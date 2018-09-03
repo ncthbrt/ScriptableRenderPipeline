@@ -11,6 +11,16 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         public SerializedProperty allowShaderVariantStripping;
         public SerializedRenderPipelineSettings renderPipelineSettings;
         public SerializedFrameSettings defaultFrameSettings;
+        public SerializedFrameSettings defaultCubeReflectionSettings;
+        public SerializedFrameSettings defaultPlanarReflectionSettings;
+
+        public enum FrameSettings
+        {
+            Camera,
+            CubeReflection,
+            PlanarReflection
+        }
+        public FrameSettings currentlyEdited = FrameSettings.Camera;
 
         public SerializedHDRenderPipelineAsset(SerializedObject serializedObject)
         {
@@ -22,6 +32,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
 
             renderPipelineSettings = new SerializedRenderPipelineSettings(serializedObject.Find((HDRenderPipelineAsset a) => a.renderPipelineSettings));
             defaultFrameSettings = new SerializedFrameSettings(serializedObject.FindProperty("m_FrameSettings"));
+            defaultCubeReflectionSettings = new SerializedFrameSettings(serializedObject.FindProperty("m_CubeReflectionSettings"));
+            defaultPlanarReflectionSettings = new SerializedFrameSettings(serializedObject.FindProperty("m_PlanarReflectionSettings"));
         }
 
         public void Update()
