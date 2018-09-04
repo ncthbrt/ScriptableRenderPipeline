@@ -145,6 +145,17 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                     overrides.intValue &= ~(int)FrameSettingsOverrides.Volumetrics;
             }
         }
+        public bool overridesProjectionForVolumetrics
+        {
+            get { return (overrides.intValue & (int)FrameSettingsOverrides.ProjectionForVolumetrics) > 0; }
+            set
+            {
+                if (value)
+                    overrides.intValue |= (int)FrameSettingsOverrides.ProjectionForVolumetrics;
+                else
+                    overrides.intValue &= ~(int)FrameSettingsOverrides.ProjectionForVolumetrics;
+            }
+        }
         public bool overridesLightLayers
         {
             get { return (overrides.intValue & (int)FrameSettingsOverrides.LightLayers) > 0; }
@@ -308,6 +319,17 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                     overrides.intValue |= (int)FrameSettingsOverrides.Stereo;
                 else
                     overrides.intValue &= ~(int)FrameSettingsOverrides.Stereo;
+            }
+        }
+        public bool overridesXrGraphicSettings
+        {
+            get { return (overrides.intValue & (int)FrameSettingsOverrides.XrGraphicSettings) > 0; }
+            set
+            {
+                if (value)
+                    overrides.intValue |= (int)FrameSettingsOverrides.XrGraphicSettings;
+                else
+                    overrides.intValue &= ~(int)FrameSettingsOverrides.XrGraphicSettings;
             }
         }
         public bool overridesMSAA

@@ -17,29 +17,31 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         Transmission = 1 << 6,
         AtmosphericScaterring = 1 << 7,
         Volumetrics = 1 << 8,
-        LightLayers = 1 << 9,
+        ProjectionForVolumetrics = 1 << 9,
+        LightLayers = 1 << 10,
+        MSAA = 1 << 11,
+        MSAASampleCounte = 1 << 12,
 
         //rendering pass
-        TransparentPrepass = 1 << 10,
-        TransparentPostpass = 1 << 11,
-        MotionVectors = 1 << 12,
-        ObjectMotionVectors = 1 << 13,
-        Decals = 1 << 14,
-        RoughRefraction = 1 << 15,
-        Distortion = 1 << 16,
-        Postprocess = 1 << 17,
+        TransparentPrepass = 1 << 13,
+        TransparentPostpass = 1 << 14,
+        MotionVectors = 1 << 15,
+        ObjectMotionVectors = 1 << 16,
+        Decals = 1 << 17,
+        RoughRefraction = 1 << 18,
+        Distortion = 1 << 19,
+        Postprocess = 1 << 20,
 
         //rendering settings
-        ForwardRenderingOnly = 1 << 18,
-        DepthPrepassWithDeferredRendering = 1 << 19,
-        AsyncCompute = 1 << 20,
-        OpaqueObjects = 1 << 21,
-        TransparentObjects = 1 << 22,
+        ForwardRenderingOnly = 1 << 21,
+        DepthPrepassWithDeferredRendering = 1 << 22,
+        AsyncCompute = 1 << 23,
+        OpaqueObjects = 1 << 24,
+        TransparentObjects = 1 << 25,
 
-        //other FrameSettings
-        Stereo = 1 << 23,
-        MSAA = 1 << 24,
-        MSAASampleCounte = 1 << 25,
+        //stereo settings
+        Stereo = 1 << 26,
+        XrGraphicSettings = 1 << 27
     }
 
     // The settings here are per frame settings.
