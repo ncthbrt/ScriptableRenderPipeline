@@ -11,10 +11,9 @@
 //                  5x5 tent PCF sampling (9 taps)
 //
 
-real SampleShadow_PCF_Tent_5x5(real4 textureSize, real4 texelSizeRcp, real3 coord, real2 sampleBias, Texture2D tex, SamplerComparisonState compSamp)
+// shadowAtlasSize.xy is the shadow atlas size in pixel and shadowAtlasSize.zw is rcp(shadow atlas size)
+real SampleShadow_PCF_Tent_5x5(real4 shadowAtlasSize, real3 coord, real2 sampleBias, Texture2D tex, SamplerComparisonState compSamp)
 {
-    real4 shadowMapTexture_TexelSize = real4(texelSizeRcp.xy, textureSize.xy);
-    
 #if SHADOW_USE_DEPTH_BIAS == 1
     // add the depth bias
     coord.z += depthBias;
@@ -24,7 +23,7 @@ real SampleShadow_PCF_Tent_5x5(real4 textureSize, real4 texelSizeRcp, real3 coor
     real fetchesWeights[9];
     real2 fetchesUV[9];
 
-    SampleShadow_ComputeSamples_Tent_5x5(shadowMapTexture_TexelSize, coord.xy, fetchesWeights, fetchesUV);
+    SampleShadow_ComputeSamples_Tent_5x5(shadowAtlasSize, coord.xy, fetchesWeights, fetchesUV);
 
 #if SHADOW_OPTIMIZE_REGISTER_USAGE == 1 && SHADOW_USE_SAMPLE_BIASING == 0
     // the loops are only there to prevent the compiler form coalescing all 9 texture fetches which increases register usage
@@ -61,10 +60,8 @@ real SampleShadow_PCF_Tent_5x5(real4 textureSize, real4 texelSizeRcp, real3 coor
 //
 //                  7x7 tent PCF sampling (16 taps)
 //
-real SampleShadow_PCF_Tent_7x7(real4 textureSize, real4 texelSizeRcp, real3 coord, real2 sampleBias, Texture2D tex, SamplerComparisonState compSamp)
+real SampleShadow_PCF_Tent_7x7(real4 shadowAtlasSize, real3 coord, real2 sampleBias, Texture2D tex, SamplerComparisonState compSamp)
 {
-    real4 shadowMapTexture_TexelSize = real4(texelSizeRcp.xy, textureSize.xy);
-
 #if SHADOW_USE_DEPTH_BIAS == 1
     // add the depth bias
     coord.z += depthBias;
@@ -74,7 +71,7 @@ real SampleShadow_PCF_Tent_7x7(real4 textureSize, real4 texelSizeRcp, real3 coor
     real fetchesWeights[16];
     real2 fetchesUV[16];
 
-    SampleShadow_ComputeSamples_Tent_7x7(shadowMapTexture_TexelSize, coord.xy, fetchesWeights, fetchesUV);
+    SampleShadow_ComputeSamples_Tent_7x7(shadowAtlasSize, coord.xy, fetchesWeights, fetchesUV);
 
 #if SHADOW_OPTIMIZE_REGISTER_USAGE == 1
     // the loops are only there to prevent the compiler form coalescing all 16 texture fetches which increases register usage

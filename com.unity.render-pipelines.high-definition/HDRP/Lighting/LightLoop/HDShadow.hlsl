@@ -20,35 +20,33 @@ float GetDirectionalShadowAttenuation(HDShadowContext shadowContext, float3 posi
     return GetDirectionalShadowAttenuation(shadowContext, positionWS, normalWS, shadowDataIndex, L);
 }
 
-float GetSpotShadowAttenuation(HDShadowContext shadowContext, float3 positionWS, float3 normalWS, int shadowDataIndex, float3 L, float L_dist)
-{
-    HDShadowData sd = shadowContext.shadowDatas[shadowDataIndex];
-    return EvalShadow_PunctualDepth(sd, _ShadowmapAtlas, sampler_ShadowmapAtlas, positionWS, normalWS, L, L_dist);
-}
-
-float GetSpotShadowAttenuation(HDShadowContext shadowContext, float3 positionWS, float3 normalWS, int shadowDataIndex, float3 L, float L_dist, float2 positionSS)
-{
-    return GetSpotShadowAttenuation(shadowContext, positionWS, normalWS, shadowDataIndex, L, L_dist);
-}
-
-float GetPointShadowAttenuation(HDShadowContext shadowContext, float3 positionWS, float3 normalWS, int shadowDataIndex, float3 L, float L_dist)
+float GetPunctualShadowAttenuation(HDShadowContext shadowContext, float3 positionWS, float3 normalWS, int shadowDataIndex, float3 L, float L_dist, bool pointLight)
 {
     // Note: Here we assume that all the shadow map cube faces have been added contiguously in the buffer to retreive the shadow information
-    HDShadowData sd = shadowContext.shadowDatas[shadowDataIndex + CubeMapFaceID(-L)];
+    HDShadowData sd = shadowContext.shadowDatas[shadowDataIndex];
+
+    if (pointLight)
+    {
+        sd.viewProjection = shadowContext.shadowDatas[shadowDataIndex + CubeMapFaceID(-L)].viewProjection;
+        sd.atlasOffset = shadowContext.shadowDatas[shadowDataIndex + CubeMapFaceID(-L)].atlasOffset;
+    }
 
     return EvalShadow_PunctualDepth(sd, _ShadowmapAtlas, sampler_ShadowmapAtlas, positionWS, normalWS, L, L_dist);
 }
 
-float GetPointShadowAttenuation(HDShadowContext shadowContext, float3 positionWS, float3 normalWS, int shadowDataIndex, float3 L, float L_dist, float2 positionSS)
+float GetPunctualShadowAttenuation(HDShadowContext shadowContext, float3 positionWS, float3 normalWS, int shadowDataIndex, float3 L, float L_dist, float2 positionSS, bool pointLight)
 {
-    return GetPointShadowAttenuation(shadowContext, positionWS, normalWS, shadowDataIndex, L, L_dist);
+    return GetPunctualShadowAttenuation(shadowContext, positionWS, normalWS, shadowDataIndex, L, L_dist, pointLight);
 }
 
 float GetPunctualShadowClosestDistance(HDShadowContext shadowContext, SamplerState sampl, real3 positionWS, int shadowDataIndex, float3 L, float3 lightPositionWS)
 {
     // Note: Here we assume that all the shadow map cube faces have been added contiguously in the buffer to retreive the shadow information
     // TODO: if on the light type to retrieve the good shadow data
-    HDShadowData sd = shadowContext.shadowDatas[shadowDataIndex + CubeMapFaceID(-L)];
+    HDShadowData sd = shadowContext.shadowDatas[shadowDataIndex];
+    sd.viewProjection = shadowContext.shadowDatas[shadowDataIndex + CubeMapFaceID(-L)].viewProjection;
+    sd.shadowToWorld = shadowContext.shadowDatas[shadowDataIndex + CubeMapFaceID(-L)].shadowToWorld;
+    sd.atlasOffset = shadowContext.shadowDatas[shadowDataIndex + CubeMapFaceID(-L)].atlasOffset;
     return EvalShadow_SampleClosestDistance_Punctual(sd, _ShadowmapAtlas, s_linear_clamp_sampler, positionWS, L, lightPositionWS);
 }
 

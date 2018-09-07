@@ -128,6 +128,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         public void RenderShadows(ScriptableRenderContext renderContext, CommandBuffer cmd, DrawShadowsSettings dss)
         {
             cmd.SetRenderTarget(identifier);
+            cmd.SetGlobalVector(HDShaderIDs._ShadowAtlasSize, new Vector4(m_Width, m_Height, 1.0f / m_Width, 1.0f / m_Height));
 
             foreach (var shadowRequest in shadowRequests)
             {

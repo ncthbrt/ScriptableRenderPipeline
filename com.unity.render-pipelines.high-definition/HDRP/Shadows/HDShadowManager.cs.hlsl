@@ -16,15 +16,14 @@
 struct HDShadowData
 {
     float4x4 viewProjection;
-    float4x4 shadowToWorld;
-    float4 scaleOffset;
-    float4 textureSize;
-    float4 textureSizeRcp;
+    float2 atlasOffset;
+    float4 zBufferParam;
+    float4 shadowMapSize;
     float4 viewBias;
-    float4 normalBias;
+    float3 normalBias;
     int flags;
-    float edgeTolerance;
     float4 shadowFilterParams0;
+    float4x4 shadowToWorld;
 };
 
 // Generated from UnityEngine.Experimental.Rendering.HDPipeline.HDDirectionalShadowData
@@ -43,27 +42,23 @@ float4x4 GetViewProjection(HDShadowData value)
 {
     return value.viewProjection;
 }
-float4x4 GetShadowToWorld(HDShadowData value)
+float2 GetAtlasOffset(HDShadowData value)
 {
-    return value.shadowToWorld;
+    return value.atlasOffset;
 }
-float4 GetScaleOffset(HDShadowData value)
+float4 GetZBufferParam(HDShadowData value)
 {
-    return value.scaleOffset;
+    return value.zBufferParam;
 }
-float4 GetTextureSize(HDShadowData value)
+float4 GetShadowMapSize(HDShadowData value)
 {
-    return value.textureSize;
-}
-float4 GetTextureSizeRcp(HDShadowData value)
-{
-    return value.textureSizeRcp;
+    return value.shadowMapSize;
 }
 float4 GetViewBias(HDShadowData value)
 {
     return value.viewBias;
 }
-float4 GetNormalBias(HDShadowData value)
+float3 GetNormalBias(HDShadowData value)
 {
     return value.normalBias;
 }
@@ -71,13 +66,13 @@ int GetFlags(HDShadowData value)
 {
     return value.flags;
 }
-float GetEdgeTolerance(HDShadowData value)
-{
-    return value.edgeTolerance;
-}
 float4 GetShadowFilterParams0(HDShadowData value)
 {
     return value.shadowFilterParams0;
+}
+float4x4 GetShadowToWorld(HDShadowData value)
+{
+    return value.shadowToWorld;
 }
 
 //

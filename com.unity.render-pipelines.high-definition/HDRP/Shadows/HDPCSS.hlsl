@@ -114,10 +114,8 @@ real PCSS(real3 coord, real filterRadius, real4 scaleOffset, real2 sampleBias, r
         //NOTE: We must clamp the sampling within the bounds of the shadow atlas.
         //        Overfiltering will leak results from other shadow lights.
         //TODO: Investigate moving this to blocker search.
-        if (U <= UMin || U >= UMax || V <= VMin || V >= VMax)
-            sum += SAMPLE_TEXTURE2D_SHADOW(shadowMap, compSampler, real3(coord.xy, coord.z)).r;
-        else
-            sum += SAMPLE_TEXTURE2D_SHADOW(shadowMap, compSampler, real3(U, V, coord.z + dot(sampleBias, offset))).r;
+        coord.xy = clamp(coord.xy, float2(UMin, VMin), float2(UMax, VMax));
+        sum += SAMPLE_TEXTURE2D_SHADOW(shadowMap, compSampler, real3(coord.xy, coord.z)).r;
     }
 
     return sum / sampleCount;

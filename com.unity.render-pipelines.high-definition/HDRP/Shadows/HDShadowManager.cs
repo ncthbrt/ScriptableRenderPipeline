@@ -9,20 +9,17 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
     public struct HDShadowData
     {
         public Matrix4x4    viewProjection;
-        public Matrix4x4    shadowToWorld;
-        public Vector4      scaleOffset;
-
-        // These fields are only for test purpose for HDShadowAlgorithm.hlsl
-        // and should be renamed/removed when we have a stable version
-        public Vector4      textureSize;
-        public Vector4      textureSizeRcp;
+        public Vector2      atlasOffset;
+        public Vector4      zBufferParam;
+        public Vector4      shadowMapSize;
 
         public Vector4      viewBias;
-        public Vector4      normalBias;
+        public Vector3      normalBias;
         public int          flags;
-        public float        edgeTolerance;
 
         public Vector4      shadowFilterParams0;
+
+        public Matrix4x4    shadowToWorld;
     }
     
     // We use a different structure for directional light because these is a lot of data there
@@ -57,6 +54,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         public Matrix4x4            projection;
         public Matrix4x4            shadowToWorld;
         public Vector2              viewportSize;
+        public Vector4              zBufferParam;
         // Warning: this field is updated by ProcessShadowRequests and is invalid before
         public Rect                 atlasViewport;
         public bool                 zClip;
@@ -74,7 +72,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         // end
 
         public Vector4              viewBias;
-        public Vector4              normalBias;
+        public Vector3              normalBias;
         public float                edgeTolerance;
         public int                  flags;
 
@@ -186,20 +184,20 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             // Compute the scale and offset (between 0 and 1) for the atlas coordinates
             float rWidth = 1.0f / m_Width;
             float rHeight = 1.0f / m_Height;
-            Vector4 atlasViewport = new Vector4(shadowRequest.atlasViewport.width, shadowRequest.atlasViewport.height, shadowRequest.atlasViewport.x, shadowRequest.atlasViewport.y);
-            data.scaleOffset = Vector4.Scale(new Vector4(rWidth, rHeight, rWidth, rHeight), atlasViewport);
+            data.atlasOffset = Vector2.Scale(new Vector2(rWidth, rHeight), new Vector2(shadowRequest.atlasViewport.x, shadowRequest.atlasViewport.y));
 
-            data.textureSize = new Vector4(m_Width, m_Height, shadowRequest.atlasViewport.width, shadowRequest.atlasViewport.height);
-            data.textureSizeRcp = new Vector4(rWidth, rHeight, 1.0f / shadowRequest.atlasViewport.width, 1.0f / shadowRequest.atlasViewport.height);
+            data.shadowMapSize = new Vector4(shadowRequest.atlasViewport.width, shadowRequest.atlasViewport.height, 1.0f / shadowRequest.atlasViewport.width, 1.0f / shadowRequest.atlasViewport.height);
+
+            // data.nearFar = new Vector2(shadowRequest.nearFar);
 
             data.viewBias = shadowRequest.viewBias;
             data.normalBias = shadowRequest.normalBias;
-            data.edgeTolerance = shadowRequest.edgeTolerance;
             data.flags = shadowRequest.flags;
 
-            data.shadowFilterParams0.x = shadowRequest.shadowSoftness;
-            data.shadowFilterParams0.y = ShadowUtils.Asfloat(shadowRequest.blockerSampleCount);
-            data.shadowFilterParams0.z = ShadowUtils.Asfloat(shadowRequest.filterSampleCount);
+            data.shadowFilterParams0.x = shadowRequest.edgeTolerance;
+            data.shadowFilterParams0.y = shadowRequest.shadowSoftness;
+            data.shadowFilterParams0.z = ShadowUtils.Asfloat(shadowRequest.blockerSampleCount);
+            data.shadowFilterParams0.w = ShadowUtils.Asfloat(shadowRequest.filterSampleCount);
 
             return data;
         }

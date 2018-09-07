@@ -3,6 +3,8 @@
 #pragma kernel DeferredDirectionalShadow_Contact            DEFERRED_DIRECTIONAL=DeferredDirectionalShadow_Contact          ENABLE_CONTACT_SHADOWS
 #pragma kernel DeferredContactShadow
 
+#define USE_HD_SHADOW_SYSTEM
+
 #ifdef SHADER_API_PSSL
 #   pragma argument( scheduler=minpressure ) // instruct the shader compiler to prefer minimizing vgpr usage
 #endif
@@ -143,7 +145,11 @@ void DEFERRED_DIRECTIONAL(uint2 groupThreadId : SV_GroupThreadID, uint2 groupId 
     float3 normalWS = normalData.normalWS;
 
     // TODO: move this to HDShadowContext
+#ifdef USE_HD_SHADOW_SYSTEM
+    HDShadowContext shadowContext = InitShadowContext();
+#else
     ShadowContext shadowContext = InitShadowContext();
+#endif
     float shadow = GetDirectionalShadowAttenuation(shadowContext, posInput.positionWS, normalWS, _DirectionalShadowIndex, _DirectionalLightDirection.xyz);
 
 #ifdef ENABLE_CONTACT_SHADOWS

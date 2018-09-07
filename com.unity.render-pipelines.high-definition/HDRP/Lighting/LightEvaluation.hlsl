@@ -58,12 +58,12 @@ void EvaluateLight_Directional(LightLoopContext lightLoopContext, PositionInputs
     {
 #ifdef USE_DEFERRED_DIRECTIONAL_SHADOWS
         shadow = LOAD_TEXTURE2D(_DeferredShadowTexture, posInput.positionSS).x;
-        // TODO: manage deferred directional shadows in the new system
-#ifdef USE_HD_SHADOW_SYSTEM
-        shadow = GetDirectionalShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L);
-#endif
 #else
+# ifdef USE_HD_SHADOW_SYSTEM
+        shadow = GetDirectionalShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L);
+# else
         shadow = GetDirectionalShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, posInput.positionSS);
+# endif
 #endif
 
 #ifdef SHADOWS_SHADOWMASK
@@ -74,10 +74,11 @@ void EvaluateLight_Directional(LightLoopContext lightLoopContext, PositionInputs
         uint  payloadOffset;
         real  fade;
         int cascadeCount;
+        int shadowSplitIndex = 0;
 #ifdef USE_HD_SHADOW_SYSTEM
-        int shadowSplitIndex = EvalShadow_GetSplitIndex(lightLoopContext.shadowContext, lightData.shadowIndex, positionWS, fade, cascadeCount);
+        shadowSplitIndex = EvalShadow_GetSplitIndex(lightLoopContext.shadowContext, lightData.shadowIndex, positionWS, fade, cascadeCount);
 #else
-        int shadowSplitIndex = EvalShadow_GetSplitIndex(lightLoopContext.shadowContext, lightData.shadowIndex, positionWS, payloadOffset, fade, cascadeCount);
+        shadowSplitIndex = EvalShadow_GetSplitIndex(lightLoopContext.shadowContext, lightData.shadowIndex, positionWS, payloadOffset, fade, cascadeCount);
 #endif
         // we have a fade caclulation for each cascade but we must lerp with shadow mask only for the last one
         // if shadowSplitIndex is -1 it mean we are outside cascade and should return 1.0 to use shadowmask: saturate(-shadowSplitIndex) return 0 for >= 0 and 1 for -1
@@ -273,7 +274,7 @@ void EvaluateLight_Punctual(LightLoopContext lightLoopContext, PositionInputs po
         {
             // Note:the case of NdotL < 0 can appear with isThinModeTransmission, in this case we need to flip the shadow bias
 #ifdef USE_HD_SHADOW_SYSTEM
-            shadow = GetPointShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, distances.x);
+            shadow = GetPunctualShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, distances.x, true);
 #else
             shadow = GetPunctualShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, distances.x, posInput.positionSS);
 #endif
@@ -292,7 +293,7 @@ void EvaluateLight_Punctual(LightLoopContext lightLoopContext, PositionInputs po
         {
             // Note:the case of NdotL < 0 can appear with isThinModeTransmission, in this case we need to flip the shadow bias
 #ifdef USE_HD_SHADOW_SYSTEM
-            shadow = GetSpotShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, distances.x);
+            shadow = GetPunctualShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, distances.x, false);
 #else
             shadow = GetPunctualShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, distances.x, posInput.positionSS);
 #endif
@@ -383,7 +384,7 @@ float3 PreEvaluatePunctualLightTransmission(LightLoopContext lightLoopContext, P
             // Compute the distance from the light to the back face of the object along the light direction.
             float distBackFaceToLight = GetPunctualShadowClosestDistance(   lightLoopContext.shadowContext, s_linear_clamp_sampler,
                                                                             posInput.positionWS, lightData.shadowIndex, L, lightData.positionRWS);
-
+                                                                        
             // Our subsurface scattering models use the semi-infinite planar slab assumption.
             // Therefore, we need to find the thickness along the normal.
             // Warning: based on the artist's input, dependence on the NdotL has been disabled.

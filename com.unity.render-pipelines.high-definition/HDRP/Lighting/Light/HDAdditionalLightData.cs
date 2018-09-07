@@ -236,7 +236,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             {
                 var         shadowRequest = shadowRequests[faceIndex];
                 Matrix4x4   invViewProjection = Matrix4x4.identity;
-                                
+                
                 // Write per light type matrices, splitDatas and culling parameters
                 switch (m_Light.type)
                 {
@@ -291,8 +291,13 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         void SetCommonShadowRequestSettings(HDShadowRequest shadowRequest, Vector3 cameraPos, Matrix4x4 invViewProjection, Vector2 viewportSize, int lightIndex)
         {
             shadowRequest.viewportSize = viewportSize;
+
+            // zBuffer param to reconstruct depth position (for transmission)
+            float f = m_Light.range;
+            float n = m_Light.shadowNearPlane;
+            shadowRequest.zBufferParam = new Vector4((f-n)/n, 1.0f, (f-n)/n*f, 1.0f/f);
             shadowRequest.viewBias = new Vector4(m_ShadowData.viewBiasMin, m_ShadowData.viewBiasMax, m_ShadowData.viewBiasScale, 2.0f / shadowRequest.projection.m00 / m_ShadowData.shadowResolution * 1.4142135623730950488016887242097f);
-            shadowRequest.normalBias = new Vector4(m_ShadowData.normalBiasMin, m_ShadowData.normalBiasMax, m_ShadowData.normalBiasScale, 0);
+            shadowRequest.normalBias = new Vector3(m_ShadowData.normalBiasMin, m_ShadowData.normalBiasMax, m_ShadowData.normalBiasScale);
             shadowRequest.flags = 0;
             shadowRequest.flags |= m_ShadowData.sampleBiasScale     ? (int)HDShadowFlag.SampleBiasScale : 0;
             shadowRequest.flags |= m_ShadowData.edgeLeakFixup       ? (int)HDShadowFlag.EdgeLeakFixup : 0;
