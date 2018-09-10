@@ -315,6 +315,11 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 invViewProjection = translation * invViewProjection;
             }
 
+            if (m_Light.type == LightType.Directional)
+                shadowRequest.position = new Vector3(shadowRequest.view.m03, shadowRequest.view.m13, shadowRequest.view.m23);
+            else
+                shadowRequest.position = (ShaderConfig.s_CameraRelativeRendering != 0) ? transform.position - cameraPos : transform.position;
+
             shadowRequest.shadowToWorld = invViewProjection.transpose;
             shadowRequest.zClip = (m_Light.type != LightType.Directional);
             shadowRequest.lightIndex = lightIndex;

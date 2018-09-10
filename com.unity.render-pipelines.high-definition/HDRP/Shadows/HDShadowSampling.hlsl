@@ -7,6 +7,25 @@
 //  PCF Filtering methods
 // ------------------------------------------------------------------
 
+real SampleShadow_PCF_Tent_3x3(real4 shadowAtlasSize, real3 coord, real2 sampleBias, Texture2D tex, SamplerComparisonState compSamp)
+{
+#if SHADOW_USE_DEPTH_BIAS == 1
+    // add the depth bias
+    coord.z += depthBias;
+#endif
+
+    real shadow = 0.0;
+    real fetchesWeights[4];
+    real2 fetchesUV[4];
+
+    SampleShadow_ComputeSamples_Tent_3x3(shadowAtlasSize, coord.xy, fetchesWeights, fetchesUV);
+    for (int i = 0; i < 4; i++)
+    {
+        shadow += fetchesWeights[i] * SAMPLE_TEXTURE2D_SHADOW(tex, compSamp, real3(fetchesUV[i].xy, coord.z + dot(fetchesUV[i].xy - coord.xy, sampleBias))).x;
+    }
+    return shadow;
+}
+
 //
 //                  5x5 tent PCF sampling (9 taps)
 //
@@ -48,9 +67,9 @@ real SampleShadow_PCF_Tent_5x5(real4 shadowAtlasSize, real3 coord, real2 sampleB
 
     shadow += fetchesWeights[ 8] * SAMPLE_TEXTURE2D_SHADOW(tex, compSamp, real3(fetchesUV[ 8].xy, coord.z + dot(fetchesUV[ 8].xy - coord.xy, sampleBias))).x;
 #else
-    for( int i = 0; i < 9; i++ )
+    for (int i = 0; i < 9; i++)
     {
-        shadow += fetchesWeights[i] * SAMPLE_TEXTURE2D_SHADOW(tex, compSamp, real3( fetchesUV[i].xy, coord.z + dot(fetchesUV[i].xy - coord.xy, sampleBias)), slice).x;
+        shadow += fetchesWeights[i] * SAMPLE_TEXTURE2D_SHADOW(tex, compSamp, real3(fetchesUV[i].xy, coord.z + dot(fetchesUV[i].xy - coord.xy, sampleBias)), slice).x;
     }
 #endif
 
@@ -109,7 +128,7 @@ real SampleShadow_PCF_Tent_7x7(real4 shadowAtlasSize, real3 coord, real2 sampleB
         shadow += fetchesWeights[15] * SAMPLE_TEXTURE2D_SHADOW(tex, compSamp, real3(fetchesUV[15].xy, coord.z + dot(fetchesUV[15].xy - coord.xy, sampleBias))).x;
     }
 #else
-    for( int i = 0; i < 16; i++ )
+    for(int i = 0; i < 16; i++)
     {
         shadow += fetchesWeights[i] * SAMPLE_TEXTURE2D_SHADOW(tex, compSamp, real3(fetchesUV[i].xy, coord.z + dot(fetchesUV[i].xy - coord.xy, sampleBias))).x;
     }
@@ -242,7 +261,7 @@ real SampleShadow_MSM_1tap(real3 tcs, real lightLeakBias, real momentBias, real 
 //
 //                  PCSS sampling
 //
-real SampleShadow_PCSS(real3 tcs, real4 scaleOffset, real2 sampleBias, real shadowSoftness, int blockerSampleCount, int filterSampleCount, Texture2D tex, SamplerComparisonState compSamp, SamplerState samp)
+real SampleShadow_PCSS(real3 tcs, real2 scale, real2 offset, real2 sampleBias, real shadowSoftness, int blockerSampleCount, int filterSampleCount, Texture2D tex, SamplerComparisonState compSamp, SamplerState samp)
 {
     real2 sampleJitter = real2(sin(GenerateHashedRandomFloat(tcs.x)),
                                cos(GenerateHashedRandomFloat(tcs.y)));
@@ -258,5 +277,5 @@ real SampleShadow_PCSS(real3 tcs, real4 scaleOffset, real2 sampleBias, real shad
     filterSize = max(filterSize, 0.000001);
 
     //3) Filter
-    return PCSS(tcs, filterSize, scaleOffset, sampleBias, sampleJitter, tex, compSamp, filterSampleCount);
+    return PCSS(tcs, filterSize, scale, offset, sampleBias, sampleJitter, tex, compSamp, filterSampleCount);
 }

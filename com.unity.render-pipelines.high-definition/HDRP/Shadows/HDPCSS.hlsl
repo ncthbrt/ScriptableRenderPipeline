@@ -94,13 +94,13 @@ bool BlockerSearch(inout real averageBlockerDepth, inout real numBlockers, real 
     return numBlockers >= 1;
 }
 
-real PCSS(real3 coord, real filterRadius, real4 scaleOffset, real2 sampleBias, real2 sampleJitter, Texture2D shadowMap, SamplerComparisonState compSampler, int sampleCount)
+real PCSS(real3 coord, real filterRadius, real2 scale, real2 offset, real2 sampleBias, real2 sampleJitter, Texture2D shadowMap, SamplerComparisonState compSampler, int sampleCount)
 {
-    real UMin = scaleOffset.z;
-    real UMax = scaleOffset.z + scaleOffset.x;
+    real UMin = offset.x;
+    real UMax = offset.x + scale.x;
 
-    real VMin = scaleOffset.w;
-    real VMax = scaleOffset.w + scaleOffset.y;
+    real VMin = offset.y;
+    real VMax = offset.y + scale.y;
 
     real sum = 0.0;
     for (int i = 0; i < sampleCount; ++i)

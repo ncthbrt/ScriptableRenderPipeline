@@ -27,7 +27,10 @@ float GetPunctualShadowAttenuation(HDShadowContext shadowContext, float3 positio
 
     if (pointLight)
     {
-        sd.viewProjection = shadowContext.shadowDatas[shadowDataIndex + CubeMapFaceID(-L)].viewProjection;
+        // sd.viewProjection = shadowContext.shadowDatas[shadowDataIndex + CubeMapFaceID(-L)].viewProjection;
+        sd.rot0 = shadowContext.shadowDatas[shadowDataIndex + CubeMapFaceID(-L)].rot0;
+        sd.rot1 = shadowContext.shadowDatas[shadowDataIndex + CubeMapFaceID(-L)].rot1;
+        sd.rot2 = shadowContext.shadowDatas[shadowDataIndex + CubeMapFaceID(-L)].rot2;
         sd.atlasOffset = shadowContext.shadowDatas[shadowDataIndex + CubeMapFaceID(-L)].atlasOffset;
     }
 
@@ -36,7 +39,7 @@ float GetPunctualShadowAttenuation(HDShadowContext shadowContext, float3 positio
 
 float GetPunctualShadowAttenuation(HDShadowContext shadowContext, float3 positionWS, float3 normalWS, int shadowDataIndex, float3 L, float L_dist, float2 positionSS, bool pointLight)
 {
-    return GetPunctualShadowAttenuation(shadowContext, positionWS, normalWS, shadowDataIndex, L, L_dist, pointLight);
+return GetPunctualShadowAttenuation(shadowContext, positionWS, normalWS, shadowDataIndex, L, L_dist, pointLight);
 }
 
 float GetPunctualShadowClosestDistance(HDShadowContext shadowContext, SamplerState sampl, real3 positionWS, int shadowDataIndex, float3 L, float3 lightPositionWS)
@@ -44,9 +47,12 @@ float GetPunctualShadowClosestDistance(HDShadowContext shadowContext, SamplerSta
     // Note: Here we assume that all the shadow map cube faces have been added contiguously in the buffer to retreive the shadow information
     // TODO: if on the light type to retrieve the good shadow data
     HDShadowData sd = shadowContext.shadowDatas[shadowDataIndex];
-    sd.viewProjection = shadowContext.shadowDatas[shadowDataIndex + CubeMapFaceID(-L)].viewProjection;
+    // sd.viewProjection = shadowContext.shadowDatas[shadowDataIndex + CubeMapFaceID(-L)].viewProjection;
     sd.shadowToWorld = shadowContext.shadowDatas[shadowDataIndex + CubeMapFaceID(-L)].shadowToWorld;
     sd.atlasOffset = shadowContext.shadowDatas[shadowDataIndex + CubeMapFaceID(-L)].atlasOffset;
+    sd.rot0 = shadowContext.shadowDatas[shadowDataIndex + CubeMapFaceID(-L)].rot0;
+    sd.rot1 = shadowContext.shadowDatas[shadowDataIndex + CubeMapFaceID(-L)].rot1;
+    sd.rot2 = shadowContext.shadowDatas[shadowDataIndex + CubeMapFaceID(-L)].rot2;
     return EvalShadow_SampleClosestDistance_Punctual(sd, _ShadowmapAtlas, s_linear_clamp_sampler, positionWS, L, lightPositionWS);
 }
 

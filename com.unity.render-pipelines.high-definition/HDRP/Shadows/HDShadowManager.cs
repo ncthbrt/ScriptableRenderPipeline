@@ -8,7 +8,12 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
     [GenerateHLSL]
     public struct HDShadowData
     {
-        public Matrix4x4    viewProjection;
+        // public Matrix4x4    viewProjection;
+        public Vector3      rot0;
+        public Vector3      rot1;
+        public Vector3      rot2;
+        public Vector3      pos;
+        public Vector4      proj;
         public Vector2      atlasOffset;
         public Vector4      zBufferParam;
         public Vector4      shadowMapSize;
@@ -53,6 +58,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         public Matrix4x4            deviceProjection;
         public Matrix4x4            projection;
         public Matrix4x4            shadowToWorld;
+        public Vector3              position;
         public Vector2              viewportSize;
         public Vector4              zBufferParam;
         // Warning: this field is updated by ProcessShadowRequests and is invalid before
@@ -178,7 +184,14 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         {
             HDShadowData data = new HDShadowData();
 
-            data.viewProjection = shadowRequest.deviceProjection * shadowRequest.view;
+            // data.viewProjection = shadowRequest.deviceProjection * shadowRequest.view;
+            var devProj = shadowRequest.deviceProjection;
+            var view = shadowRequest.view;
+            data.proj = new Vector4(devProj.m00, devProj.m11, devProj.m22, devProj.m23);
+            data.pos = shadowRequest.position;
+            data.rot0 = new Vector3(view.m00, view.m01, view.m02);
+            data.rot1 = new Vector3(view.m10, view.m11, view.m12);
+            data.rot2 = new Vector3(view.m20, view.m21, view.m22);
             data.shadowToWorld = shadowRequest.shadowToWorld;
 
             // Compute the scale and offset (between 0 and 1) for the atlas coordinates
