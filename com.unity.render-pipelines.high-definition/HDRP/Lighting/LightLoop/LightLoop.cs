@@ -2531,23 +2531,19 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 cmd.SetComputeTextureParam(screenSpaceShadowComputeShader, kernel, HDShaderIDs._CameraDepthTexture, depthTexture);
 
                 int deferredShadowTileSize = 16; // Must match DeferreDirectionalShadow.compute
-                int numTilesX;
-                int numTilesY;
+                int numTilesX = hdCamera.frameSettings.enableStereo ? ((hdCamera.actualWidth / 2) + (deferredShadowTileSize - 1)) / deferredShadowTileSize : (hdCamera.actualWidth + (deferredShadowTileSize - 1)) / deferredShadowTileSize;
+                int numTilesY = (hdCamera.actualHeight + (deferredShadowTileSize - 1)) / deferredShadowTileSize;
 
                 if (hdCamera.frameSettings.enableStereo)
                 {
                     for (uint eye = 0; eye < 2; eye++)
                     {
-                        numTilesX = ((hdCamera.actualWidth/2) + (deferredShadowTileSize - 1)) / deferredShadowTileSize;
-                        numTilesY = (hdCamera.actualHeight + (deferredShadowTileSize - 1)) / deferredShadowTileSize;
                         cmd.SetComputeIntParam(screenSpaceShadowComputeShader, HDShaderIDs._Eye, (int)eye);
                         cmd.DispatchCompute(screenSpaceShadowComputeShader, kernel, numTilesX, numTilesY, 1);
                     }
                 }
                 else
                 {
-                    numTilesX = (hdCamera.actualWidth + (deferredShadowTileSize - 1)) / deferredShadowTileSize;
-                    numTilesY = (hdCamera.actualHeight + (deferredShadowTileSize - 1)) / deferredShadowTileSize;
                     cmd.SetComputeIntParam(screenSpaceShadowComputeShader, HDShaderIDs._Eye, 0);
                     cmd.DispatchCompute(screenSpaceShadowComputeShader, kernel, numTilesX, numTilesY, 1);
                 }
