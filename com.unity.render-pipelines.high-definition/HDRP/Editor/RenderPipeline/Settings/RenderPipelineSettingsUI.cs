@@ -79,7 +79,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             EditorGUILayout.PropertyField(d.increaseResolutionOfVolumetrics, _.GetContent("Increase resolution of volumetrics|Increase the resolution of volumetric lighting buffers. Warning: high performance cost, do not enable on consoles."));
             EditorGUILayout.PropertyField(d.supportLightLayers, _.GetContent("Support LightLayers|Enable light layers. In deferred this imply an extra render target in memory and extra cost."));
             EditorGUILayout.PropertyField(d.supportOnlyForward, _.GetContent("Support Only Forward|Remove all the memory and shader variant of GBuffer. The renderer can be switch to deferred anymore."));
-            
             // Engine
             EditorGUILayout.PropertyField(d.supportDecals, _.GetContent("Support Decals|Enable memory and variant for decals buffer and cluster decals"));
             // TODO: Implement MSAA - Hide for now as it doesn't work

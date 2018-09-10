@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Improve Decal Gizmo
 - Implement Screen Space Reflections (SSR) (alpha version, highly experimental)
 - Add an option to invert the fade parameter on a Density Volume
+- Stereo rendering support for ScreenSpaceShadows
 
 ### Changed
 - Changed the way depth & color pyramids are built to be faster and better quality, thus improving the look of distortion and refraction.

@@ -288,6 +288,15 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             nonJitteredProjMatrix = gpuNonJitteredProj;
             cameraPos = pos;
 
+            if (!m_frameSettings.enableStereo)
+            {
+                // TODO VR: Current solution for compute shaders grabs matrices from
+                // stereo matrices even when not rendering stereo in order to reduce shader variants.
+                // After native fix for compute shader keywords is completed, qualify this with stereoEnabled.
+                viewMatrixStereo[0] = viewMatrix;
+                projMatrixStereo[0] = projMatrix;
+            }
+
             if (ShaderConfig.s_CameraRelativeRendering != 0)
             {
                 Matrix4x4 cameraDisplacement = Matrix4x4.Translate(cameraPos - prevCameraPos); // Non-camera-relative positions
