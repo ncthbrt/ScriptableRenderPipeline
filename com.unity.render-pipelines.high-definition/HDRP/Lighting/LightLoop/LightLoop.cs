@@ -446,20 +446,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         static ComputeBuffer s_PerTileLogBaseTweak = null;
         static ComputeBuffer s_GlobalLightListAtomic = null;
 
-        // TODO: remove this once the new shadow system works
-        static bool _useNewShadowSystem = true;
-        public static bool useNewShadowSystem
-        {
-            get { return _useNewShadowSystem; }
-            set { _useNewShadowSystem = value; }
-        }
-        static bool _useDynamicLightViewport = false;
-        public static bool useDynamicLightViewport
-        {
-            get { return _useDynamicLightViewport; }
-            set { _useDynamicLightViewport = value; }
-        }
-        // End 
+        const bool useNewShadowSystem = true;
 
         public enum ClusterPrepassSource : int
         {
@@ -1707,9 +1694,9 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
                 // TODO: Only for dev purpose remove once the new shadow system is stable
                 if (useNewShadowSystem)
-                    Shader.EnableKeyword("USE_HD_SHADOW_SYSTEM");
+                    Shader.EnableKeyword("USE_CORE_SHADOW_SYSTEM");
                 else
-                    Shader.DisableKeyword("USE_HD_SHADOW_SYSTEM");
+                    Shader.DisableKeyword("USE_CORE_SHADOW_SYSTEM");
                 
                 // We must clear the shadow requests before checking if they are any visible light because we would have requests from the last frame executed in the case where we don't see any lights
                 if (useNewShadowSystem)
@@ -1925,7 +1912,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                             if (shadowSettings.enabled && cullResults.GetShadowCasterBounds(lightIndex, out bounds))
                             {
                                 int shadowRequestCount;
-                                additionalLightData.useDynamicViewportResize = useDynamicLightViewport;
                                 shadowIndex = additionalLightData.UpdateShadowRequest(camera, m_NewShadowManager, light, cullResults, lightIndex, out shadowRequestCount);
 
 #if UNITY_EDITOR

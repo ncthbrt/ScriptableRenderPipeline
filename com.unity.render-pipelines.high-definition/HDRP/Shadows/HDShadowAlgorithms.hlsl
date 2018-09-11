@@ -3,7 +3,7 @@
 // The variant without resource parameters dynamically accesses the texture when sampling.
 
 // We can't use multi_compile for compute shaders so we force the shadow algorithm
-#if (SHADERPASS == SHADERPASS_DEFERRED_LIGHTING)
+#if (SHADERPASS == SHADERPASS_DEFERRED_LIGHTING || SHADERPASS == SHADERPASS_VOLUMETRIC_LIGHTING)
 #define DIRECTIONAL_SHADOW_LOW
 #define PUNCTUAL_SHADOW_LOW
 #endif
@@ -42,19 +42,19 @@ real4 EvalShadow_WorldToShadow(HDShadowData sd, real3 positionWS, bool perspProj
 #if 0
     return mul(viewProjection, real4(positionWS, 1));
 #else
-    if( perspProj )
+    if(perspProj)
     {
         positionWS = positionWS - sd.pos;
         float3x3 view = { sd.rot0, sd.rot1, sd.rot2 };
-        positionWS = mul( view, positionWS );
+        positionWS = mul(view, positionWS);
     }
     else
     {
         float3x4 view;
-        view[0] = float4( sd.rot0, sd.pos.x );
-        view[1] = float4( sd.rot1, sd.pos.y );
-        view[2] = float4( sd.rot2, sd.pos.z );
-        positionWS = mul( view, float4( positionWS, 1.0 ) ).xyz;
+        view[0] = float4(sd.rot0, sd.pos.x);
+        view[1] = float4(sd.rot1, sd.pos.y);
+        view[2] = float4(sd.rot2, sd.pos.z);
+        positionWS = mul(view, float4(positionWS, 1.0)).xyz;
     }
 
     float4x4 proj;
@@ -63,12 +63,12 @@ real4 EvalShadow_WorldToShadow(HDShadowData sd, real3 positionWS, bool perspProj
     proj._m11 = sd.proj[1];
     proj._m22 = sd.proj[2];
     proj._m23 = sd.proj[3];
-    if( perspProj )
+    if(perspProj)
         proj._m32 = -1.0;
     else
         proj._m33 = 1.0;
 
-    return mul( proj, float4( positionWS, 1.0 ) );
+    return mul(proj, float4(positionWS, 1.0));
 #endif
 }
 
@@ -179,10 +179,73 @@ real3 EvalShadow_ReceiverBias(real4 viewBias, real3 normalBias, real3 positionWS
 #endif
 }
 
-// Reimplement SHADOW_USE_SAMPLE_BIASING
 // sample bias used by wide PCF filters to offset individual taps
+#if SHADOW_USE_SAMPLE_BIASING != 0
+real EvalShadow_SampleBiasFlag(int flag)
+{
+    return (flag & SAMPLE_BIAS_SCALE) ? 1.0 : 0.0;
+}
+
+float2 EvalShadow_SampleBias_Persp(HDShadowData sd, float3 positionWS, float3 normalWS, float3 tcs)
+{
+    float3 e1, e2;
+    if(abs(normalWS.z) > 0.65)
+    {
+        e1 = float3(1.0, 0.0, -normalWS.x / normalWS.z);
+        e2 = float3(0.0, 1.0, -normalWS.y / normalWS.z);
+    }
+    else if(abs(normalWS.y) > 0.65)
+    {
+        e1 = float3(1.0, -normalWS.x / normalWS.y, 0.0);
+        e2 = float3(0.0, -normalWS.z / normalWS.y, 1.0);
+    }
+    else
+    {
+        e1 = float3(-normalWS.y / normalWS.x, 1.0, 0.0);
+        e2 = float3(-normalWS.z / normalWS.x, 0.0, 1.0);
+    }
+
+    float4 p1 = EvalShadow_WorldToShadow(sd, positionWS + e1, true);
+    float4 p2 = EvalShadow_WorldToShadow(sd, positionWS + e2, true);
+
+    p1.xyz /= p1.w;
+    p2.xyz /= p2.w;
+
+    p1.xyz = float3(p1.xy * 0.5 + 0.5, p1.z);
+    p2.xyz = float3(p2.xy * 0.5 + 0.5, p2.z);
+
+    p1.xy = p1.xy * sd.shadowMapSize * _ShadowAtlasSize.zw + sd.atlasOffset;
+    p2.xy = p2.xy * sd.shadowMapSize * _ShadowAtlasSize.zw + sd.atlasOffset;
+
+    float3 nrm     = cross(p1.xyz - tcs, p2.xyz - tcs);
+           nrm.xy /= -nrm.z;
+
+    return isfinite(nrm.xy) ? (EvalShadow_SampleBiasFlag(sd.normalBias.w) * nrm.xy) : 0.0.xx;
+}
+
+float2 EvalShadow_SampleBias_Ortho(HDShadowData sd, float3 normalWS)
+{
+    float3x3 view = float3x3(sd.rot0, sd.rot1, sd.rot2);
+    float3 nrm = mul(view, normalWS);
+
+    nrm.x /= sd.proj[0];
+    nrm.y /= sd.proj[1];
+    nrm.z /= sd.proj[2];
+
+    float2 scale = sd.shadowMapSize * _ShadowAtlasSize.zw;
+
+    nrm.x *= sd.scale.y;
+    nrm.y *= sd.scale.x;
+    nrm.z *= sd.scale.x * sd.scale.y;
+
+    nrm.xy /= -nrm.z;
+
+    return isfinite(nrm.xy) ? (EvalShadow_SampleBiasFlag(sd.normalBias.w) * nrm.xy) : 0.0.xx;
+}
+#else // SHADOW_USE_SAMPLE_BIASING != 0
 real2 EvalShadow_SampleBias_Persp(real3 positionWS, real3 normalWS, real3 tcs) { return 0.0.xx; }
-real2 EvalShadow_SampleBias_Ortho(real3 normalWS)                                { return 0.0.xx; }
+real2 EvalShadow_SampleBias_Ortho(real3 normalWS)                              { return 0.0.xx; }
+#endif // SHADOW_USE_SAMPLE_BIASING != 0
 
 
 //

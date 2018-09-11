@@ -43,7 +43,7 @@ void ApplyDebug(LightLoopContext lightLoopContext, float3 positionWS, inout floa
             int cascadeCount;
 
 // TODO: Remove once new shadow system works
-#ifdef USE_HD_SHADOW_SYSTEM
+#ifndef USE_CORE_SHADOW_SYSTEM
             int shadowSplitIndex = EvalShadow_GetSplitIndex(lightLoopContext.shadowContext, shadowIdx, positionWS, alpha, cascadeCount);
 #else
             int shadowSplitIndex = EvalShadow_GetSplitIndex(lightLoopContext.shadowContext, shadowIdx, positionWS, payloadOffset, alpha, cascadeCount);
@@ -82,7 +82,7 @@ void LightLoop( float3 V, PositionInputs posInput, PreLightData preLightData, BS
     {
         UNITY_BRANCH if(_DirectionalShadowIndex != -1)
         {
-#ifdef USE_HD_SHADOW_SYSTEM
+#ifndef USE_CORE_SHADOW_SYSTEM
             context.shadowValue = GetDirectionalShadowAttenuation(
                 context.shadowContext,posInput.positionWS, bsdfData.normalWS,
                 _DirectionalLightDatas[_DirectionalShadowIndex].shadowIndex,

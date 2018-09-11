@@ -435,10 +435,6 @@ Shader "HDRenderPipeline/LayeredLit"
     // enable dithering LOD crossfade
     #pragma multi_compile _ LOD_FADE_CROSSFADE
 
-    // TODO: remove this once new shadow system works
-    // Only for dev/test purpose, allow to switch dynamically between HD and Core shadow system
-    #pragma multi_compile _ USE_HD_SHADOW_SYSTEM
-
     //enable GPU instancing support
     #pragma multi_compile_instancing
     #pragma instancing_options renderinglayer
@@ -714,6 +710,10 @@ Shader "HDRenderPipeline/LayeredLit"
             #pragma multi_compile _ SHADOWS_SHADOWMASK
             // Setup DECALS_OFF so the shader stripper can remove variants
             #pragma multi_compile DECALS_OFF DECALS_3RT DECALS_4RT
+            
+            // TODO: remove this once new shadow system works
+            // Only for dev/test purpose, allow to switch dynamically between HD and Core shadow system
+            // #pragma multi_compile _ USE_CORE_SHADOW_SYSTEM
             
             // Supported shadow modes per light type
             #pragma multi_compile PUNCTUAL_SHADOW_LOW PUNCTUAL_SHADOW_MEDIUM PUNCTUAL_SHADOW_HIGH

@@ -229,9 +229,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         unsafe public void ProcessShadowRequests(CullResults cullResults, Camera camera)
         {
             int shadowIndex = 0;
-
-            // TODO: prune all shadow we dont need to render
-            // TODO maybe: sort all shadows by "importance" (aka size on screen)
             
             // Assign a position to all the shadows in the atlas, and scale shadows if needed
             m_CascadeAtlas.Layout(false);
@@ -257,7 +254,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     second = ((second == k_DirectionalShadowCascadeCount || second == first)  && sphere[i].w > 0.0f) ? i : second;
                 }
             }
-
 
             // Update directional datas:
             if (second != k_DirectionalShadowCascadeCount)
@@ -320,7 +316,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         // Warning: must be called after ProcessShadowRequests and RenderShadows to have valid informations
         public void DisplayShadowAtlas(CommandBuffer cmd, Material debugMaterial, float screenX, float screenY, float screenSizeX, float screenSizeY, float minValue, float maxValue, bool flipY)
         {
-            //TODO display debug shadow map
             m_Atlas.DisplayAtlas(cmd, debugMaterial, new Rect(0, 0, m_Width, m_Height), screenX, screenY, screenSizeX, screenSizeY, minValue, maxValue, flipY);
         }
         

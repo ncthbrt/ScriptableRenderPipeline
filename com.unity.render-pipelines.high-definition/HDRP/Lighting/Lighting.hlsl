@@ -18,7 +18,7 @@
 
 #include "../Lighting/LightDefinition.cs.hlsl"
 
-#ifdef USE_HD_SHADOW_SYSTEM
+#ifndef USE_CORE_SHADOW_SYSTEM
 # include "LightLoop/HDShadow.hlsl"
 #else
 # include "LightLoop/Shadow.hlsl"

@@ -67,7 +67,7 @@ void EvaluateLight_Directional(LightLoopContext lightLoopContext, PositionInputs
         real  fade;
         int cascadeCount;
         int shadowSplitIndex = 0;
-#ifdef USE_HD_SHADOW_SYSTEM
+#ifndef USE_CORE_SHADOW_SYSTEM
         shadowSplitIndex = EvalShadow_GetSplitIndex(lightLoopContext.shadowContext, lightData.shadowIndex, positionWS, fade, cascadeCount);
 #else
         shadowSplitIndex = EvalShadow_GetSplitIndex(lightLoopContext.shadowContext, lightData.shadowIndex, positionWS, payloadOffset, fade, cascadeCount);
@@ -265,7 +265,7 @@ void EvaluateLight_Punctual(LightLoopContext lightLoopContext, PositionInputs po
         UNITY_BRANCH if (lightData.shadowIndex >= 0 && (dot(N, L) >= 0.0))
         {
             // Note:the case of NdotL < 0 can appear with isThinModeTransmission, in this case we need to flip the shadow bias
-#ifdef USE_HD_SHADOW_SYSTEM
+#ifndef USE_CORE_SHADOW_SYSTEM
             shadow = GetPunctualShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, distances.x, true);
 #else
             shadow = GetPunctualShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, distances.x, posInput.positionSS);
@@ -284,7 +284,7 @@ void EvaluateLight_Punctual(LightLoopContext lightLoopContext, PositionInputs po
         UNITY_BRANCH if (lightData.shadowIndex >= 0 && (dot(N, L) >= 0.0))
         {
             // Note:the case of NdotL < 0 can appear with isThinModeTransmission, in this case we need to flip the shadow bias
-#ifdef USE_HD_SHADOW_SYSTEM
+#ifndef USE_CORE_SHADOW_SYSTEM
             shadow = GetPunctualShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, distances.x, false);
 #else
             shadow = GetPunctualShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, distances.x, posInput.positionSS);
