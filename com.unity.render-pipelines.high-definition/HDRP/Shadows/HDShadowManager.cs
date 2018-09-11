@@ -14,13 +14,17 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         public Vector3      rot2;
         public Vector3      pos;
         public Vector4      proj;
+
         public Vector2      atlasOffset;
+        public float        edgeTolerance;
+        public int          flags;
+
         public Vector4      zBufferParam;
         public Vector4      shadowMapSize;
 
         public Vector4      viewBias;
         public Vector3      normalBias;
-        public int          flags;
+        public float        _padding;
 
         public Vector4      shadowFilterParams0;
 
@@ -201,16 +205,15 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
             data.shadowMapSize = new Vector4(shadowRequest.atlasViewport.width, shadowRequest.atlasViewport.height, 1.0f / shadowRequest.atlasViewport.width, 1.0f / shadowRequest.atlasViewport.height);
 
-            // data.nearFar = new Vector2(shadowRequest.nearFar);
-
             data.viewBias = shadowRequest.viewBias;
             data.normalBias = shadowRequest.normalBias;
             data.flags = shadowRequest.flags;
+            data.edgeTolerance = shadowRequest.edgeTolerance;
 
-            data.shadowFilterParams0.x = shadowRequest.edgeTolerance;
-            data.shadowFilterParams0.y = shadowRequest.shadowSoftness;
-            data.shadowFilterParams0.z = ShadowUtils.Asfloat(shadowRequest.blockerSampleCount);
-            data.shadowFilterParams0.w = ShadowUtils.Asfloat(shadowRequest.filterSampleCount);
+            data.shadowFilterParams0.x = shadowRequest.shadowSoftness;
+            data.shadowFilterParams0.y = ShadowUtils.Asfloat(shadowRequest.blockerSampleCount);
+            data.shadowFilterParams0.z = ShadowUtils.Asfloat(shadowRequest.filterSampleCount);
+            data.shadowFilterParams0.w = 0;
 
             return data;
         }

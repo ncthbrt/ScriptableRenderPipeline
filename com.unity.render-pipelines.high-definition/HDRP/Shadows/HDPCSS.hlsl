@@ -1,6 +1,8 @@
 #include "CoreRP/ShaderLibrary/Common.hlsl"
 
-static const float2 poissonDisk64[64] =
+#define POISSON_DISK_SAMPLE_COUNT 64
+
+static const float2 poissonDisk64[POISSON_DISK_SAMPLE_COUNT] =
 {
     float2 ( 0.1187053,   0.7951565),
     float2 ( 0.1173675,   0.6087878),
@@ -76,7 +78,7 @@ real PenumbraSize(real Reciever, real Blocker)
 bool BlockerSearch(inout real averageBlockerDepth, inout real numBlockers, real lightArea, real3 coord, real2 sampleJitter, real2 sampleBias, Texture2D shadowMap, SamplerState pointSampler, int sampleCount)
 {
     real blockerSum = 0.0;
-    for (int i = 0; i < sampleCount; ++i)
+    for (int i = 0; i < sampleCount && i < POISSON_DISK_SAMPLE_COUNT; ++i)
     {
         real2 offset = real2(poissonDisk64[i].x *  sampleJitter.y + poissonDisk64[i].y * sampleJitter.x,
                              poissonDisk64[i].x * -sampleJitter.x + poissonDisk64[i].y * sampleJitter.y) * lightArea;
@@ -103,7 +105,7 @@ real PCSS(real3 coord, real filterRadius, real2 scale, real2 offset, real2 sampl
     real VMax = offset.y + scale.y;
 
     real sum = 0.0;
-    for (int i = 0; i < sampleCount; ++i)
+    for (int i = 0; i < sampleCount && i < POISSON_DISK_SAMPLE_COUNT; ++i)
     {
         real2 offset = real2(poissonDisk64[i].x *  sampleJitter.y + poissonDisk64[i].y * sampleJitter.x,
                              poissonDisk64[i].x * -sampleJitter.x + poissonDisk64[i].y * sampleJitter.y) * filterRadius;
@@ -114,8 +116,12 @@ real PCSS(real3 coord, real filterRadius, real2 scale, real2 offset, real2 sampl
         //NOTE: We must clamp the sampling within the bounds of the shadow atlas.
         //        Overfiltering will leak results from other shadow lights.
         //TODO: Investigate moving this to blocker search.
-        coord.xy = clamp(coord.xy, float2(UMin, VMin), float2(UMax, VMax));
-        sum += SAMPLE_TEXTURE2D_SHADOW(shadowMap, compSampler, real3(coord.xy, coord.z)).r;
+        // coord.xy = clamp(coord.xy, float2(UMin, VMin), float2(UMax, VMax));
+        
+        if (U <= UMin || U >= UMax || V <= VMin || V >= VMax)
+            sum += SAMPLE_TEXTURE2D_SHADOW(shadowMap, compSampler, real3(coord.xy, coord.z)).r;
+        else
+            sum += SAMPLE_TEXTURE2D_SHADOW(shadowMap, compSampler, real3(U, V, coord.z + dot(sampleBias, offset))).r;
     }
 
     return sum / sampleCount;

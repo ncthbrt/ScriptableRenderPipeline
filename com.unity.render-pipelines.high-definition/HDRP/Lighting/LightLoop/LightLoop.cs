@@ -102,11 +102,18 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     ShadowData[] sds;
                     sc.GetShadowDatas(out sds, out offset, out count);
                     Debug.Assert(offset == 0);
-                    s_ShadowDataBuffer.SetData(sds);   // unfortunately we can't pass an offset or count to this function
+
+                    // Avoid overflowing the compute buffer
+                    if (sds.Length <= k_MaxShadowDataSlots)
+                        s_ShadowDataBuffer.SetData(sds);   // unfortunately we can't pass an offset or count to this function
+                    
                     ShadowPayload[] payloads;
                     sc.GetPayloads(out payloads, out offset, out count);
                     Debug.Assert(offset == 0);
-                    s_ShadowPayloadBuffer.SetData(payloads);
+                    
+                    // Avoid overflowing the compute buffer
+                    if (payloads.Length <= k_MaxShadowDataSlots)
+                        s_ShadowPayloadBuffer.SetData(payloads);
                 };
 
 
@@ -445,41 +452,14 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         public static bool useNewShadowSystem
         {
             get { return _useNewShadowSystem; }
-            set
-            {
-                _useNewShadowSystem = value;
-                Debug.Log("New shadow system " + (_useNewShadowSystem ? "Enabled" : "Disabled"));
-            }
+            set { _useNewShadowSystem = value; }
         }
         static bool _useDynamicLightViewport = false;
         public static bool useDynamicLightViewport
         {
             get { return _useDynamicLightViewport; }
-            set
-            {
-                _useDynamicLightViewport = value;
-                Debug.Log("Dynamic light viewport " + (_useDynamicLightViewport ? " Enabled" : "Disabled"));
-            }
+            set { _useDynamicLightViewport = value; }
         }
-
-        #if UNITY_EDITOR
-        [UnityEditor.InitializeOnLoad]
-        static class UseNewShadowSystemSwitcher
-        {
-            static UseNewShadowSystemSwitcher()
-            {
-                UnityEditor.SceneView.onSceneGUIDelegate += (sceneView) => {
-                    if (Event.current.type == EventType.KeyDown)
-                    {
-                        if (Event.current.keyCode == KeyCode.Space)
-                            useNewShadowSystem = !useNewShadowSystem;
-                        else if (Event.current.keyCode == KeyCode.V)
-                            useDynamicLightViewport = !useDynamicLightViewport;
-                    }
-                };
-            }
-        }
-        #endif
         // End 
 
         public enum ClusterPrepassSource : int
@@ -2543,16 +2523,10 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 Camera camera = hdCamera.camera;
 
                 // Shadows
-                if (useNewShadowSystem)
-                {
-                    m_NewShadowManager.SyncData();
-                    m_NewShadowManager.BindResources(cmd);
-                }
-                else
-                {
-                    m_ShadowMgr.SyncData();
-                    m_ShadowMgr.BindResources(cmd, null, 0);
-                }
+                m_NewShadowManager.SyncData();
+                m_NewShadowManager.BindResources(cmd);
+                m_ShadowMgr.SyncData();
+                m_ShadowMgr.BindResources(cmd, null, 0);
 
                 cmd.SetGlobalTexture(HDShaderIDs._CookieTextures, m_CookieTexArray.GetTexCache());
                 cmd.SetGlobalTexture(HDShaderIDs._CookieCubeTextures, m_CubeCookieTexArray.GetTexCache());
@@ -2662,11 +2636,9 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     lightDirection.w = 0;
                 }
 
-                // Passing the compute shader and it's kernel is totally useless i think (because the binder in ShadowSetup ignore them)
-                if (useNewShadowSystem)
-                    m_NewShadowManager.BindResources(cmd);
-                else
-                    m_ShadowMgr.BindResources(cmd, screenSpaceShadowComputeShader, kernel);
+                m_NewShadowManager.BindResources(cmd);
+                // Passing the compute shader and it's kernel is totally useless (because the binder in ShadowSetup ignore them)
+                m_ShadowMgr.BindResources(cmd, screenSpaceShadowComputeShader, kernel);
 
                 if (m_ContactShadows)
                 {

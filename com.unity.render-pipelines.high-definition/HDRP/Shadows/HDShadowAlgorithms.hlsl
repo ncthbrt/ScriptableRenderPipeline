@@ -2,20 +2,37 @@
 // There are two variants provided, one takes the texture and sampler explicitly so they can be statically passed in.
 // The variant without resource parameters dynamically accesses the texture when sampling.
 
+// We can't use multi_compile for compute shaders so we force the shadow algorithm
+#if (SHADERPASS == SHADERPASS_DEFERRED_LIGHTING)
+#define DIRECTIONAL_SHADOW_LOW
+#define PUNCTUAL_SHADOW_LOW
+#endif
+
 #ifdef PUNCTUAL_SHADOW_LOW
 #define PUNCTUAL_FILTER_ALGORITHM(sd, posTC, sampleBias, tex, samp) SampleShadow_PCF_Tent_5x5(_ShadowAtlasSize.zwxy, posTC, sampleBias, tex, samp)
-#elif PUNCTUAL_SHADOW_MEDIUM
+#endif
+#ifdef PUNCTUAL_SHADOW_MEDIUM
 #define PUNCTUAL_FILTER_ALGORITHM(sd, posTC, sampleBias, tex, samp) SampleShadow_PCF_Tent_7x7(_ShadowAtlasSize.zwxy, posTC, sampleBias, tex, samp)
-#else // PUNCTUAL_SHADOW_HIGH
+#endif
+#ifdef PUNCTUAL_SHADOW_HIGH
 #define PUNCTUAL_FILTER_ALGORITHM(sd, posTC, sampleBias, tex, samp) SampleShadow_PCSS(posTC, sd.shadowMapSize.xy * _ShadowAtlasSize.zw, sd.atlasOffset, sampleBias, sd.shadowFilterParams0.x, asint(sd.shadowFilterParams0.y), asint(sd.shadowFilterParams0.z), tex, samp, s_point_clamp_sampler)
 #endif
 
 #ifdef DIRECTIONAL_SHADOW_LOW
 #define DIRECTIONAL_FILTER_ALGORITHM(sd, posTC, sampleBias, tex, samp) SampleShadow_PCF_Tent_5x5(_ShadowAtlasSize.zwxy, posTC, sampleBias, tex, samp)
-#elif DIRECTIONAL_SHADOW_MEDIUM
+#endif
+#ifdef DIRECTIONAL_SHADOW_MEDIUM
 #define DIRECTIONAL_FILTER_ALGORITHM(sd, posTC, sampleBias, tex, samp) SampleShadow_PCF_Tent_7x7(_ShadowAtlasSize.zwxy, posTC, sampleBias, tex, samp)
-#else // DIRECTIONAL_SHADOW_HIGH
+#endif
+#ifdef DIRECTIONAL_SHADOW_HIGH
 #define DIRECTIONAL_FILTER_ALGORITHM(sd, posTC, sampleBias, tex, samp) SampleShadow_PCSS(posTC, sd.shadowMapSize.xy * _ShadowAtlasSize.zw, sd.atlasOffset, sampleBias, sd.shadowFilterParams0.x, asint(sd.shadowFilterParams0.y), asint(sd.shadowFilterParams0.z), tex, samp, s_point_clamp_sampler)
+#endif
+
+#ifndef PUNCTUAL_FILTER_ALGORITHM
+#error "Undefined punctual shadow filter algorithm"
+#endif
+#ifndef DIRECTIONAL_FILTER_ALGORITHM
+#error "Undefined directional shadow filter algorithm"
 #endif
 
 real4 EvalShadow_WorldToShadow(HDShadowData sd, real3 positionWS, bool perspProj)
@@ -174,7 +191,7 @@ real2 EvalShadow_SampleBias_Ortho(real3 normalWS)                               
 real EvalShadow_PunctualDepth(HDShadowData sd, Texture2D tex, SamplerComparisonState samp, real3 positionWS, real3 normalWS, real3 L, real L_dist)
 {
     /* bias the world position */
-    real recvBiasWeight = EvalShadow_ReceiverBiasWeight(sd, sd.shadowMapSize.xy, sd.atlasOffset, sd.viewBias, sd.shadowFilterParams0.x, sd.flags, tex, samp, positionWS, normalWS, L, L_dist, true);
+    real recvBiasWeight = EvalShadow_ReceiverBiasWeight(sd, sd.shadowMapSize.xy, sd.atlasOffset, sd.viewBias, sd.edgeTolerance, sd.flags, tex, samp, positionWS, normalWS, L, L_dist, true);
     positionWS = EvalShadow_ReceiverBias(sd.viewBias, sd.normalBias, positionWS, normalWS, L, L_dist, recvBiasWeight, true);
     /* get shadowmap texcoords */
     real3 posTC = EvalShadow_GetTexcoordsAtlas(sd, sd.shadowMapSize.xy, sd.atlasOffset, positionWS, true);
@@ -247,7 +264,7 @@ real EvalShadow_CascadedDepth_Blend(HDShadowContext shadowContext, Texture2D tex
 
     /* normal based bias */
     real3 orig_pos = positionWS;
-    real recvBiasWeight = EvalShadow_ReceiverBiasWeight(sd, sd.shadowMapSize.xy, sd.atlasOffset, sd.viewBias, sd.shadowFilterParams0.x, sd.flags, tex, samp, positionWS, normalWS, L, 1.0, false);
+    real recvBiasWeight = EvalShadow_ReceiverBiasWeight(sd, sd.shadowMapSize.xy, sd.atlasOffset, sd.viewBias, sd.edgeTolerance, sd.flags, tex, samp, positionWS, normalWS, L, 1.0, false);
     positionWS = EvalShadow_ReceiverBias(sd.viewBias, sd.normalBias, positionWS, normalWS, L, 1.0, recvBiasWeight, false);
 
     /* get shadowmap texcoords */
