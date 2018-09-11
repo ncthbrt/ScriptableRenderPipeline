@@ -52,12 +52,12 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     curY += curH;
                     curH = viewport.height;
                 }
-                if (curY + curH >= yMax)
+                if (curY + curH > yMax)
                 {
                     if (allowResize)
                         LayoutResize();
                     else
-                        Debug.LogWarning("Shadow atlasing has failed.");
+                        Debug.LogWarning("HD Shadow atlasing has failed.");
                     return ;
                 }
                 viewport.x = curX;
