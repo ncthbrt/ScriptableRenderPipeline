@@ -8,6 +8,7 @@
     uint _EnvLightCount;
     uint _EnvProxyCount;
     int  _EnvLightSkyEnabled;         // TODO: make it a bool
+    int _DirectionalShadowIndex;
 
     uint _NumTileFtplX;
     uint _NumTileFtplY;
@@ -29,14 +30,15 @@
     //#ifdef USE_CLUSTERED_LIGHTLIST
     uint _NumTileClusteredX;
     uint _NumTileClusteredY;
+    
+    real4 _ShadowAtlasSize;
 
     float4x4 _Env2DCaptureVP[MAX_ENV2D_LIGHT];
 
 #else
 
     #include "HDRP/Lighting/LightDefinition.cs.hlsl"
-    #include "CoreRP/Shadow/ShadowBase.cs.hlsl"
-    // #include "HDRP/Shadows/HDShadowManager.cs.hlsl"
+    #include "HDRP/CoreRP/Shadow/ShadowBase.cs.hlsl"
 
     StructuredBuffer<uint>  g_vLightListGlobal;      // don't support Buffer yet in unity
 

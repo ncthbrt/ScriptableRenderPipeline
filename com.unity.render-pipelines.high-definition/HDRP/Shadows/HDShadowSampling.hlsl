@@ -1,7 +1,8 @@
 // Various shadow sampling logic.
 // Again two versions, one for dynamic resource indexing, one for static resource access.
 
-#include "CoreRP/ShaderLibrary/Shadow/ShadowSamplingTent.hlsl"
+
+#include "HDRP/ShaderLibrary/Shadow/ShadowSamplingTent.hlsl"
 
 // ------------------------------------------------------------------
 //  PCF Filtering methods
@@ -180,7 +181,7 @@ real SampleShadow_PCF_9tap_Adaptive(real4 texelSizeRcp, real3 tcs, real2 sampleB
     return flSum;
 }
 
-#include "CoreRP/ShaderLibrary/Shadow/ShadowMoments.hlsl"
+#include "HDRP/ShaderLibrary/Shadow/ShadowMoments.hlsl"
 
 //
 //                  1 tap VSM sampling

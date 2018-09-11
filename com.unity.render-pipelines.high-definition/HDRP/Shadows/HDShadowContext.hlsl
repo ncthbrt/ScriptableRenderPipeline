@@ -13,12 +13,6 @@ struct HDShadowContext
     HDDirectionalShadowData         directionalShadowData;
 };
 
-// TODO: move this to ShaderVariables ?
-cbuffer ShadowDatas
-{
-    real4      _ShadowAtlasSize;
-}
-
 // HD shadow sampling bindings
 #include "HDShadowSampling.hlsl"
 #include "HDShadowAlgorithms.hlsl"
