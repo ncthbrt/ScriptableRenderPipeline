@@ -447,7 +447,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         static ComputeBuffer s_GlobalLightListAtomic = null;
 
         // TODO: remove this once the new shadow system works
-        static bool _useNewShadowSystem = false;
+        static bool _useNewShadowSystem = true;
         public static bool useNewShadowSystem
         {
             get { return _useNewShadowSystem; }

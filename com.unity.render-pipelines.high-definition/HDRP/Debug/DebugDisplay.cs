@@ -639,16 +639,16 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             list.Add(new DebugUI.BoolField
             {
                 displayName = "Use HD Shadow System",
-                getter = () => lightingDebugSettings.useNewShadowSystem,
-                setter = value => lightingDebugSettings.useNewShadowSystem = value,
+                getter = () => LightLoop.useNewShadowSystem,
+                setter = value => LightLoop.useNewShadowSystem = value,
                 onValueChanged = (f, value) => LightLoop.useNewShadowSystem = value,
             });
 
             list.Add(new DebugUI.BoolField
             {
                 displayName = "Use Light dynamic viewport",
-                getter = () => lightingDebugSettings.useDynamicLightViewport,
-                setter = value => lightingDebugSettings.useDynamicLightViewport = value,
+                getter = () => LightLoop.useDynamicLightViewport,
+                setter = value => LightLoop.useDynamicLightViewport = value,
                 onValueChanged = (f, value) => LightLoop.useDynamicLightViewport = value,
             });
 
