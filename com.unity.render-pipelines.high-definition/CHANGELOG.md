@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Improve Decal Gizmo
 - Implement Screen Space Reflections (SSR) (alpha version, highly experimental)
 - Add an option to invert the fade parameter on a Density Volume
-- Add stereo support to ShaderPassForward.hlsl. Forward rendering now seems passable in limited test scenes
+- Add stereo support to ShaderPassForward.hlsl. Forward rendering now seems passable in limited test scenes with camera-relative rendering disabled.
 
 ### Changed
 - Changed the way depth & color pyramids are built to be faster and better quality, thus improving the look of distortion and refraction.
