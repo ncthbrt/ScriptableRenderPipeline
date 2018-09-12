@@ -367,7 +367,7 @@ real EvalShadow_hash12(real2 pos)
     return frac((p3.x + p3.y) * p3.z);
 }
 
-#if 1
+// TODO: optimize this using LinearEyeDepth() to avoid having to pass the shadowToWorld matrix
 real EvalShadow_SampleClosestDistance_Punctual(HDShadowData sd, Texture2D tex, SamplerState sampl, real3 positionWS, real3 L, real3 lightPositionWS)
 {
     real4 closestNDC = { 0,0,0,1 };
@@ -382,70 +382,3 @@ real EvalShadow_SampleClosestDistance_Punctual(HDShadowData sd, Texture2D tex, S
 
     return distance(occluderPosWS, lightPositionWS);
 }
-#else
-real EvalShadow_SampleClosestDistance_Punctual(HDShadowData sd, Texture2D tex, SamplerState sampl, real3 positionWS, real3 L, real3 lightPositionWS)
-{
-    real4 closestNDC = { 0,0,0,1 };
-    real2 texelIdx = EvalShadow_GetTexcoordsAtlas(sd, sd.shadowMapSize.xy, sd.atlasOffset, sd.shadowMapSize.xy, sd.shadowMapSize.zw, positionWS, closestNDC.xy, true);
-
-    // sample the shadow map
-    real depth = SAMPLE_TEXTURE2D_LOD(tex, sampl, texelIdx, 0).x;
-
-    real2 a = closestNDC.xy;
-
-    // zBufferParam = { (f-n)/n, 1, (f-n)/n*f, 1/f }
-    return length(real3(a, LinearEyeDepth(depth, sd.zBufferParam)));
-}
-#endif
-
-// We don't use this for now, see if it will be useful for the future
-/*real3 EvalShadow_GetClosestSample_Cascade(HDShadowContext shadowContext, Texture2D tex, real3 positionWS, real3 normalWS, int index, real4 L)
-{
-    // load the right shadow data for the current face
-    real alpha;
-    int  cascadeCount;
-    int  shadowSplitIndex = EvalShadow_GetSplitIndex(shadowContext, index, positionWS, alpha, cascadeCount);
-
-    if (shadowSplitIndex < 0)
-        return 0.0;
-
-    HDShadowData sd = shadowContext.shadowDatas[index + shadowSplitIndex];
-
-    real4 closestNDC = { 0,0,0,1 };
-    uint2 texelIdx = EvalShadow_GetIntTexcoordsAtlas(sd.viewProjection, sd.scaleOffset, sd.shadowMapSize.xy, sd.shadowMapSize.zw, sd.textureSize.xy, positionWS, closestNDC.xy, false);
-
-    // load the texel
-    closestNDC.z = LOAD_TEXTURE2D_LOD(tex, texelIdx, 0).x;
-
-    // reconstruct depth position
-    real4 closestWS = mul(closestNDC, sd.shadowToWorld);
-    return closestWS.xyz / closestWS.w;
-}
-
-real EvalShadow_SampleClosestDistance_Cascade(HDShadowContext shadowContext, Texture2D tex, SamplerState sampl,
-                                               real3 positionWS, real3 normalWS, int index, real4 L, out real3 nearPlanePositionWS)
-{
-    real alpha;
-    int  cascadeCount;
-    int shadowSplitIndex = EvalShadow_GetSplitIndex(shadowContext, index, positionWS, alpha, cascadeCount);
-    
-    HDShadowData sd = shadowContext.shadowDatas[index + shadowSplitIndex];
-
-    real4 closestNDC = { 0,0,0,1 };
-    real4 scaleOffset = real4(sd.shadowMapSize.xy * _ShadowAtlasSize.zw, sd.atlasOffset);
-    real2 texelIdx = EvalShadow_GetTexcoordsAtlas(shadowContext, index, scaleOffset, sd.shadowMapSize.xy, sd.shadowMapSize.zw, positionWS, closestNDC.xy, false);
-
-    // sample the shadow map
-    closestNDC.z = SAMPLE_TEXTURE2D_LOD(tex, sampl, texelIdx, 0).x;
-
-    // reconstruct depth position
-    real4 closestWS = mul(closestNDC, sd.shadowToWorld);
-    real3 occluderPosWS = closestWS.xyz / closestWS.w;
-
-    // TODO: avoid the matrix multiplication here.
-    real4 nearPlanePos = mul(real4(0,0,1,1), sd.shadowToWorld); // Note the reversed Z
-    nearPlanePositionWS = nearPlanePos.xyz / nearPlanePos.w;
-
-    return distance(occluderPosWS, nearPlanePositionWS);
-}
-*/

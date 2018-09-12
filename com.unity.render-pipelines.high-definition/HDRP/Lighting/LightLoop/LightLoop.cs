@@ -1694,9 +1694,9 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
                 // TODO: Only for dev purpose remove once the new shadow system is stable
                 if (useNewShadowSystem)
-                    Shader.EnableKeyword("USE_CORE_SHADOW_SYSTEM");
-                else
                     Shader.DisableKeyword("USE_CORE_SHADOW_SYSTEM");
+                else
+                    Shader.EnableKeyword("USE_CORE_SHADOW_SYSTEM");
                 
                 // We must clear the shadow requests before checking if they are any visible light because we would have requests from the last frame executed in the case where we don't see any lights
                 if (useNewShadowSystem)
