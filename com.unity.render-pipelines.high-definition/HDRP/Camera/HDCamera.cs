@@ -35,7 +35,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         public Matrix4x4[] viewMatrixStereo;
         public Matrix4x4[] projMatrixStereo;
         public Vector4 centerEyeTranslationOffset;
-        public float textureWidthScaling; // 0.5 for SinglePassDoubleWide (stereo) and 1.0 otherwise
+        public Vector4 textureWidthScaling; // (2.0, 0.5) for SinglePassDoubleWide (stereo) and (1.0, 1.0) otherwise
 
         // Non oblique projection matrix (RHS)
         public Matrix4x4 nonObliqueProjMatrix
@@ -212,11 +212,11 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             m_ActualHeight = camera.pixelHeight;
             var screenWidth = m_ActualWidth;
             var screenHeight = m_ActualHeight;
-            textureWidthScaling = 1.0f; 
+            textureWidthScaling = new Vector4(1.0f, 1.0f, 0.0f, 0.0f); 
             if (m_frameSettings.enableStereo)
             {
                 if (XRGraphicsConfig.stereoRenderingMode == UnityEditor.StereoRenderingPath.SinglePass) // VR TODO: is this also true for single-pass instanced and multi-view?
-                    textureWidthScaling = 0.5f; 
+                    textureWidthScaling = new Vector4(2.0f, 0.5f, 0.0f, 0.0f); 
                 for (uint eyeIndex = 0; eyeIndex < 2; eyeIndex++)
                 {
                     // For VR, TAA proj matrices don't need to be jittered
@@ -642,7 +642,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             cmd.SetGlobalMatrixArray(HDShaderIDs._InvProjMatrixStereo, invProjStereo);
             cmd.SetGlobalMatrixArray(HDShaderIDs._InvViewProjMatrixStereo, invViewProjStereo);
             cmd.SetGlobalMatrixArray(HDShaderIDs._PrevViewProjMatrixStereo, prevViewProjMatrixStereo);
-            cmd.SetGlobalFloat(HDShaderIDs._TextureWidthScaling, textureWidthScaling);
+            cmd.SetGlobalVector(HDShaderIDs._TextureWidthScaling, textureWidthScaling);
         }
 
         public RTHandleSystem.RTHandle GetPreviousFrameRT(int id)

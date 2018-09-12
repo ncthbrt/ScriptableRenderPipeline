@@ -448,11 +448,11 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             }
 
             // VR is not fully supported in HD
-            if (XRGraphicsConfig.enabled)
-            {
-                CoreUtils.DisplayUnsupportedXRMessage();
-                return false;
-            }
+            //if (XRGraphicsConfig.enabled)
+            //{
+            //    CoreUtils.DisplayUnsupportedXRMessage();
+            //    return false;
+            //}
             return true;
         }
 
@@ -1119,7 +1119,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                             m_LightLoop.RenderScreenSpaceShadows(hdCamera, m_ScreenSpaceShadowsBuffer, currentFrameSettings.enableMSAA ? m_SharedRTManager.GetDepthValuesTexture() : m_SharedRTManager.GetDepthTexture(), cmd, currentFrameSettings);
                             
                             PushFullScreenDebugTexture(hdCamera, cmd, m_ScreenSpaceShadowsBuffer, FullScreenDebugMode.ScreenSpaceShadows);
-                            StopStereoRendering(cmd, renderContext, hdCamera);
                         }
 
                         if (hdCamera.frameSettings.enableAsyncCompute)
@@ -1149,7 +1148,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                         m_VolumetricLightingSystem.VolumetricLightingPass(hdCamera, cmd, m_FrameCount);
 
                         // Might float this higher if we enable stereo w/ deferred
-                        StartStereoRendering(cmd, renderContext, hdCamera);
 
                         RenderDeferredLighting(hdCamera, cmd);
 
@@ -2028,7 +2026,8 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     // Note: Here we don't use GetDepthTexture() to get the depth texture but m_CameraDepthStencilBuffer as the Forward transparent pass can
                     // write extra data to deal with DOF/MB
                     cmd.SetGlobalTexture(HDShaderIDs._CameraDepthTexture, m_SharedRTManager.GetDepthStencilBuffer());
-                    cmd.SetGlobalTexture(HDShaderIDs._CameraMotionVectorsTexture, m_VelocityBuffer);
+                    if (m_VelocityBuffer != null)
+                        cmd.SetGlobalTexture(HDShaderIDs._CameraMotionVectorsTexture, m_VelocityBuffer);
                 }
 
                 var context = hdcamera.postprocessRenderContext;
