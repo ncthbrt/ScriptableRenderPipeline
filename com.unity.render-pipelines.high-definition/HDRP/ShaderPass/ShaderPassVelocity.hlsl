@@ -174,11 +174,20 @@ PackedVaryingsToPS VertTesselation(VaryingsToDS input)
 #endif // TESSELLATION_ON
 
 void Frag(  PackedVaryingsToPS packedInput,
-            out float4 outColor : SV_Target0
+            #ifdef WRITE_NORMAL_BUFFER
+                OUTPUT_NORMALBUFFER(outNormalBuffer)
+            #else
+                out float4 outColor : SV_Target0
+            #endif
+
+            , out float4 outVelocity : SV_Target1
+            #ifdef WRITE_MSAA_DEPTH
+                , out float1 depthColor : SV_Target2
+            #endif
             #ifdef _DEPTHOFFSET_ON
             , out float outputDepth : SV_Depth
             #endif
-            )
+        )
 {
     FragInputs input = UnpackVaryingsMeshToFragInputs(packedInput.vmesh);
 
@@ -192,10 +201,23 @@ void Frag(  PackedVaryingsToPS packedInput,
     float3 V = float3(1.0, 1.0, 1.0); // Avoid the division by 0
 #endif
 
-    // Perform alpha testing + get velocity
     SurfaceData surfaceData;
     BuiltinData builtinData;
     GetSurfaceAndBuiltinData(input, V, posInput, surfaceData, builtinData);
+
+#ifdef _DEPTHOFFSET_ON
+    outputDepth = posInput.deviceDepth;
+#endif
+
+// Normal Buffer Processing
+#ifdef WRITE_NORMAL_BUFFER
+    ENCODE_INTO_NORMALBUFFER(surfaceData, posInput.positionSS, outNormalBuffer);
+#elif defined(SCENESELECTIONPASS)
+    // We use depth prepass for scene selection in the editor, this code allow to output the outline correctly
+    outColor = float4(_ObjectId, _PassValue, 1.0, 1.0);
+#else
+    outColor = float4(0.0, 0.0, 0.0, 0.0);
+#endif
 
     VaryingsPassToPS inputPass = UnpackVaryingsPassToPS(packedInput.vpass);
 #ifdef _DEPTHOFFSET_ON
@@ -209,14 +231,17 @@ void Frag(  PackedVaryingsToPS packedInput,
     // Convert from Clip space (-1..1) to NDC 0..1 space.
     // Note it doesn't mean we don't have negative value, we store negative or positive offset in NDC space.
     // Note: ((positionCS * 0.5 + 0.5) - (previousPositionCS * 0.5 + 0.5)) = (velocity * 0.5)
-    EncodeVelocity(velocity * 0.5, outColor);
+    EncodeVelocity(velocity * 0.5, outVelocity);
 
     // Note: unity_MotionVectorsParams.y is 0 is forceNoMotion is enabled
     bool forceNoMotion = unity_MotionVectorsParams.y == 0.0;
     if (forceNoMotion)
-        outColor = float4(0.0, 0.0, 0.0, 0.0);
+        outVelocity = float4(0.0, 0.0, 0.0, 0.0);
 
-#ifdef _DEPTHOFFSET_ON
-    outputDepth = posInput.deviceDepth;
+
+// MSAA Depth Processing
+#ifdef WRITE_MSAA_DEPTH
+    // In case we are rendering in MSAA, reading the an MSAA depth buffer is way too expensive. To avoid that, we export the depth to a color buffer
+    depthColor = packedInput.vmesh.positionCS.z;
 #endif
 }
