@@ -173,17 +173,19 @@ PackedVaryingsToPS VertTesselation(VaryingsToDS input)
 
 #endif // TESSELLATION_ON
 
-void Frag(  PackedVaryingsToPS packedInput,
+void Frag(  PackedVaryingsToPS packedInput
+            // The velocity if always the first buffer
+            , out float4 outVelocity : SV_Target0
+
+            // Write the normal buffer
             #ifdef WRITE_NORMAL_BUFFER
-                OUTPUT_NORMALBUFFER(outNormalBuffer)
-            #else
-                out float4 outColor : SV_Target0
+            , out float4 outNormalBuffer : SV_Target1
+                // Output the depth as a color if required
+                #ifdef WRITE_MSAA_DEPTH
+                , out float1 depthColor : SV_Target2
+                #endif
             #endif
 
-            , out float4 outVelocity : SV_Target1
-            #ifdef WRITE_MSAA_DEPTH
-                , out float1 depthColor : SV_Target2
-            #endif
             #ifdef _DEPTHOFFSET_ON
             , out float outputDepth : SV_Depth
             #endif
@@ -205,20 +207,6 @@ void Frag(  PackedVaryingsToPS packedInput,
     BuiltinData builtinData;
     GetSurfaceAndBuiltinData(input, V, posInput, surfaceData, builtinData);
 
-#ifdef _DEPTHOFFSET_ON
-    outputDepth = posInput.deviceDepth;
-#endif
-
-// Normal Buffer Processing
-#ifdef WRITE_NORMAL_BUFFER
-    ENCODE_INTO_NORMALBUFFER(surfaceData, posInput.positionSS, outNormalBuffer);
-#elif defined(SCENESELECTIONPASS)
-    // We use depth prepass for scene selection in the editor, this code allow to output the outline correctly
-    outColor = float4(_ObjectId, _PassValue, 1.0, 1.0);
-#else
-    outColor = float4(0.0, 0.0, 0.0, 0.0);
-#endif
-
     VaryingsPassToPS inputPass = UnpackVaryingsPassToPS(packedInput.vpass);
 #ifdef _DEPTHOFFSET_ON
     inputPass.positionCS.w += builtinData.depthOffset;
@@ -238,10 +226,17 @@ void Frag(  PackedVaryingsToPS packedInput,
     if (forceNoMotion)
         outVelocity = float4(0.0, 0.0, 0.0, 0.0);
 
+// Normal Buffer Processing
+#ifdef WRITE_NORMAL_BUFFER
+    EncodeIntoNormalBuffer(ConvertSurfaceDataToNormalData(surfaceData), posInput.positionSS, outNormalBuffer);
 
-// MSAA Depth Processing
-#ifdef WRITE_MSAA_DEPTH
+    #ifdef WRITE_MSAA_DEPTH
     // In case we are rendering in MSAA, reading the an MSAA depth buffer is way too expensive. To avoid that, we export the depth to a color buffer
     depthColor = packedInput.vmesh.positionCS.z;
+    #endif
+#endif
+
+#ifdef _DEPTHOFFSET_ON
+    outputDepth = posInput.deviceDepth;
 #endif
 }
