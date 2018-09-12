@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 
 namespace UnityEditor.Experimental.Rendering.HDPipeline
 {
@@ -17,14 +18,16 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
 
         static void Drawer_FieldHDShadows(HDShadowInitParametersUI s, SerializedHDShadowInitParameters d, Editor o)
         {
-            EditorGUILayout.LabelField(_.GetContent("Shadow"), EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(_.GetContent("HD Shadow"), EditorStyles.boldLabel);
             
             ++EditorGUI.indentLevel;
             EditorGUILayout.LabelField(_.GetContent("Shadow Atlas"), EditorStyles.boldLabel);
             ++EditorGUI.indentLevel;
             EditorGUILayout.PropertyField(d.shadowAtlasWidth, _.GetContent("Atlas Width"));
             EditorGUILayout.PropertyField(d.shadowAtlasHeight, _.GetContent("Atlas Height"));
-            EditorGUILayout.PropertyField(d.shadowMapDepthBits, _.GetContent("Shadow Map Depth Bits"));
+            bool shadowMap16Bits = (DepthBits)d.shadowMapDepthBits.intValue	== DepthBits.Depth16;
+            shadowMap16Bits = EditorGUILayout.Toggle(_.GetContent("16-bit Shadow Maps"), shadowMap16Bits);
+            d.shadowMapDepthBits.intValue = (shadowMap16Bits) ? (int)DepthBits.Depth16 : (int)DepthBits.Depth32;
             --EditorGUI.indentLevel;
 
             EditorGUILayout.Space();
