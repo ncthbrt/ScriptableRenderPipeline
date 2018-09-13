@@ -244,7 +244,7 @@ $include("SharedCode.template.hlsl")
 
         // Builtin Data
         // For back lighting we use the oposite vertex normal 
-        InitBuiltinData(surfaceDescription.Alpha, surfaceData.normalWS, -fragInputs.worldToTangent[2], fragInputs.positionRWS, fragInputs.texCoord1, fragInputs.texCoord2, builtinData);
+        InitBuiltinData(surfaceDescription.Alpha, surfaceData.normalWS, -fragInputs.worldToTangent[2], fragInputs.positionRWS, fragInputs.texCoord1.xy, fragInputs.texCoord2.xy, builtinData);
 
 $SurfaceDescription.Emission:     builtinData.emissiveColor =             surfaceDescription.Emission;
 
