@@ -1119,7 +1119,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                             m_LightLoop.RenderScreenSpaceShadows(hdCamera, m_ScreenSpaceShadowsBuffer, currentFrameSettings.enableMSAA ? m_SharedRTManager.GetDepthValuesTexture() : m_SharedRTManager.GetDepthTexture(), cmd, currentFrameSettings);
                             
                             PushFullScreenDebugTexture(hdCamera, cmd, m_ScreenSpaceShadowsBuffer, FullScreenDebugMode.ScreenSpaceShadows);
-                            StopStereoRendering(cmd, renderContext, hdCamera);
                         }
 
                         if (hdCamera.frameSettings.enableAsyncCompute)
@@ -1149,7 +1148,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                         m_VolumetricLightingSystem.VolumetricLightingPass(hdCamera, cmd, m_FrameCount);
 
                         // Might float this higher if we enable stereo w/ deferred
-                        StartStereoRendering(cmd, renderContext, hdCamera);
 
                         RenderDeferredLighting(hdCamera, cmd);
 

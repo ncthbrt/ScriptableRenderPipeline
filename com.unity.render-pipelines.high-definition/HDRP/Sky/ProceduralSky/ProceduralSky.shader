@@ -18,6 +18,7 @@ Shader "Hidden/HDRenderPipeline/Sky/ProceduralSky"
     #include "CoreRP/ShaderLibrary/Common.hlsl"
     #include "CoreRP/ShaderLibrary/Color.hlsl"
     #include "CoreRP/ShaderLibrary/CommonLighting.hlsl"
+    #include "../../ShaderVariables.hlsl"
 
     float4   _SkyParam; // x exposure, y multiplier, z rotation
     float4x4 _PixelCoordToViewDirWS; // Actually just 3x3, but Unity can only set 4x4
@@ -120,7 +121,8 @@ Shader "Hidden/HDRenderPipeline/Sky/ProceduralSky"
     float4 Frag(Varyings input) : SV_Target
     {
         // Points towards the camera
-        float3 viewDirWS = normalize(mul(float3(input.positionCS.xy, 1.0), (float3x3)_PixelCoordToViewDirWS));
+        float2 pos = input.positionCS.xy - uint2(unity_StereoEyeIndex * _ScreenSize.x, 0.0);
+        float3 viewDirWS = normalize(mul(float3(pos, 1.0), (float3x3)_PixelCoordToViewDirWS));
         // Reverse it to point into the scene
         float3 dir = -viewDirWS;
 
