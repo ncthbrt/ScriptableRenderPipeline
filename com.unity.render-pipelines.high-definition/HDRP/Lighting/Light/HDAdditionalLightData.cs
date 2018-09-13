@@ -196,7 +196,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
         int GetShadowRequestCount()
         {
-            return (m_Light.type == LightType.Point) ? 6 : (m_Light.type == LightType.Directional) ? 4 : 1;
+            return (m_Light.type == LightType.Point) ? 6 : (m_Light.type == LightType.Directional) ? m_ShadowData.cascadeCount : 1;
         }
 
         // Must return the first executed shadow request
@@ -206,13 +206,13 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             Vector3 cameraPos = camera.transform.position;
             shadowRequestCount = 0;
 
-            // Create shadow requests array using the light type
-            if (shadowRequests == null || shadowRequests.Length != GetShadowRequestCount())
-                shadowRequests = Enumerable.Range(0, GetShadowRequestCount()).Select(i => new HDShadowRequest()).ToArray();
-
             // When creating a new light, at the first frame, there is no AdditionalShadowData so we can't really render shadows
             if (m_ShadowData == null)
                 return -1;
+
+            // Create shadow requests array using the light type
+            if (shadowRequests == null || shadowRequests.Length != GetShadowRequestCount())
+                shadowRequests = Enumerable.Range(0, GetShadowRequestCount()).Select(i => new HDShadowRequest()).ToArray();
 
             // If the shadow is too far away, we don't render it
             if (m_Light.type != LightType.Directional && Vector3.Distance(cameraPos, transform.position) >= m_ShadowData.shadowFadeDistance)
@@ -265,7 +265,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                             cullingSphere.y -= cameraPos.y;
                             cullingSphere.z -= cameraPos.z;
                         }
-                        
+
                         manager.UpdateCascade(faceIndex, cullingSphere, cascadeBorders[faceIndex]);
                         break;
                     case LightType.Area:

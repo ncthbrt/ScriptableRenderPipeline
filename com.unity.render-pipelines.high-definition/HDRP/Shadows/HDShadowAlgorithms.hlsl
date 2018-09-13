@@ -320,7 +320,7 @@ real EvalShadow_CascadedDepth_Blend(HDShadowContext shadowContext, Texture2D tex
     int  shadowSplitIndex = EvalShadow_GetSplitIndex(shadowContext, index, positionWS, alpha, cascadeCount);
 
     if (shadowSplitIndex < 0)
-        return 0.0;
+        return 1.0;
 
     HDShadowData sd = shadowContext.shadowDatas[index];
     LoadDirectionalShadowDatas(sd, shadowContext, index + shadowSplitIndex);

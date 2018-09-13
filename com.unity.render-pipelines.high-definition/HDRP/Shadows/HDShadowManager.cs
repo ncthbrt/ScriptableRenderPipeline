@@ -224,6 +224,11 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             }
         }
 
+        public void UpdateCullingParameters(ref ScriptableCullingParameters cullingParams)
+        {
+            cullingParams.shadowDistance = VolumeManager.instance.stack.GetComponent<HDShadowSettings>().maxShadowDistance;
+        }
+
         unsafe public void ProcessShadowRequests(CullResults cullResults, Camera camera)
         {
             int shadowIndex = 0;
