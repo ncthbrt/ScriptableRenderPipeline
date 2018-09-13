@@ -3,7 +3,7 @@
 // The variant without resource parameters dynamically accesses the texture when sampling.
 
 // We can't use multi_compile for compute shaders so we force the shadow algorithm
-#if (SHADERPASS == SHADERPASS_DEFERRED_LIGHTING || SHADERPASS == SHADERPASS_VOLUMETRIC_LIGHTING)
+#if (SHADERPASS == SHADERPASS_DEFERRED_LIGHTING || SHADERPASS == SHADERPASS_VOLUMETRIC_LIGHTING || SHADERPASS == SHADERPASS_VOLUME_VOXELIZATION)
 #define DIRECTIONAL_SHADOW_LOW
 #define PUNCTUAL_SHADOW_LOW
 #endif
