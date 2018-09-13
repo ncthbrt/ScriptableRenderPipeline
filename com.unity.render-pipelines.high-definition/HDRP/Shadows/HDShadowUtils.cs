@@ -8,7 +8,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
     // TODO remove every occurrence of ShadowSplitData in function parameters when we'll have scriptable culling
     public static class HDShadowUtils
     {
-        static float GetFilterWidthInTexels(LightType lightType)
+        static float GetPunctualFilterWidthInTexels(LightType lightType)
         {
             var hdAsset = (GraphicsSettings.renderPipelineAsset as HDRenderPipelineAsset);
 
@@ -19,9 +19,9 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             {
                 // Warning: these values have to match the algorithms used for shadow filtering (in HDShadowAlgorithm.hlsl)
                 case HDShadowQuality.Low:
-                    return 5; // PCF 5x5
+                    return 3; // PCF 3x3
                 case HDShadowQuality.Medium:
-                    return 7; // PCF 7x7
+                    return 5; // PCF 5x5
                 default:
                     return 1; // Any non PCF algorithms
             }
@@ -31,7 +31,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         {
             Vector4 lightDir;
 
-            float guardAngle = ShadowUtils.CalcGuardAnglePerspective(90.0f, viewportSize.x, GetFilterWidthInTexels(lightType), normalBiasMax, 79.0f);
+            float guardAngle = ShadowUtils.CalcGuardAnglePerspective(90.0f, viewportSize.x, GetPunctualFilterWidthInTexels(lightType), normalBiasMax, 79.0f);
             ShadowUtils.ExtractPointLightMatrix(visibleLight, faceIndex, guardAngle, out view, out projection, out deviceProjection, out invViewProjection, out lightDir, out splitData);
         }
 
@@ -40,7 +40,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         {
             Vector4 lightDir;
 
-            float guardAngle = ShadowUtils.CalcGuardAnglePerspective(visibleLight.light.spotAngle, viewportSize.x, GetFilterWidthInTexels(lightType), normalBiasMax, 180.0f - visibleLight.light.spotAngle);
+            float guardAngle = ShadowUtils.CalcGuardAnglePerspective(visibleLight.light.spotAngle, viewportSize.x, GetPunctualFilterWidthInTexels(lightType), normalBiasMax, 180.0f - visibleLight.light.spotAngle);
             ShadowUtils.ExtractSpotLightMatrix(visibleLight, guardAngle, aspectRatio, out view, out projection, out deviceProjection, out invViewProjection, out lightDir, out splitData);
 
             if (shape == SpotLightShape.Box)
