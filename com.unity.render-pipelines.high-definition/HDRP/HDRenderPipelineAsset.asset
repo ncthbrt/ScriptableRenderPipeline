@@ -27,7 +27,7 @@ MonoBehaviour:
     enableLightLayers: 1
     diffuseGlobalDimmer: 1
     specularGlobalDimmer: 1
-    enableForwardRenderingOnly: 1
+    enableForwardRenderingOnly: 0
     enableDepthPrepassWithDeferredRendering: 0
     enableTransparentPrepass: 1
     enableMotionVectors: 1
@@ -103,8 +103,8 @@ MonoBehaviour:
       shadowAtlasHeight: 4096
       maxShadowRequests: 128
       shadowMapsDepthBits: 32
-      punctualShadowQuality: 0
-      directionalShadowQuality: 0
+      punctualShadowQuality: 2
+      directionalShadowQuality: 2
     decalSettings:
       drawDistance: 1000
       atlasWidth: 4096

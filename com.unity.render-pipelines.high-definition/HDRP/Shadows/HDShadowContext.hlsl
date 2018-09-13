@@ -4,9 +4,6 @@
 #include "CoreRP/ShaderLibrary/Common.hlsl"
 #include "HDRP/Shadows/HDShadowManager.cs.hlsl"
 
-// Custom shadowmap sampling functions
-#include "HDRP/Shadows/HDShadowTexFetch.hlsl"
-
 struct HDShadowContext
 {
     StructuredBuffer<HDShadowData>  shadowDatas;

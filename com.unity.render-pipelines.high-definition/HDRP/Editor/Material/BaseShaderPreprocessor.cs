@@ -24,12 +24,12 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         protected ShaderKeyword m_Decals3RT;
         protected ShaderKeyword m_Decals4RT;
         protected ShaderKeyword m_LightLayers;
-        protected ShaderKeyword m_PunctualPCF_5x5;
-        protected ShaderKeyword m_PunctualPCF_7x7;
-        protected ShaderKeyword m_PunctualPCSS;
-        protected ShaderKeyword m_DirectionalPCF_5x5;
-        protected ShaderKeyword m_DirectionalPCF_7x7;
-        protected ShaderKeyword m_DirectionalPCSS;
+        protected ShaderKeyword m_PunctualLow;
+        protected ShaderKeyword m_PunctualMedium;
+        protected ShaderKeyword m_PunctualHigh;
+        protected ShaderKeyword m_DirectionalLow;
+        protected ShaderKeyword m_DirectionalMedium;
+        protected ShaderKeyword m_DirectionalHigh;
         
         Dictionary<HDShadowQuality, ShaderKeyword> m_PunctualShadowVariants;
         Dictionary<HDShadowQuality, ShaderKeyword> m_DirectionalShadowVariants;
@@ -45,24 +45,24 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             m_Decals3RT = new ShaderKeyword("DECALS_3RT");
             m_Decals4RT = new ShaderKeyword("DECALS_4RT");
             m_LightLayers = new ShaderKeyword("LIGHT_LAYERS");
-            m_PunctualPCF_5x5 = new ShaderKeyword("PUNCTUAL_SHADOW_LOW");
-            m_PunctualPCF_7x7 = new ShaderKeyword("PUNCTUAL_SHADOW_MEDIUM");
-            m_PunctualPCSS = new ShaderKeyword("PUNCTUAL_SHADOW_HIGH");
-            m_DirectionalPCF_5x5 = new ShaderKeyword("DIRECTIONAL_SHADOW_LOW");
-            m_DirectionalPCF_7x7 = new ShaderKeyword("DIRECTIONAL_SHADOW_MEDIUM");
-            m_DirectionalPCSS = new ShaderKeyword("DIRECTIONAL_SHADOW_HIGH");
+            m_PunctualLow = new ShaderKeyword("PUNCTUAL_SHADOW_LOW");
+            m_PunctualMedium = new ShaderKeyword("PUNCTUAL_SHADOW_MEDIUM");
+            m_PunctualHigh = new ShaderKeyword("PUNCTUAL_SHADOW_HIGH");
+            m_DirectionalLow = new ShaderKeyword("DIRECTIONAL_SHADOW_LOW");
+            m_DirectionalMedium = new ShaderKeyword("DIRECTIONAL_SHADOW_MEDIUM");
+            m_DirectionalHigh = new ShaderKeyword("DIRECTIONAL_SHADOW_HIGH");
             
             m_PunctualShadowVariants = new Dictionary<HDShadowQuality, ShaderKeyword>
             {
-                {HDShadowQuality.Low, m_PunctualPCF_5x5},
-                {HDShadowQuality.Medium, m_PunctualPCF_7x7},
-                {HDShadowQuality.High, m_PunctualPCSS},
+                {HDShadowQuality.Low, m_PunctualLow},
+                {HDShadowQuality.Medium, m_PunctualMedium},
+                {HDShadowQuality.High, m_PunctualHigh},
             };
             m_DirectionalShadowVariants = new Dictionary<HDShadowQuality, ShaderKeyword>
             {
-                {HDShadowQuality.Low, m_DirectionalPCF_5x5},
-                {HDShadowQuality.Medium, m_DirectionalPCF_7x7},
-                {HDShadowQuality.High, m_DirectionalPCSS},
+                {HDShadowQuality.Low, m_DirectionalLow},
+                {HDShadowQuality.Medium, m_DirectionalMedium},
+                {HDShadowQuality.High, m_DirectionalHigh},
             };
         }
 

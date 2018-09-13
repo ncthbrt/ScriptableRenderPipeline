@@ -8,7 +8,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
     [GenerateHLSL]
     public struct HDShadowData
     {
-        // public Matrix4x4    viewProjection;
         public Vector3      rot0;
         public Vector3      rot1;
         public Vector3      rot2;
@@ -188,7 +187,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         {
             HDShadowData data = new HDShadowData();
 
-            // data.viewProjection = shadowRequest.deviceProjection * shadowRequest.view;
             var devProj = shadowRequest.deviceProjection;
             var view = shadowRequest.view;
             data.proj = new Vector4(devProj.m00, devProj.m11, devProj.m22, devProj.m23);

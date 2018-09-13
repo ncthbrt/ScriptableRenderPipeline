@@ -324,7 +324,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         List<Matrix4x4> m_Env2DCaptureVP = new List<Matrix4x4>();
 
         // For now we don't use shadow cascade borders.
-        static public readonly bool s_UseCascadeBorders = true;
+        static public readonly bool s_UseCascadeBorders = false;
 
         // Keep sorting array around to avoid garbage
         uint[] m_SortKeys = null;
