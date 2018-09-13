@@ -448,11 +448,11 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             }
 
             // VR is not fully supported in HD
-            if (XRGraphicsConfig.enabled)
-            {
-                CoreUtils.DisplayUnsupportedXRMessage();
-                return false;
-            }
+            //if (XRGraphicsConfig.enabled)
+            //{
+            //    CoreUtils.DisplayUnsupportedXRMessage();
+            //    return false;
+            //}
             return true;
         }
 
@@ -2026,7 +2026,8 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     // Note: Here we don't use GetDepthTexture() to get the depth texture but m_CameraDepthStencilBuffer as the Forward transparent pass can
                     // write extra data to deal with DOF/MB
                     cmd.SetGlobalTexture(HDShaderIDs._CameraDepthTexture, m_SharedRTManager.GetDepthStencilBuffer());
-                    cmd.SetGlobalTexture(HDShaderIDs._CameraMotionVectorsTexture, m_VelocityBuffer);
+                    if (m_VelocityBuffer != null)
+                        cmd.SetGlobalTexture(HDShaderIDs._CameraMotionVectorsTexture, m_VelocityBuffer);
                 }
 
                 var context = hdcamera.postprocessRenderContext;
