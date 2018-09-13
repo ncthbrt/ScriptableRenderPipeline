@@ -58,7 +58,7 @@ Shader "Hidden/HDRenderPipeline/OpaqueAtmosphericScattering"
 
         float4 FragMSAA(Varyings input, uint sampleIndex: SV_SampleIndex) : SV_Target
         {
-            int2 msTex = int2(input.texcoord.xy * _ScreenSize.xy) + int2(unity_StereoEyeIndex * _ScreenSize.x, 0);
+            int2 msTex = int2(TexCoordStereoOffset(input.texcoord.xy * _ScreenSize.xy));
             float depth = _DepthTextureMS.Load(msTex, sampleIndex).x;
             return AtmosphericScatteringCompute(input, depth);
         }

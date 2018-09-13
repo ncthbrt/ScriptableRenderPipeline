@@ -262,4 +262,11 @@ float4 SampleSkyTexture(float3 texCoord, float lod)
     return SAMPLE_TEXTURECUBE_LOD(_SkyTexture, s_trilinear_clamp_sampler, texCoord, lod);
 }
 
+float2 TexCoordStereoOffset(float2 texCoord)
+{
+#if defined(UNITY_SINGLE_PASS_STEREO)
+    return texCoord + float2(unity_StereoEyeIndex * _ScreenSize.x, 0.0);
+#endif
+    return texCoord;
+}
 #endif // UNITY_SHADER_VARIABLES_FUNCTIONS_INCLUDED
