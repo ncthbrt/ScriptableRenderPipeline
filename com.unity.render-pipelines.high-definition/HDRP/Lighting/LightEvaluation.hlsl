@@ -266,7 +266,7 @@ void EvaluateLight_Punctual(LightLoopContext lightLoopContext, PositionInputs po
         {
             // Note:the case of NdotL < 0 can appear with isThinModeTransmission, in this case we need to flip the shadow bias
 #ifndef USE_CORE_SHADOW_SYSTEM
-            shadow = GetPunctualShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, distances.x, true);
+            shadow = GetPunctualShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, distances.x, true, true);
 #else
             shadow = GetPunctualShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, distances.x, posInput.positionSS);
 #endif
@@ -285,7 +285,7 @@ void EvaluateLight_Punctual(LightLoopContext lightLoopContext, PositionInputs po
         {
             // Note:the case of NdotL < 0 can appear with isThinModeTransmission, in this case we need to flip the shadow bias
 #ifndef USE_CORE_SHADOW_SYSTEM
-            shadow = GetPunctualShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, distances.x, false);
+            shadow = GetPunctualShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, distances.x, false, lightData.lightType != GPULIGHTTYPE_PROJECTOR_BOX);
 #else
             shadow = GetPunctualShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, distances.x, posInput.positionSS);
 #endif
