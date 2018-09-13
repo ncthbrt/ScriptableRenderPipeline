@@ -7,8 +7,8 @@ namespace UnityEngine.Experimental.Rendering
     {
         static RTHandleSystem s_DefaultInstance = new RTHandleSystem();
 
-        public static int maxWidth { get { return s_DefaultInstance.maxWidth; } }
-        public static int maxHeight { get { return s_DefaultInstance.maxHeight; } }
+        public static int maxWidth { get { return s_DefaultInstance.GetMaxWidth(); } }
+        public static int maxHeight { get { return s_DefaultInstance.GetMaxHeight(); } }
 
         public static RTHandleSystem.RTHandle Alloc(
             int width,
@@ -220,14 +220,12 @@ namespace UnityEngine.Experimental.Rendering
         public static void ResetReferenceSize(
             int width,
             int height,
-            bool msaa,
             MSAASamples msaaSamples
             )
         {
             s_DefaultInstance.ResetReferenceSize(
                 width,
                 height,
-                msaa,
                 msaaSamples
                 );
         }
@@ -235,14 +233,12 @@ namespace UnityEngine.Experimental.Rendering
         public static void SetReferenceSize(
             int width,
             int height,
-            bool msaa,
             MSAASamples msaaSamples
             )
         {
             s_DefaultInstance.SetReferenceSize(
                 width,
                 height,
-                msaa,
                 msaaSamples
                 );
         }
