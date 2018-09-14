@@ -59,4 +59,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `Normal Create` node has been renamed to `Normal From Texture`.
 - The preview of nodes now updates correctly.
 - Your system locale can no longer cause incorrect commands due to full stops being converted to commas.
-- HDRP ShaderGraphs now support 4 channel UVs
+- In the High Definition Render Pipeline, Shader Graph now supports 4-channel UVs.
