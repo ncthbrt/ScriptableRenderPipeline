@@ -102,6 +102,16 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             EditorGUILayout.PropertyField(d.supportRuntimeDebugDisplay, _.GetContent("Support runtime debug display|Remove all debug display shader variant only in the player. Allow faster build."));
             EditorGUILayout.PropertyField(d.supportDitheringCrossFade, _.GetContent("Support dithering cross fade|Remove all dithering cross fade shader variant only in the player. Allow faster build."));
 
+            // Only display the support ray tracing feature if the platform supports it
+            if(UnityEngine.SystemInfo.supportsRayTracing)
+            {
+                EditorGUILayout.PropertyField(d.supportRayTracing, _.GetContent("Support Realtime Raytracing."));
+            }
+            else
+            {
+                d.supportRayTracing.boolValue = false;
+            }
+
             --EditorGUI.indentLevel;
         }
     }
