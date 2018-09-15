@@ -122,9 +122,11 @@ Shader "Hidden/HDRenderPipeline/Sky/ProceduralSky"
     {
         // Points towards the camera
         float2 pos = input.positionCS.xy - uint2(unity_StereoEyeIndex * _ScreenSize.x, 0.0);
+        float depth = LOAD_TEXTURE2D(_CameraDepthTexture, input.positionCS.xy).x;
+        PositionInputs posInput = GetPositionInput_Stereo(input.positionCS.xy, _ScreenSize.zw, depth, UNITY_MATRIX_I_VP, UNITY_MATRIX_V, unity_StereoEyeIndex);
         float3 viewDirWS = normalize(mul(float3(pos, 1.0), (float3x3)_PixelCoordToViewDirWS));
         // Reverse it to point into the scene
-        float3 dir = -viewDirWS;
+        float3 dir = normalize(posInput.positionWS);
 
         // Rotate direction
         float phi = DegToRad(_SkyParam.z);
