@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Stabilize the dithered LOD transition mask with respect to the camera rotation.
 - Added a Fabric shader (experimental) handling cotton and silk
 - Added support for MSAA in forward only for opaque only
+- Implement smoothness fade for SSR
 - Add stereo support to ShaderPassForward.hlsl. Forward rendering now seems passable in limited test scenes with camera-relative rendering disabled.
 - Modified deferred compute and vert/frag shaders for first steps towards stereo support
 
@@ -37,6 +38,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed an issue with reflection probe face fading
 - Fixed camera motion vectors shader and associated matrices to update correctly for single-pass double-wide stereo rendering
 - Fixed light attenuation functions when range attenuation is disabled
+- Fixed shadow component algorithm fixup not dirtying the scene, so changes can be saved to disk.
 
 ### Changed
 - Changed the way depth & color pyramids are built to be faster and better quality, thus improving the look of distortion and refraction.
@@ -51,6 +53,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated camera inspector UI
 - Updated decal gizmo
 - Optimization: The objects that are rendered in the Motion Vector Pass are not rendered in the prepass anymore
+- Removed setting shader inclue path via old API, use package shader include paths
 
 ## [3.3.0-preview]
 

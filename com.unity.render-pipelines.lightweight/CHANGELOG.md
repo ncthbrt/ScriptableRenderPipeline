@@ -15,11 +15,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Sorting of opaque objects now respects camera opaqueSortMode setting.
 - Sorting of opaque objects disables front-to-back sorting flag when camera settings allow that and the GPU has hidden surface removal.
 - Custom Light Explorer for LWRP, compared to builtin only reflection probes have changed, removed projection and added resolution.
+- Vertex Lit shader for detail meshes on terrain, this is hidden by default but will override the usage in the terrain system.
 ### Changed
 - The `RenderingData` struct is now read-only.
 - `ScriptableRenderer`always perform a Clear before calling `IRendererSetup::Setup.` 
 - `ScriptableRenderPass::Execute` no longer takes `CullResults` as input. Instead, use `RenderingData`as input, since that references `CullResults`.
 - `IRendererSetup_Setup` no longer takes `ScriptableRenderContext` and `CullResults` as input.
+- Removed setting shader inclue path via old API, use package shader include paths
 
 ### Fixed
 - If you have more than 16 lights in a scene, LWRP no longer causes random glitches while rendering lights.
