@@ -120,9 +120,11 @@ Shader "Hidden/HDRenderPipeline/Sky/ProceduralSky"
     float4 Frag(Varyings input) : SV_Target
     {
         // Points towards the camera
-        float3 viewDirWS = normalize(mul(float3(input.positionCS.xy, 1.0), (float3x3)_PixelCoordToViewDirWS));
+        float2 pos = input.positionCS.xy - uint2(unity_StereoEyeIndex * _ScreenSize.x, 0.0);
+        PositionInputs posInput = GetPositionInput_Stereo(input.positionCS.xy, _ScreenSize.zw, UNITY_RAW_FAR_CLIP_VALUE, UNITY_MATRIX_I_VP, UNITY_MATRIX_V, unity_StereoEyeIndex);
+        float3 viewDirWS = normalize(mul(float3(pos, 1.0), (float3x3)_PixelCoordToViewDirWS));
         // Reverse it to point into the scene
-        float3 dir = -viewDirWS;
+        float3 dir = normalize(posInput.positionWS);
 
         // Rotate direction
         float phi = DegToRad(_SkyParam.z);

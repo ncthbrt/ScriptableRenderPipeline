@@ -204,7 +204,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             if (enableStereo)
             {
                 // Force forward if we request stereo. TODO: We should not enforce that, users should be able to chose deferred
-                enableForwardRenderingOnly = true;
+                //enableForwardRenderingOnly = true;
 
                 // TODO: The work will be implemented piecemeal to support all passes
                 //enableMotionVectors = !enableMSAA;

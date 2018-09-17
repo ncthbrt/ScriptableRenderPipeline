@@ -2540,11 +2540,22 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 cmd.SetComputeTextureParam(screenSpaceShadowComputeShader, kernel, HDShaderIDs._DeferredShadowTextureUAV, deferredShadowRT);
 
                 int deferredShadowTileSize = 16; // Must match DeferreDirectionalShadow.compute
-                int numTilesX = (hdCamera.actualWidth + (deferredShadowTileSize - 1)) / deferredShadowTileSize;
+                int numTilesX = hdCamera.frameSettings.enableStereo ? ((hdCamera.actualWidth / 2) + (deferredShadowTileSize - 1)) / deferredShadowTileSize : (hdCamera.actualWidth + (deferredShadowTileSize - 1)) / deferredShadowTileSize;
                 int numTilesY = (hdCamera.actualHeight + (deferredShadowTileSize - 1)) / deferredShadowTileSize;
 
-                // TODO: Update for stereo
-                cmd.DispatchCompute(screenSpaceShadowComputeShader, kernel, numTilesX, numTilesY, 1);
+                if (hdCamera.frameSettings.enableStereo)
+                {
+                    for (uint eye = 0; eye < 2; eye++)
+                    {
+                        cmd.SetComputeIntParam(screenSpaceShadowComputeShader, HDShaderIDs._Eye, (int)eye);
+                        cmd.DispatchCompute(screenSpaceShadowComputeShader, kernel, numTilesX, numTilesY, 1);
+                    }
+                }
+                else
+                {
+                    cmd.SetComputeIntParam(screenSpaceShadowComputeShader, HDShaderIDs._Eye, 0);
+                    cmd.DispatchCompute(screenSpaceShadowComputeShader, kernel, numTilesX, numTilesY, 1);
+                }
 
                 cmd.SetGlobalTexture(HDShaderIDs._DeferredShadowTexture, deferredShadowRT);
             }
@@ -2580,13 +2591,13 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 // Compute path
                 if (m_FrameSettings.lightLoopSettings.enableTileAndCluster && m_FrameSettings.lightLoopSettings.enableComputeLightEvaluation)
                 {
-                    int w = camera.pixelWidth;
-                    int h = camera.pixelHeight;
-                    int numTilesX = (w + 15) / 16;
+                    int w = hdCamera.actualWidth;
+                    int h = hdCamera.actualHeight;
+                    int numTilesX = m_FrameSettings.enableStereo ? ((w / 2) + 15) / 16 : (w + 15) / 16;
                     int numTilesY = (h + 15) / 16;
                     int numTiles = numTilesX * numTilesY;
 
-                    bool enableFeatureVariants = GetFeatureVariantsEnabled() && !debugDisplaySettings.IsDebugDisplayEnabled();
+                    bool enableFeatureVariants = GetFeatureVariantsEnabled() && !debugDisplaySettings.IsDebugDisplayEnabled() && !hdCamera.frameSettings.enableStereo; // TODO VR: Reenable later
 
                     int numVariants = 1;
                     if (enableFeatureVariants)
@@ -2627,15 +2638,28 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                         // always do deferred lighting in blocks of 16x16 (not same as tiled light size)
 
                         if (enableFeatureVariants)
-                        {
+                        { // TODO VR: variants support (solve how g_TileListOffset and surrounding math should work with stereo)
                             cmd.SetComputeBufferParam(deferredComputeShader, kernel, HDShaderIDs.g_TileFeatureFlags, s_TileFeatureFlags);
                             cmd.SetComputeIntParam(deferredComputeShader, HDShaderIDs.g_TileListOffset, variant * numTiles);
                             cmd.SetComputeBufferParam(deferredComputeShader, kernel, HDShaderIDs.g_TileList, s_TileList);
+                            cmd.SetComputeIntParam(deferredComputeShader, HDShaderIDs._Eye, 0);
                             cmd.DispatchCompute(deferredComputeShader, kernel, s_DispatchIndirectBuffer, (uint)variant * 3 * sizeof(uint));
                         }
                         else
                         {
-                            cmd.DispatchCompute(deferredComputeShader, kernel, numTilesX, numTilesY, 1);
+                            if (m_FrameSettings.enableStereo)
+                            {
+                                for (int eye = 0; eye < 2; eye++)
+                                {
+                                    cmd.SetComputeIntParam(deferredComputeShader, HDShaderIDs._Eye, eye);
+                                    cmd.DispatchCompute(deferredComputeShader, kernel, numTilesX, numTilesY, 1);
+                                }
+                            }
+                            else
+                            {
+                                cmd.SetComputeIntParam(deferredComputeShader, HDShaderIDs._Eye, 0);
+                                cmd.DispatchCompute(deferredComputeShader, kernel, numTilesX, numTilesY, 1);
+                            }
                         }
                     }
                 }

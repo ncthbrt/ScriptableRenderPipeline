@@ -333,20 +333,20 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
             if (settings.supportSSAO)
             {
-                m_AmbientOcclusionBuffer = RTHandles.Alloc(Vector2.one, filterMode: FilterMode.Bilinear, colorFormat: RenderTextureFormat.R8, sRGB: false, enableRandomWrite: true, name: "AmbientOcclusion");
+                m_AmbientOcclusionBuffer = RTHandles.Alloc(Vector2.one, filterMode: FilterMode.Bilinear, colorFormat: RenderTextureFormat.R8, sRGB: false, enableRandomWrite: true, name: "AmbientOcclusion", stereoEnabled: XRGraphicsConfig.enabled);
             }
 
-            m_DistortionBuffer = RTHandles.Alloc(Vector2.one, filterMode: FilterMode.Point, colorFormat: Builtin.GetDistortionBufferFormat(), sRGB: Builtin.GetDistortionBufferSRGBFlag(), name: "Distortion");
+            m_DistortionBuffer = RTHandles.Alloc(Vector2.one, filterMode: FilterMode.Point, colorFormat: Builtin.GetDistortionBufferFormat(), sRGB: Builtin.GetDistortionBufferSRGBFlag(), name: "Distortion", stereoEnabled: XRGraphicsConfig.enabled);
 
             // TODO: For MSAA, we'll need to add a Draw path in order to support MSAA properlye
             // Use RG16 as we only have one deferred directional and one screen space shadow light currently
-            m_ScreenSpaceShadowsBuffer = RTHandles.Alloc(Vector2.one, filterMode: FilterMode.Point, colorFormat: RenderTextureFormat.RG16, sRGB: false, enableRandomWrite: true, name: "ScreenSpaceShadowsBuffer");
+            m_ScreenSpaceShadowsBuffer = RTHandles.Alloc(Vector2.one, filterMode: FilterMode.Point, colorFormat: RenderTextureFormat.RG16, sRGB: false, enableRandomWrite: true, name: "ScreenSpaceShadowsBuffer", stereoEnabled: XRGraphicsConfig.enabled);
 
             if (settings.supportSSR)
             {
                 // m_SsrDebugTexture    = RTHandles.Alloc(Vector2.one, filterMode: FilterMode.Point, colorFormat: RenderTextureFormat.ARGBFloat, sRGB: false, enableRandomWrite: true, name: "SSR_Debug_Texture");
-                m_SsrHitPointTexture = RTHandles.Alloc(Vector2.one, filterMode: FilterMode.Point, colorFormat: RenderTextureFormat.RG32,      sRGB: false, enableRandomWrite: true, name: "SSR_Hit_Point_Texture");
-                m_SsrLightingTexture = RTHandles.Alloc(Vector2.one, filterMode: FilterMode.Point, colorFormat: RenderTextureFormat.ARGBHalf,  sRGB: false, enableRandomWrite: true, name: "SSR_Lighting_Texture");
+                m_SsrHitPointTexture = RTHandles.Alloc(Vector2.one, filterMode: FilterMode.Point, colorFormat: RenderTextureFormat.RG32,      sRGB: false, enableRandomWrite: true, name: "SSR_Hit_Point_Texture", stereoEnabled: XRGraphicsConfig.enabled);
+                m_SsrLightingTexture = RTHandles.Alloc(Vector2.one, filterMode: FilterMode.Point, colorFormat: RenderTextureFormat.ARGBHalf,  sRGB: false, enableRandomWrite: true, name: "SSR_Lighting_Texture", stereoEnabled: XRGraphicsConfig.enabled);
             }
 
             if (Debug.isDebugBuild)
@@ -361,10 +361,10 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 // MSAA versions of classic texture
                 if (m_Asset.renderPipelineSettings.supportSSAO)
                 {
-                    m_MultiAmbientOcclusionBuffer = RTHandles.Alloc(Vector2.one, filterMode: FilterMode.Bilinear, colorFormat: RenderTextureFormat.RG16, sRGB: false, enableRandomWrite: true, name: "AmbientOcclusionMSAA");
+                    m_MultiAmbientOcclusionBuffer = RTHandles.Alloc(Vector2.one, filterMode: FilterMode.Bilinear, colorFormat: RenderTextureFormat.RG16, sRGB: false, enableRandomWrite: true, name: "AmbientOcclusionMSAA", stereoEnabled: XRGraphicsConfig.enabled);
                 }
-                m_CameraColorMSAABuffer = RTHandles.Alloc(Vector2.one, filterMode: FilterMode.Point, colorFormat: RenderTextureFormat.ARGBHalf, sRGB: false, bindTextureMS: true, enableMSAA: true, name: "CameraColorMSAA");
-                m_CameraSssDiffuseLightingMSAABuffer = RTHandles.Alloc(Vector2.one, filterMode: FilterMode.Point, colorFormat: RenderTextureFormat.RGB111110Float, sRGB: false, bindTextureMS: true, enableMSAA: true, name: "CameraSSSDiffuseLightingMSAA");
+                m_CameraColorMSAABuffer = RTHandles.Alloc(Vector2.one, filterMode: FilterMode.Point, colorFormat: RenderTextureFormat.ARGBHalf, sRGB: false, bindTextureMS: true, enableMSAA: true, name: "CameraColorMSAA", stereoEnabled: XRGraphicsConfig.enabled);
+                m_CameraSssDiffuseLightingMSAABuffer = RTHandles.Alloc(Vector2.one, filterMode: FilterMode.Point, colorFormat: RenderTextureFormat.RGB111110Float, sRGB: false, bindTextureMS: true, enableMSAA: true, name: "CameraSSSDiffuseLightingMSAA", stereoEnabled: XRGraphicsConfig.enabled);
             }
         }
 
@@ -450,7 +450,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 return false;
             }
 
-            // VR is not supported currently in HD
+            // VR is not fully supported in HD
             //if (XRGraphicsConfig.enabled)
             //{
             //    CoreUtils.DisplayUnsupportedXRMessage();
@@ -630,8 +630,11 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
                 // Set up UnityPerView CBuffer.
                 hdCamera.SetupGlobalParams(cmd, m_Time, m_LastTime, m_FrameCount);
-                if (hdCamera.frameSettings.enableStereo)
-                    hdCamera.SetupGlobalStereoParams(cmd);
+
+                // TODO VR: Current solution for compute shaders grabs matrices from
+                // stereo matrices even when not rendering stereo in order to reduce shader variants.
+                // After native fix for compute shader keywords is completed, qualify this with stereoEnabled.
+                hdCamera.SetupGlobalStereoParams(cmd);
 
                 cmd.SetGlobalVector(HDShaderIDs._IndirectLightingMultiplier, new Vector4(VolumeManager.instance.stack.GetComponent<IndirectLightingController>().indirectDiffuseIntensity, 0, 0, 0));
 
@@ -1107,12 +1110,17 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                             // Overwrite camera properties set during the shadow pass with the original camera properties.
                             renderContext.SetupCameraProperties(camera, hdCamera.frameSettings.enableStereo);
                             hdCamera.SetupGlobalParams(cmd, m_Time, m_LastTime, m_FrameCount);
-                            if (hdCamera.frameSettings.enableStereo)
-                                hdCamera.SetupGlobalStereoParams(cmd);
+
+                            // TODO VR: Current solution for compute shaders grabs matrices from
+                            // stereo matrices even when not rendering stereo in order to reduce shader variants.
+                            // After native fix for compute shader keywords is completed, qualify this with stereoEnabled.
+                            hdCamera.SetupGlobalStereoParams(cmd);
                         }
 
                         using (new ProfilingSample(cmd, "Screen space shadows", CustomSamplerId.ScreenSpaceShadows.GetSampler()))
                         {
+
+                            StartStereoRendering(cmd, renderContext, hdCamera);
                             // When debug is enabled we need to clear otherwise we may see non-shadows areas with stale values.
                             if (m_CurrentDebugDisplaySettings.fullScreenDebugMode == FullScreenDebugMode.ScreenSpaceShadows)
                             {
@@ -1157,8 +1165,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
                         RenderDeferredLighting(hdCamera, cmd);
 
-                        // Might float this higher if we enable stereo w/ deferred
-                        StartStereoRendering(cmd, renderContext, hdCamera);
 
                         RenderForward(m_CullResults, hdCamera, renderContext, cmd, ForwardPass.Opaque);
 

@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Improve Decal Gizmo
 - Implement Screen Space Reflections (SSR) (alpha version, highly experimental)
 - Add an option to invert the fade parameter on a Density Volume
+- Add stereo support to ShaderPassForward.hlsl. Forward rendering now seems passable in limited test scenes with camera-relative rendering disabled.
+- Added stereo support in MSAA color resolve shader
+- Added stereo support in skybox and atmospherics shaders. There is currently a slight discrepancy in horizon position between these two. 
 - Added a Fabric shader (experimental) handling cotton and silk
 - Added support for MSAA in forward only for opaque only
 - Implement smoothness fade for SSR
@@ -48,6 +51,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated decal gizmo
 - Optimization: The objects that are rendered in the Motion Vector Pass are not rendered in the prepass anymore
 - Removed setting shader inclue path via old API, use package shader include paths
+- Modified deferred compute and vert/frag shaders for first steps towards stereo support
 
 ## [3.3.0-preview]
 

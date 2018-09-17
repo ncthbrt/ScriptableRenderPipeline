@@ -6,6 +6,8 @@
 #   pragma argument( scheduler=minpressure ) // instruct the shader compiler to prefer minimizing vgpr usage
 #endif
 
+#define UNITY_SINGLE_PASS_STEREO 1
+
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
 #include "../ShaderVariables.hlsl"
 #include "../Material/NormalBuffer.hlsl"
@@ -27,6 +29,7 @@ float4  _PunctualLightPosition;
 float4  _ContactShadowParamsParameters;
 float4  _ContactShadowParamsParameters2;
 int     _SampleCount;
+uint    _Eye;
 CBUFFER_END
 
 #define _ContactShadowLength                _ContactShadowParamsParameters.x
@@ -133,6 +136,7 @@ float ComputeContactShadow(PositionInputs posInput, float3 direction)
 void DEFERRED_CONTACT_SHADOW_GENERIC(uint2 groupThreadId : SV_GroupThreadID, uint2 groupId : SV_GroupID)
 {
     uint2 pixelCoord = groupId * DEFERRED_SHADOW_TILE_SIZE + groupThreadId;
+    pixelCoord.x = pixelCoord.x + (_Eye * _ScreenSize.x);
     uint2 tileCoord = groupId;
 
 #ifdef ENABLE_MSAA
@@ -144,7 +148,7 @@ void DEFERRED_CONTACT_SHADOW_GENERIC(uint2 groupThreadId : SV_GroupThreadID, uin
     if (depth == UNITY_RAW_FAR_CLIP_VALUE)
         return;
 
-    PositionInputs posInput = GetPositionInput(pixelCoord.xy, _ScreenSize.zw, depth, UNITY_MATRIX_I_VP, UNITY_MATRIX_V, tileCoord);
+    PositionInputs posInput = GetPositionInput(pixelCoord.xy - (_Eye * float2(_ScreenSize.x, 0)), _ScreenSize.zw, depth, _InvViewProjMatrixStereo[_Eye], _ViewMatrixStereo[_Eye], tileCoord);
     
     //Direction got from either the directional light direction or the difference of punctual light position and the pixel position
     float3 direction = normalize(_DirectionalLightDirection.xyz * _DirectionalLightDirection.w + (_PunctualLightPosition.xyz - posInput.positionWS) * _PunctualLightPosition.w);
