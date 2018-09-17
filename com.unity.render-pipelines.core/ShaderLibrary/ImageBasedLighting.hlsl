@@ -139,7 +139,7 @@ void SampleGGXDir(real2   u,
                   bool     VeqN = false)
 {
     // GGX NDF sampling
-    real cosTheta = sqrt((1.0 - u.x) / (1.0 + (roughness * roughness - 1.0) * u.x));
+    real cosTheta = sqrt(SafeDiv(1.0 - u.x, 1.0 + (roughness * roughness - 1.0) * u.x));
     real phi      = TWO_PI * u.y;
 
     real3 localH = SphericalToCartesian(phi, cosTheta);
@@ -168,6 +168,7 @@ void SampleGGXDir(real2   u,
 }
 
 // Ref: "A Simpler and Exact Sampling Routine for the GGX Distribution of Visible Normals".
+// Note: this code will most likely fail if roughness is 0.
 void SampleVisibleAnisoGGXDir(real2 u, real3 V, real3x3 localToWorld,
                               real roughnessT, real roughnessB,
                               out real3 L,
@@ -186,6 +187,7 @@ void SampleVisibleAnisoGGXDir(real2 u, real3 V, real3x3 localToWorld,
     }
     else
     {
+        // TODO: this code is tacky. We should make it cleaner.
         viewToLocal[2] = normalize(real3(roughnessT * localV.x, roughnessB * localV.y, localV.z));
         viewToLocal[0] = (viewToLocal[2].z < 0.9999) ? normalize(cross(viewToLocal[2], real3(0, 0, 1))) : real3(1, 0, 0);
         viewToLocal[1] = cross(viewToLocal[0], viewToLocal[2]);
