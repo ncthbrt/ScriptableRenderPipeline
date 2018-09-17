@@ -344,14 +344,12 @@ real4 IntegrateGGXAndDisneyDiffuseFGD(real3 V, real3 N, real roughness, uint sam
 {
     real NdotV     = ClampNdotV(dot(N, V));
     real4 acc      = real4(0.0, 0.0, 0.0, 0.0);
-    // Add some jittering on Hammersley2d
-    real2 randNum  = InitRandom(V.xy * 0.5 + 0.5);
 
     real3x3 localToWorld = GetLocalFrame(N);
 
     for (uint i = 0; i < sampleCount; ++i)
     {
-        real2 u = frac(randNum + Hammersley2d(i, sampleCount));
+        real2 u = Hammersley2d(i, sampleCount);
 
         real VdotH;
         real NdotL;
@@ -401,14 +399,12 @@ real4 IntegrateCharlieAndFabricLambertFGD(real3 V, real3 N, real roughness, uint
 {
     real NdotV     = ClampNdotV(dot(N, V));
     real4 acc      = real4(0.0, 0.0, 0.0, 0.0);
-    // Add some jittering on Hammersley2d
-    real2 randNum  = InitRandom(V.xy * 0.5 + 0.5);
 
     real3x3 localToWorld = GetLocalFrame(N);
 
     for (uint i = 0; i < sampleCount; ++i)
     {
-        real2 u = frac(randNum + Hammersley2d(i, sampleCount));
+        real2 u = Hammersley2d(i, sampleCount);
 
         real NdotL;
         real weightOverPdf;
@@ -638,8 +634,6 @@ real4 IntegrateLD_MIS(TEXTURECUBE_ARGS(envMap, sampler_envMap),
 {
     real3x3 localToWorld = GetLocalFrame(N);
 
-    real2 randNum  = InitRandom(V.xy * 0.5 + 0.5);
-
     real3 lightInt = real3(0.0, 0.0, 0.0);
     real  cbsdfInt = 0.0;
 
@@ -658,7 +652,7 @@ real4 IntegrateLD_MIS(TEXTURECUBE_ARGS(envMap, sampler_envMap),
     // Perform light importance sampling.
     for (uint i = 0; i < sampleCount; i++)
     {
-        real2 s = frac(randNum + Hammersley2d(i, sampleCount));
+        real2 s = Hammersley2d(i, sampleCount);
 
         // Sample a row from the marginal distribution.
         uint y = BinarySearchRow(0, s.x, marginalRowDensities, height - 1);
