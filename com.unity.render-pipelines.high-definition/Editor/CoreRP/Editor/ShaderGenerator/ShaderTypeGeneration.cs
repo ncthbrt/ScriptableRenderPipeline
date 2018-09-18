@@ -124,7 +124,7 @@ namespace UnityEditor.Experimental.Rendering
 
             public int elementCount
             {
-                get { return rows * cols * (arraySize > 0 ? arraySize : 1); }
+                get { return rows * cols * Mathf.Max(arraySize, 1); }
             }
 
             public object Clone()
@@ -252,7 +252,7 @@ namespace UnityEditor.Experimental.Rendering
                     Error(mismatchErrorMsg);
                     return false;
                 }
-                EmitPrimitiveType(PrimitiveType.Float, floatFields.Count, -1, field.Name, comment, shaderFields);
+                EmitPrimitiveType(PrimitiveType.Float, floatFields.Count, 0, field.Name, comment, shaderFields);
             }
             else if (intFields.Count > 0)
             {
@@ -261,7 +261,7 @@ namespace UnityEditor.Experimental.Rendering
                     Error(mismatchErrorMsg);
                     return false;
                 }
-                EmitPrimitiveType(PrimitiveType.Int, intFields.Count, -1, field.Name, "", shaderFields);
+                EmitPrimitiveType(PrimitiveType.Int, intFields.Count, 0, field.Name, "", shaderFields);
             }
             else if (uintFields.Count > 0)
             {
@@ -270,7 +270,7 @@ namespace UnityEditor.Experimental.Rendering
                     Error(mismatchErrorMsg);
                     return false;
                 }
-                EmitPrimitiveType(PrimitiveType.UInt, uintFields.Count, -1, field.Name, "", shaderFields);
+                EmitPrimitiveType(PrimitiveType.UInt, uintFields.Count, 0, field.Name, "", shaderFields);
             }
             else if (boolFields.Count > 0)
             {
@@ -279,7 +279,7 @@ namespace UnityEditor.Experimental.Rendering
                     Error(mismatchErrorMsg);
                     return false;
                 }
-                EmitPrimitiveType(PrimitiveType.Bool, boolFields.Count, -1, field.Name, "", shaderFields);
+                EmitPrimitiveType(PrimitiveType.Bool, boolFields.Count, 0, field.Name, "", shaderFields);
             }
             else
             {

@@ -125,48 +125,6 @@ void GetPunctualLightVectors(float3 positionWS, LightData lightData, out float3 
     }
 }
 
-float4 EvaluateCookie_Spot(LightLoopContext lightLoopContext, LightData lightData,
-                               float3 lightToSample)
-{
-    int     lightType = lightData.lightType;
-    float4  cookie;
-
-    // Translate and rotate 'positionWS' into the light space.
-    // 'lightData.right' and 'lightData.up' are pre-scaled on CPU.
-    float3x3 lightToWorld = float3x3(lightData.right, lightData.up, lightData.forward);
-    float3   positionLS   = mul(lightToSample, transpose(lightToWorld));
-    
-    // Perform orthographic or perspective projection.
-    float  perspectiveZ = (lightType != GPULIGHTTYPE_PROJECTOR_BOX) ? positionLS.z : 1.0;
-    float2 positionCS   = positionLS.xy / perspectiveZ;
-    bool   isInBounds   = Max3(abs(positionCS.x), abs(positionCS.y), 1.0 - positionLS.z) <= 1.0;
-
-    // Remap the texture coordinates from [-1, 1]^2 to [0, 1]^2.
-    float2 positionNDC = positionCS * 0.5 + 0.5;
-
-    // Manually clamp to border (black).
-    cookie.rgb = SampleCookie2D(lightLoopContext, positionNDC, lightData.cookieIndex, false);
-    cookie.a   = isInBounds ? 1 : 0;
-
-    return cookie;
-}
-
-float4 EvaluateCookie_Point(LightLoopContext lightLoopContext, LightData lightData,
-                               float3 lightToSample)
-{
-    float4  cookie;
-
-    // Translate and rotate 'positionWS' into the light space.
-    // 'lightData.right' and 'lightData.up' are pre-scaled on CPU.
-    float3x3 lightToWorld = float3x3(lightData.right, lightData.up, lightData.forward);
-    float3   positionLS   = mul(lightToSample, transpose(lightToWorld));
-
-    cookie.rgb = SampleCookieCube(lightLoopContext, positionLS, lightData.cookieIndex);
-    cookie.a   = 1;
-    
-    return cookie;
-}
-
 float4 EvaluateCookie_Punctual(LightLoopContext lightLoopContext, LightData lightData,
                                float3 lightToSample)
 {
@@ -202,28 +160,6 @@ float4 EvaluateCookie_Punctual(LightLoopContext lightLoopContext, LightData ligh
     return cookie;
 }
 
-void EvaluateLight_AdditionalShadows(LightLoopContext lightLoopContext, LightData lightData, inout float shadow, float shadowMask)
-{
- #ifdef SHADOWS_SHADOWMASK
-        // Note: Legacy Unity have two shadow mask mode. ShadowMask (ShadowMask contain static objects shadow and ShadowMap contain only dynamic objects shadow, final result is the minimun of both value)
-        // and ShadowMask_Distance (ShadowMask contain static objects shadow and ShadowMap contain everything and is blend with ShadowMask based on distance (Global distance setup in QualitySettigns)).
-        // HDRenderPipeline change this behavior. Only ShadowMask mode is supported but we support both blend with distance AND minimun of both value. Distance is control by light.
-        // The following code do this.
-        // The min handle the case of having only dynamic objects in the ShadowMap
-        // The second case for blend with distance is handled with ShadowDimmer. ShadowDimmer is define manually and by shadowDistance by light.
-        // With distance, ShadowDimmer become one and only the ShadowMask appear, we get the blend with distance behavior.
-        shadow = lightData.nonLightmappedOnly ? min(shadowMask, shadow) : shadow;
-        shadow = lerp(shadowMask, shadow, lightData.shadowDimmer);
-#else
-        shadow = lerp(1.0, shadow, lightData.shadowDimmer);
-#endif
-
-        // Transparent have no contact shadow information
-#ifndef _SURFACE_TYPE_TRANSPARENT
-        shadow = min(shadow, GetContactShadow(lightLoopContext, lightData.contactShadowIndex));
-#endif
-}
-
 // None of the outputs are premultiplied.
 // distances = {d, d^2, 1/d, d_proj}, where d_proj = dot(lightToSample, lightData.forward).
 // Note: When doing transmission we always have only one shadow sample to do: Either front or back. We use NdotL to know on which side we are
@@ -244,53 +180,49 @@ void EvaluateLight_Punctual(LightLoopContext lightLoopContext, PositionInputs po
     float distVol = (lightData.lightType == GPULIGHTTYPE_PROJECTOR_BOX) ? distances.w : distances.x;
     attenuation *= TransmittanceHomogeneousMedium(_GlobalExtinction, distVol);
 
+    // Projector lights always have cookies, so we can perform clipping inside the if().
+        UNITY_BRANCH if (lightData.cookieIndex >= 0)
+        {
+        float4 cookie = EvaluateCookie_Punctual(lightLoopContext, lightData, lightToSample);
+
+            color       *= cookie.rgb;
+            attenuation *= cookie.a;
+        }
+
 #ifdef SHADOWS_SHADOWMASK
     // shadowMaskSelector.x is -1 if there is no shadow mask
     // Note that we override shadow value (in case we don't have any dynamic shadow)
     shadow = shadowMask = (lightData.shadowMaskSelector.x >= 0.0) ? dot(BUILTIN_DATA_SHADOW_MASK, lightData.shadowMaskSelector) : 1.0;
 #endif
 
-    UNITY_BRANCH if (lightData.lightType == GPULIGHTTYPE_POINT)
-    {
-        // Cookie evaluation if there is one
-        UNITY_BRANCH if (lightData.cookieIndex >= 0)
-        {
-            float4 cookie = EvaluateCookie_Point(lightLoopContext, lightData, lightToSample);
-
-            color       *= cookie.rgb;
-            attenuation *= cookie.a;
-        }
-
-        // point light shadow attenuation
+    // We test NdotL >= 0.0 to not sample the shadow map if it is not required.
         UNITY_BRANCH if (lightData.shadowIndex >= 0 && (dot(N, L) >= 0.0))
         {
-            // Note:the case of NdotL < 0 can appear with isThinModeTransmission, in this case we need to flip the shadow bias
+        // Note:the case of NdotL < 0 can appear with isThinModeTransmission, in this case we need to flip the shadow bias
 #ifndef USE_CORE_SHADOW_SYSTEM
-            shadow = GetPunctualShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, distances.x, true, true);
+        shadow = GetPunctualShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, distances.x, lightData.lightType == GPULIGHTTYPE_POINT, lightData.lightType != GPULIGHTTYPE_PROJECTOR_BOX);
 #else
-            shadow = GetPunctualShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, distances.x, posInput.positionSS);
+        shadow = GetPunctualShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, distances.x, posInput.positionSS);
 #endif
-            EvaluateLight_AdditionalShadows(lightLoopContext, lightData, shadow, shadowMask);
-        }
-    }
-    else
-    {
-        // Projector lights always have cookies
-        float4 cookie = EvaluateCookie_Spot(lightLoopContext, lightData, lightToSample);
 
-        color       *= cookie.rgb;
-        attenuation *= cookie.a;
+#ifdef SHADOWS_SHADOWMASK
+        // Note: Legacy Unity have two shadow mask mode. ShadowMask (ShadowMask contain static objects shadow and ShadowMap contain only dynamic objects shadow, final result is the minimun of both value)
+        // and ShadowMask_Distance (ShadowMask contain static objects shadow and ShadowMap contain everything and is blend with ShadowMask based on distance (Global distance setup in QualitySettigns)).
+        // HDRenderPipeline change this behavior. Only ShadowMask mode is supported but we support both blend with distance AND minimun of both value. Distance is control by light.
+        // The following code do this.
+        // The min handle the case of having only dynamic objects in the ShadowMap
+        // The second case for blend with distance is handled with ShadowDimmer. ShadowDimmer is define manually and by shadowDistance by light.
+        // With distance, ShadowDimmer become one and only the ShadowMask appear, we get the blend with distance behavior.
+        shadow = lightData.nonLightmappedOnly ? min(shadowMask, shadow) : shadow;
+        shadow = lerp(shadowMask, shadow, lightData.shadowDimmer);
+#else
+        shadow = lerp(1.0, shadow, lightData.shadowDimmer);
+#endif
         
-        UNITY_BRANCH if (lightData.shadowIndex >= 0 && (dot(N, L) >= 0.0))
-        {
-            // Note:the case of NdotL < 0 can appear with isThinModeTransmission, in this case we need to flip the shadow bias
-#ifndef USE_CORE_SHADOW_SYSTEM
-            shadow = GetPunctualShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, distances.x, false, lightData.lightType != GPULIGHTTYPE_PROJECTOR_BOX);
-#else
-            shadow = GetPunctualShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, distances.x, posInput.positionSS);
+        // Transparent have no contact shadow information
+#ifndef _SURFACE_TYPE_TRANSPARENT
+        shadow = min(shadow, GetContactShadow(lightLoopContext, lightData.contactShadowIndex));
 #endif
-            EvaluateLight_AdditionalShadows(lightLoopContext, lightData, shadow, shadowMask);
-        }
     }
 
     attenuation *= shadow;

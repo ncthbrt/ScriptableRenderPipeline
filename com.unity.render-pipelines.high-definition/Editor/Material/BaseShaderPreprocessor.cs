@@ -83,7 +83,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         protected bool CommonShaderStripper(HDRenderPipelineAsset hdrpAsset, Shader shader, ShaderSnippetData snippet, ShaderCompilerData inputData)
         {
             // Strip every useless shadow configs
-            // TODO: test if it actually works
             var shadowInitParams = hdrpAsset.renderPipelineSettings.hdShadowInitParams;
             foreach (var punctualShadowVariant in m_PunctualShadowVariants)
             {
