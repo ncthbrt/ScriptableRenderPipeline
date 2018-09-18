@@ -7,7 +7,7 @@
 //
 // UnityEngine.Experimental.Rendering.HDPipeline.PreIntegratedFGD+FGDTexture:  static fields
 //
-#define FGDTEXTURE_RESOLUTION (128)
+#define FGDTEXTURE_RESOLUTION (64)
 
 
 #endif

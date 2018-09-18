@@ -344,7 +344,11 @@ void ImportanceSampleAnisoGGX(real2   u,
 // Ref: Listing 18 in "Moving Frostbite to PBR" + https://knarkowicz.wordpress.com/2014/12/27/analytical-dfg-term-for-ibl/
 real4 IntegrateGGXAndDisneyDiffuseFGD(real NdotV, real roughness, uint sampleCount = 4096)
 {
-    NdotV     = ClampNdotV(NdotV);
+    // Note that our LUT covers the full [0, 1] range.
+    // Therefore, we don't really want to clamp NdotV here (else the lerp slope is wrong).
+    // However, if NdotV is 0, the integral is 0, so that's not what we want, either.
+    // Our runtime NdotV bias is quite large, so we use a smaller one here instead.
+    NdotV     = max(NdotV, FLT_EPS);
     real3 V   = real3(sqrt(1 - NdotV * NdotV), 0, NdotV);
     real4 acc = real4(0.0, 0.0, 0.0, 0.0);
 

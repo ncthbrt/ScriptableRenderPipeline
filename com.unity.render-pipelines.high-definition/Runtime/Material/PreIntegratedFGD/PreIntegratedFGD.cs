@@ -8,7 +8,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         [GenerateHLSL]
         public enum FGDTexture
         {
-            Resolution = 128
+            Resolution = 64
         }
 
         static PreIntegratedFGD s_Instance;
