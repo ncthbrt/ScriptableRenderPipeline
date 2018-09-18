@@ -162,7 +162,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             propertyBlock.SetTexture("_AtlasTexture", m_Atlas.rt);
             propertyBlock.SetVector("_TextureScaleBias", scaleBias);
             propertyBlock.SetVector("_ValidRange", validRange);
-            propertyBlock.SetFloat("_RequireToFlipInputTexture", flipY ? 1.0f : 0.0f);
             cmd.SetViewport(new Rect(screenX, screenY, screenSizeX, screenSizeY));
             cmd.DrawProcedural(Matrix4x4.identity, debugMaterial, debugMaterial.FindPass("VARIANCESHADOW"), MeshTopology.Triangles, 3, 1, propertyBlock);
         }

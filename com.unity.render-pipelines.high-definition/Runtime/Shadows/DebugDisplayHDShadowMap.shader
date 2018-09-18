@@ -4,11 +4,12 @@ Shader "Hidden/ScriptableRenderPipeline/DebugDisplayHDShadowMap"
         #pragma target 4.5
         #pragma only_renderers d3d11 ps4 xboxone vulkan metal switch
 
-        #include "CoreRP/ShaderLibrary/Common.hlsl"
+        #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
+        #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderVariables.hlsl"
+        #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Debug/DebugDisplay.hlsl"
 
         float4 _TextureScaleBias;
         float2 _ValidRange;
-        float _RequireToFlipInputTexture;
         SamplerState ltc_linear_clamp_sampler;
         TEXTURE2D(_AtlasTexture);
 
@@ -28,7 +29,7 @@ Shader "Hidden/ScriptableRenderPipeline/DebugDisplayHDShadowMap"
             Varyings output;
             output.positionCS = GetFullScreenTriangleVertexPosition(input.vertexID);
             output.texcoord = GetFullScreenTriangleTexCoord(input.vertexID);
-            if (_RequireToFlipInputTexture > 0.0f)
+            if (ShouldFlipDebugTexture())
             {
                 output.texcoord.y = 1.0f - output.texcoord.y;
             }
