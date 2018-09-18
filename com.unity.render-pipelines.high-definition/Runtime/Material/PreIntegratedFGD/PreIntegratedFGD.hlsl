@@ -5,7 +5,10 @@ TEXTURE2D(_PreIntegratedFGD_GGXDisneyDiffuse);
 // reflectivity is  Integral{(BSDF_GGX / F) - use for multiscattering
 void GetPreIntegratedFGDGGXAndDisneyDiffuse(float NdotV, float perceptualRoughness, float3 fresnel0, out float3 GGXSpecularFGD, out float disneyDiffuseFGD, out float reflectivity)
 {
-    float3 preFGD = SAMPLE_TEXTURE2D_LOD(_PreIntegratedFGD_GGXDisneyDiffuse, s_linear_clamp_sampler, float2(NdotV, perceptualRoughness), 0).xyz;
+    // We want the LUT to contain the entire [0, 1] range, without losing half a texel at each side.
+    float2 coordLUT = Remap01ToHalfTexelCoord(float2(NdotV, perceptualRoughness), FGDTEXTURE_RESOLUTION);
+
+    float3 preFGD = SAMPLE_TEXTURE2D_LOD(_PreIntegratedFGD_GGXDisneyDiffuse, s_linear_clamp_sampler, coordLUT, 0).xyz;
 
     // Pre-integrate GGX FGD
     // Integral{BSDF * <N,L> dw} =

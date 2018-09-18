@@ -342,12 +342,13 @@ void ImportanceSampleAnisoGGX(real2   u,
 
 #if !defined SHADER_API_GLES
 // Ref: Listing 18 in "Moving Frostbite to PBR" + https://knarkowicz.wordpress.com/2014/12/27/analytical-dfg-term-for-ibl/
-real4 IntegrateGGXAndDisneyDiffuseFGD(real3 V, real3 N, real roughness, uint sampleCount = 8192)
+real4 IntegrateGGXAndDisneyDiffuseFGD(real NdotV, real roughness, uint sampleCount = 4096)
 {
-    real NdotV     = ClampNdotV(dot(N, V));
-    real4 acc      = real4(0.0, 0.0, 0.0, 0.0);
+    NdotV     = ClampNdotV(NdotV);
+    real3 V   = real3(sqrt(1 - NdotV * NdotV), 0, NdotV);
+    real4 acc = real4(0.0, 0.0, 0.0, 0.0);
 
-    real3x3 localToWorld = GetLocalFrame(N);
+    real3x3 localToWorld = k_identity3x3;
 
     for (uint i = 0; i < sampleCount; ++i)
     {
@@ -397,7 +398,7 @@ real4 IntegrateGGXAndDisneyDiffuseFGD(real3 V, real3 N, real roughness, uint sam
 #endif
 
 #if !defined SHADER_API_GLES
-real4 IntegrateCharlieAndFabricLambertFGD(real3 V, real3 N, real roughness, uint sampleCount = 8192)
+real4 IntegrateCharlieAndFabricLambertFGD(real3 V, real3 N, real roughness, uint sampleCount = 4096)
 {
     real NdotV     = ClampNdotV(dot(N, V));
     real4 acc      = real4(0.0, 0.0, 0.0, 0.0);
