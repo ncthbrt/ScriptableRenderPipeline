@@ -1,3 +1,5 @@
+#include "PreIntegratedFGD.cs.hlsl"
+
 TEXTURE2D(_PreIntegratedFGD_GGXDisneyDiffuse);
 
 // For image based lighting, a part of the BSDF is pre-integrated.
