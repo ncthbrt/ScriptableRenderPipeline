@@ -46,8 +46,12 @@ Shader "Hidden/HDRenderPipeline/preIntegratedFGD_GGXDisneyDiffuse"
 
                 // These coordinate sampling must match the decoding in GetPreIntegratedDFG in Lit.hlsl,
                 // i.e here we use perceptualRoughness, must be the same in shader
-                float NdotV                 = coordLUT.x;
-                float perceptualRoughness   = coordLUT.y;
+            #if 0
+                float NdotV = cos(HALF_PI * coordLUT.x);
+            #else
+                float NdotV = coordLUT.x;
+            #endif
+                float perceptualRoughness = coordLUT.y;
 
                 // Pre integrate GGX with smithJoint visibility as well as DisneyDiffuse
                 float4 preFGD = IntegrateGGXAndDisneyDiffuseFGD(NdotV, PerceptualRoughnessToRoughness(perceptualRoughness));
