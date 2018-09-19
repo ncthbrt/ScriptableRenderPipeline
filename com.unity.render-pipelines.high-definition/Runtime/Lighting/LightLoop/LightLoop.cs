@@ -2548,14 +2548,12 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     for (uint eye = 0; eye < 2; eye++)
                     {
                         cmd.SetGlobalInt(HDShaderIDs._ComputeEyeIndex, (int)eye);
-                        //cmd.SetComputeIntParam(screenSpaceShadowComputeShader, HDShaderIDs._Eye, (int)eye);
                         cmd.DispatchCompute(screenSpaceShadowComputeShader, kernel, numTilesX, numTilesY, 1);
                     }
                 }
                 else
                 {
                     cmd.SetGlobalInt(HDShaderIDs._ComputeEyeIndex, 0);
-                    //cmd.SetComputeIntParam(screenSpaceShadowComputeShader, HDShaderIDs._Eye, 0);
                     cmd.DispatchCompute(screenSpaceShadowComputeShader, kernel, numTilesX, numTilesY, 1);
                 }
 
@@ -2644,7 +2642,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                             cmd.SetComputeBufferParam(deferredComputeShader, kernel, HDShaderIDs.g_TileFeatureFlags, s_TileFeatureFlags);
                             cmd.SetComputeIntParam(deferredComputeShader, HDShaderIDs.g_TileListOffset, variant * numTiles);
                             cmd.SetComputeBufferParam(deferredComputeShader, kernel, HDShaderIDs.g_TileList, s_TileList);
-                            cmd.SetComputeIntParam(deferredComputeShader, HDShaderIDs._Eye, 0);
+                            cmd.SetGlobalInt(HDShaderIDs._ComputeEyeIndex, 0);
                             cmd.DispatchCompute(deferredComputeShader, kernel, s_DispatchIndirectBuffer, (uint)variant * 3 * sizeof(uint));
                         }
                         else
@@ -2653,13 +2651,13 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                             {
                                 for (int eye = 0; eye < 2; eye++)
                                 {
-                                    cmd.SetComputeIntParam(deferredComputeShader, HDShaderIDs._Eye, eye);
+                                    cmd.SetGlobalInt(HDShaderIDs._ComputeEyeIndex, eye);
                                     cmd.DispatchCompute(deferredComputeShader, kernel, numTilesX, numTilesY, 1);
                                 }
                             }
                             else
                             {
-                                cmd.SetComputeIntParam(deferredComputeShader, HDShaderIDs._Eye, 0);
+                                cmd.SetGlobalInt(HDShaderIDs._ComputeEyeIndex, 0);
                                 cmd.DispatchCompute(deferredComputeShader, kernel, numTilesX, numTilesY, 1);
                             }
                         }
