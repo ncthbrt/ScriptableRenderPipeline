@@ -181,13 +181,13 @@ void EvaluateLight_Punctual(LightLoopContext lightLoopContext, PositionInputs po
     attenuation *= TransmittanceHomogeneousMedium(_GlobalExtinction, distVol);
 
     // Projector lights always have cookies, so we can perform clipping inside the if().
-        UNITY_BRANCH if (lightData.cookieIndex >= 0)
-        {
+    UNITY_BRANCH if (lightData.cookieIndex >= 0)
+    {
         float4 cookie = EvaluateCookie_Punctual(lightLoopContext, lightData, lightToSample);
 
-            color       *= cookie.rgb;
-            attenuation *= cookie.a;
-        }
+        color       *= cookie.rgb;
+        attenuation *= cookie.a;
+    }
 
 #ifdef SHADOWS_SHADOWMASK
     // shadowMaskSelector.x is -1 if there is no shadow mask
@@ -196,8 +196,8 @@ void EvaluateLight_Punctual(LightLoopContext lightLoopContext, PositionInputs po
 #endif
 
     // We test NdotL >= 0.0 to not sample the shadow map if it is not required.
-        UNITY_BRANCH if (lightData.shadowIndex >= 0 && (dot(N, L) >= 0.0))
-        {
+    UNITY_BRANCH if (lightData.shadowIndex >= 0 && (dot(N, L) >= 0.0))
+    {
         // Note:the case of NdotL < 0 can appear with isThinModeTransmission, in this case we need to flip the shadow bias
 #ifndef USE_CORE_SHADOW_SYSTEM
         shadow = GetPunctualShadowAttenuation(lightLoopContext.shadowContext, positionWS, N, lightData.shadowIndex, L, distances.x, lightData.lightType == GPULIGHTTYPE_POINT, lightData.lightType != GPULIGHTTYPE_PROJECTOR_BOX);
@@ -218,7 +218,7 @@ void EvaluateLight_Punctual(LightLoopContext lightLoopContext, PositionInputs po
 #else
         shadow = lerp(1.0, shadow, lightData.shadowDimmer);
 #endif
-        
+
         // Transparent have no contact shadow information
 #ifndef _SURFACE_TYPE_TRANSPARENT
         shadow = min(shadow, GetContactShadow(lightLoopContext, lightData.contactShadowIndex));
@@ -308,7 +308,7 @@ float3 PreEvaluatePunctualLightTransmission(LightLoopContext lightLoopContext, P
             // Compute the distance from the light to the back face of the object along the light direction.
             float distBackFaceToLight = GetPunctualShadowClosestDistance(   lightLoopContext.shadowContext, s_linear_clamp_sampler,
                                                                             posInput.positionWS, lightData.shadowIndex, L, lightData.positionRWS);
-                                                                        
+
             // Our subsurface scattering models use the semi-infinite planar slab assumption.
             // Therefore, we need to find the thickness along the normal.
             // Warning: based on the artist's input, dependence on the NdotL has been disabled.
