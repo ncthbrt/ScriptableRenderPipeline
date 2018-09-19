@@ -10,6 +10,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         public SerializedProperty shadowAtlasWidth;
         public SerializedProperty shadowAtlasHeight;
         public SerializedProperty shadowMapDepthBits;
+        public SerializedProperty useDynamicViewportRescale;
 
         public SerializedProperty maxShadowRequests;
 
@@ -23,6 +24,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             shadowAtlasWidth = root.Find((HDShadowInitParameters s) => s.shadowAtlasWidth);
             shadowAtlasHeight = root.Find((HDShadowInitParameters s) => s.shadowAtlasHeight);
             shadowMapDepthBits = root.Find((HDShadowInitParameters s) => s.shadowMapsDepthBits);
+            useDynamicViewportRescale = root.Find((HDShadowInitParameters s) => s.useDynamicViewportRescale);
             maxShadowRequests = root.Find((HDShadowInitParameters s) => s.maxShadowRequests);
             punctualShadowQuality = root.Find((HDShadowInitParameters s) => s.punctualShadowQuality);
             directionalShadowQuality = root.Find((HDShadowInitParameters s) => s.directionalShadowQuality);

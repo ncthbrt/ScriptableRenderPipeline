@@ -110,6 +110,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         public int              shadowAtlasHeight = k_DefaultShadowAtlasSize;
         public int              maxShadowRequests = k_DefaultMaxShadowRequests;
         public DepthBits        shadowMapsDepthBits = k_DefaultShadowMapDepthBits;
+        public bool             useDynamicViewportRescale = true;
 
         public HDShadowQuality  punctualShadowQuality;
         public HDShadowQuality  directionalShadowQuality;
@@ -229,12 +230,19 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             cullingParams.shadowDistance = Mathf.Min(VolumeManager.instance.stack.GetComponent<HDShadowSettings>().maxShadowDistance, cullingParams.shadowDistance);
         }
 
-        unsafe public void ProcessShadowRequests(CullResults cullResults, Camera camera)
+        unsafe public void ProcessShadowRequests(CullResults cullResults, Camera camera, LightingDebugSettings lightingDebugSettings)
         {
             int shadowIndex = 0;
+
+            if (lightingDebugSettings.shadowResolutionScaleFactor != 1.0f)
+            {
+                foreach (var shadowRequest in m_ShadowRequests)
+                    shadowRequest.viewportSize *= lightingDebugSettings.shadowResolutionScaleFactor;
+            }
             
             // Assign a position to all the shadows in the atlas, and scale shadows if needed
-            m_CascadeAtlas.Layout(false);
+            if (!m_CascadeAtlas.Layout(false))
+                Debug.LogWarning("Cascade Shadow atlasing has failed, try reducing the shadow resolution of the directional light or increase the shadow atlas size");
             m_Atlas.Layout();
 
             m_ShadowDatas.Clear();

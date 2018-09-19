@@ -74,7 +74,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             public SerializedProperty shadowSoftness;
             public SerializedProperty blockerSampleCount;
             public SerializedProperty filterSampleCount;
-            public SerializedProperty useDynamicViewportResize;
 
             // Editor stuff
             public SerializedProperty useOldInspector;
@@ -188,7 +187,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                     shadowSoftness = o.Find(x => x.shadowSoftness),
                     blockerSampleCount = o.Find(x => x.blockerSampleCount),
                     filterSampleCount = o.Find(x => x.filterSampleCount),
-                    useDynamicViewportResize = o.Find(x => x.useDynamicViewportResize),
 
                     // Editor stuff
                     useOldInspector = o.Find(x => x.useOldInspector),
@@ -787,8 +785,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 EditorGUI.indentLevel++;
 
                 EditorGUILayout.PropertyField(m_AdditionalShadowData.contactShadows, s_Styles.contactShadows);
-
-                EditorGUILayout.PropertyField(m_AdditionalLightData.useDynamicViewportResize, s_Styles.useDynamicViewportResize);
 
                 if (settings.lightType.enumValueIndex != (int)LightType.Directional)
                 {

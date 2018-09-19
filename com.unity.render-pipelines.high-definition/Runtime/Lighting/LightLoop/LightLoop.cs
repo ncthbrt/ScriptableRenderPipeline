@@ -496,10 +496,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         Light m_CurrentSunLight;
         int m_CurrentShadowSortedSunLightIndex = -1;
 
-        // USed to shadow shadow maps with use selection enabled in the debug menu
-        int m_SelectedLightShadowIndex;
-        int m_SelectedLightShadowCount;
-
         // Used to get the current dominant casting shadow light on screen (the one which takes the biggest part of the screen)
         int m_DominantLightIndex = -1;
         float m_DominantLightValue;
@@ -516,12 +512,18 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         List<int>                           m_ShadowRequests = new List<int>();
         Dictionary<int, int>                m_ShadowIndices = new Dictionary<int, int>();
 
+        /// HD Shadow stuff
+        HDShadowInitParameters              m_HDShadowInitParameters;
+        // Used to shadow shadow maps with use selection enabled in the debug menu
+        int m_DebugSelectedLightShadowIndex;
+        int m_DebugSelectedLightShadowCount;
+
         void InitShadowSystem(HDRenderPipelineAsset hdAsset, ShadowSettings shadowSettings)
         {
             var shadowInitParams = hdAsset.GetRenderPipelineSettings().shadowInitParams;
-            var hdShadowInitParams = hdAsset.GetRenderPipelineSettings().hdShadowInitParams;
+            m_HDShadowInitParameters = hdAsset.GetRenderPipelineSettings().hdShadowInitParams;
             m_ShadowSetup = new ShadowSetup(hdAsset.renderPipelineResources, shadowInitParams, shadowSettings, out m_ShadowMgr);
-            m_NewShadowManager = new HDShadowManager(hdShadowInitParams.shadowAtlasWidth, hdShadowInitParams.shadowAtlasHeight, hdShadowInitParams.maxShadowRequests, hdShadowInitParams.shadowMapsDepthBits, hdAsset.renderPipelineResources.shadowClearShader);
+            m_NewShadowManager = new HDShadowManager(m_HDShadowInitParameters.shadowAtlasWidth, m_HDShadowInitParameters.shadowAtlasHeight, m_HDShadowInitParameters.maxShadowRequests, m_HDShadowInitParameters.shadowMapsDepthBits, hdAsset.renderPipelineResources.shadowClearShader);
         }
 
         void DeinitShadowSystem()
@@ -1933,13 +1935,13 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                             if (shadowSettings.enabled && cullResults.GetShadowCasterBounds(lightIndex, out bounds))
                             {
                                 int shadowRequestCount;
-                                shadowIndex = additionalLightData.UpdateShadowRequest(camera, m_NewShadowManager, light, cullResults, lightIndex, out shadowRequestCount);
+                                shadowIndex = additionalLightData.UpdateShadowRequest(camera, m_HDShadowInitParameters, m_NewShadowManager, light, cullResults, lightIndex, out shadowRequestCount);
 
 #if UNITY_EDITOR
                                 if (debugDisplaySettings.lightingDebugSettings.shadowDebugUseSelection && UnityEditor.Selection.activeGameObject == lightComponent.gameObject)
                                 {
-                                    m_SelectedLightShadowIndex = shadowIndex;
-                                    m_SelectedLightShadowCount = shadowRequestCount;
+                                    m_DebugSelectedLightShadowIndex = shadowIndex;
+                                    m_DebugSelectedLightShadowCount = shadowRequestCount;
                                 }
 #endif
                             }
@@ -2004,7 +2006,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     
                     if (useNewShadowSystem)
                     {
-                        m_NewShadowManager.ProcessShadowRequests(cullResults, camera);
+                        m_NewShadowManager.ProcessShadowRequests(cullResults, camera, debugDisplaySettings.lightingDebugSettings);
                     }
 
                     //Activate contact shadows on dominant light
@@ -2927,8 +2929,8 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 #if UNITY_EDITOR
                         if (lightingDebug.shadowDebugUseSelection)
                         {
-                            startShadowIndex = m_SelectedLightShadowIndex;
-                            shadowRequestCount = m_SelectedLightShadowCount;
+                            startShadowIndex = m_DebugSelectedLightShadowIndex;
+                            shadowRequestCount = m_DebugSelectedLightShadowCount;
                         }
 #endif
 

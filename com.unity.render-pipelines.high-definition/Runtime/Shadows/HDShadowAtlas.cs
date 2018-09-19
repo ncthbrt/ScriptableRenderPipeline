@@ -30,7 +30,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             shadowRequests.Add(shadowRequest);
         }
 
-        public void Layout(bool allowResize = true)
+        public bool Layout(bool allowResize = true)
         {
             // TODO: change this sort (and maybe the list) by something that don't create garbage
             // Note: it is very important to keep the added order for shadow maps that are the same size (for punctual lights)
@@ -55,16 +55,20 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 if (curY + curH > yMax)
                 {
                     if (allowResize)
+                    {
                         LayoutResize();
+                        return true;
+                    }
                     else
-                        Debug.LogWarning("HD Shadow atlasing has failed.");
-                    return ;
+                        return false;
                 }
                 viewport.x = curX;
                 viewport.y = curY;
                 shadowRequest.atlasViewport = viewport;
                 curX += viewport.width;
             }
+
+            return true;
         }
 
         void LayoutResize()

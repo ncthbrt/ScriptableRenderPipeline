@@ -28,6 +28,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             bool shadowMap16Bits = (DepthBits)d.shadowMapDepthBits.intValue	== DepthBits.Depth16;
             shadowMap16Bits = EditorGUILayout.Toggle(_.GetContent("16-bit Shadow Maps"), shadowMap16Bits);
             d.shadowMapDepthBits.intValue = (shadowMap16Bits) ? (int)DepthBits.Depth16 : (int)DepthBits.Depth32;
+            EditorGUILayout.PropertyField(d.useDynamicViewportRescale, _.GetContent("Dynamic Shadow Rescale|Scale the shadow map size using the screen size of the light to leave more space for other shadows in the atlas"));
             --EditorGUI.indentLevel;
 
             EditorGUILayout.Space();
