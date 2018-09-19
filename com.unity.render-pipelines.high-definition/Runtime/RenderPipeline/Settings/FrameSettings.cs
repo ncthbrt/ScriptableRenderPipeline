@@ -203,8 +203,10 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         {
             if (enableStereo)
             {
-                // Force forward if we request stereo. TODO: We should not enforce that, users should be able to chose deferred
-                //enableForwardRenderingOnly = true;
+                // Stereo deferred rendering still has the following problems:
+                // VR TODO: Dispatch tile light-list compute per-eye
+                // VR TODO: Update compute lighting shaders for stereo
+                enableForwardRenderingOnly = true;
 
                 // TODO: The work will be implemented piecemeal to support all passes
                 //enableMotionVectors = !enableMSAA;

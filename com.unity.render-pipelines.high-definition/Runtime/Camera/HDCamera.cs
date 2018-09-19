@@ -613,6 +613,12 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             cmd.SetGlobalVector(HDShaderIDs._SinTime,        new Vector4(Mathf.Sin(ct * 0.125f), Mathf.Sin(ct * 0.25f), Mathf.Sin(ct * 0.5f), Mathf.Sin(ct)));
             cmd.SetGlobalVector(HDShaderIDs._CosTime,        new Vector4(Mathf.Cos(ct * 0.125f), Mathf.Cos(ct * 0.25f), Mathf.Cos(ct * 0.5f), Mathf.Cos(ct)));
             cmd.SetGlobalInt(HDShaderIDs._FrameCount,        (int)frameCount);
+
+
+            // TODO VR: Current solution for compute shaders grabs matrices from
+            // stereo matrices even when not rendering stereo in order to reduce shader variants.
+            // After native fix for compute shader keywords is completed, qualify this with stereoEnabled.
+            SetupGlobalStereoParams(cmd);
         }
 
         public void SetupGlobalStereoParams(CommandBuffer cmd)

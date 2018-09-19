@@ -2543,17 +2543,10 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 int numTilesX = hdCamera.frameSettings.enableStereo ? ((hdCamera.actualWidth / 2) + (deferredShadowTileSize - 1)) / deferredShadowTileSize : (hdCamera.actualWidth + (deferredShadowTileSize - 1)) / deferredShadowTileSize;
                 int numTilesY = (hdCamera.actualHeight + (deferredShadowTileSize - 1)) / deferredShadowTileSize;
 
-                if (hdCamera.frameSettings.enableStereo)
+                int numEyes = hdCamera.frameSettings.enableStereo ? 2 : 1; // FIXME generalize this once XRSDK support for >2 eyes is ready
+                for (int eye = 0; eye < numEyes; eye++)
                 {
-                    for (uint eye = 0; eye < 2; eye++)
-                    {
-                        cmd.SetComputeIntParam(screenSpaceShadowComputeShader, HDShaderIDs._Eye, (int)eye);
-                        cmd.DispatchCompute(screenSpaceShadowComputeShader, kernel, numTilesX, numTilesY, 1);
-                    }
-                }
-                else
-                {
-                    cmd.SetComputeIntParam(screenSpaceShadowComputeShader, HDShaderIDs._Eye, 0);
+                    cmd.SetGlobalInt(HDShaderIDs._ComputeEyeIndex, (int)eye);
                     cmd.DispatchCompute(screenSpaceShadowComputeShader, kernel, numTilesX, numTilesY, 1);
                 }
 
@@ -2642,22 +2635,15 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                             cmd.SetComputeBufferParam(deferredComputeShader, kernel, HDShaderIDs.g_TileFeatureFlags, s_TileFeatureFlags);
                             cmd.SetComputeIntParam(deferredComputeShader, HDShaderIDs.g_TileListOffset, variant * numTiles);
                             cmd.SetComputeBufferParam(deferredComputeShader, kernel, HDShaderIDs.g_TileList, s_TileList);
-                            cmd.SetComputeIntParam(deferredComputeShader, HDShaderIDs._Eye, 0);
+                            cmd.SetGlobalInt(HDShaderIDs._ComputeEyeIndex, 0);
                             cmd.DispatchCompute(deferredComputeShader, kernel, s_DispatchIndirectBuffer, (uint)variant * 3 * sizeof(uint));
                         }
                         else
                         {
-                            if (m_FrameSettings.enableStereo)
+                            int numEyes = hdCamera.frameSettings.enableStereo ? 2 : 1; // VR TODO: generalize this once XRSDK support for >2 eyes is ready
+                            for (int eye = 0; eye < numEyes; eye++)
                             {
-                                for (int eye = 0; eye < 2; eye++)
-                                {
-                                    cmd.SetComputeIntParam(deferredComputeShader, HDShaderIDs._Eye, eye);
-                                    cmd.DispatchCompute(deferredComputeShader, kernel, numTilesX, numTilesY, 1);
-                                }
-                            }
-                            else
-                            {
-                                cmd.SetComputeIntParam(deferredComputeShader, HDShaderIDs._Eye, 0);
+                                cmd.SetGlobalInt(HDShaderIDs._ComputeEyeIndex, eye);
                                 cmd.DispatchCompute(deferredComputeShader, kernel, numTilesX, numTilesY, 1);
                             }
                         }

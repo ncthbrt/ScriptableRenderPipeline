@@ -126,9 +126,13 @@ CBUFFER_END
 #elif defined(UNITY_STEREO_INSTANCING_ENABLED) || defined(UNITY_STEREO_MULTIVIEW_ENABLED)
     static uint unity_StereoEyeIndex;
 #elif defined(UNITY_SINGLE_PASS_STEREO)
+#if SHADER_STAGE_COMPUTE
+    #define unity_StereoEyeIndex _ComputeEyeIndex
+#else
     CBUFFER_START(UnityStereoEyeIndex)
         int unity_StereoEyeIndex;
     CBUFFER_END
+#endif
 #endif
 
 CBUFFER_START(UnityPerDrawRare)
@@ -298,6 +302,9 @@ float4x4 _InvViewMatrixStereo[2];
 float4x4 _InvProjMatrixStereo[2];
 float4x4 _InvViewProjMatrixStereo[2];
 float4x4 _PrevViewProjMatrixStereo[2];
+#if SHADER_STAGE_COMPUTE
+float _ComputeEyeIndex;
+#endif
 CBUFFER_END
 
 #endif // USING_STEREO_MATRICES
