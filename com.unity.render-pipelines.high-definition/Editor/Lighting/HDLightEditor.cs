@@ -163,7 +163,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                     volumetricDimmer = o.Find(x => x.volumetricDimmer),
                     lightUnit = o.Find(x => x.lightUnit),
                     displayAreaLightEmissiveMesh = o.Find(x => x.displayAreaLightEmissiveMesh),
-                    lightLayers = o.Find(x => x.lightLayers),                    
+                    lightLayers = o.Find(x => x.lightLayers),
                     fadeDistance = o.Find(x => x.fadeDistance),
                     affectDiffuse = o.Find(x => x.affectDiffuse),
                     affectSpecular = o.Find(x => x.affectSpecular),
@@ -211,7 +211,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                     if (hdLightData != null)
                         hdLightData.UpdateAreaLightEmissiveMesh();
             };
-            
+
             // If the light is disabled in the editor we force the light upgrade from his inspector
             foreach (var additionalLightData in m_AdditionalLightDatas)
                 additionalLightData.UpgradeLight();
@@ -433,6 +433,10 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 case LightShape.Directional:
                     settings.lightType.enumValueIndex = (int)LightType.Directional;
                     m_AdditionalLightData.lightTypeExtent.enumValueIndex = (int)LightTypeExtent.Punctual;
+
+                    // Sun disk.
+                    EditorGUILayout.Slider(settings.spotAngle, 0f, 45f, s_Styles.sunDiskSize);
+                    EditorGUILayout.Slider(m_AdditionalLightData.spotInnerPercent, 0f, 100f, s_Styles.sunDiskPercent);
                     break;
 
                 case LightShape.Point:
@@ -870,7 +874,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                         Handles.DrawLine(src.gameObject.transform.position, hit.point);
                         Handles.DrawWireDisc(hit.point, hit.normal, 0.5f);
                     }
-                    
+
                     Handles.zTest = UnityEngine.Rendering.CompareFunction.Greater;
                     using (new Handles.DrawingScope(Color.red))
                     {

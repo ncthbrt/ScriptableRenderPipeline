@@ -1196,6 +1196,11 @@ void BSDF(  float3 V, float3 L, float NdotL, float3 positionWS, PreLightData pre
 // EvaluateBSDF_Directional
 //-----------------------------------------------------------------------------
 
+float3 Nlerp(float3 A, float3 B, float t)
+{
+    return normalize(lerp(A, B, t));
+}
+
 DirectLighting EvaluateBSDF_Directional(LightLoopContext lightLoopContext,
                                         float3 V, PositionInputs posInput, PreLightData preLightData,
                                         DirectionalLightData lightData, BSDFData bsdfData,
@@ -1206,7 +1211,23 @@ DirectLighting EvaluateBSDF_Directional(LightLoopContext lightLoopContext,
 
     float3 L = -lightData.forward;
     float3 N = bsdfData.normalWS;
+    float3 R = reflect(-V, N); // Not always the same as preLightData.iblR
+
+    // Fake a sun disk. by modifying the light vector.
+    float t = AngleAttenuation(dot(L, R), lightData.angleScale, lightData.angleOffset);
+
+    L = Nlerp(L, R, t);
+
     float NdotL = dot(N, L);
+
+    // We must clamp here, otherwise our disk light hack for smooth surfaces does not work.
+    // Explanation: for a perfectly smooth surface, lighting is only reflected if (NdotL = NdotV).
+    // This implies that (NdotH = 1).
+    // Due to the floating point arithmetic (see the math above and also GetBSDFAngle()),
+    // we will never arrive at this exact number, so no lighting will be reflected.
+    // If we increase the roughness somewhat, the trick still works.
+    bsdfData.roughnessT = max(bsdfData.roughnessT, 1.0 / (255 * 255));
+    bsdfData.roughnessB = max(bsdfData.roughnessB, 1.0 / (255 * 255));
 
     float3 transmittance = float3(0.0, 0.0, 0.0);
     if (HasFlag(bsdfData.materialFeatures, MATERIAL_FEATURE_FLAGS_TRANSMISSION_MODE_THIN_THICKNESS))
