@@ -101,56 +101,6 @@ namespace UnityEngine.Experimental.Rendering
                 name
                 );
         }
-        public static RTHandleSystem.RTHandle Alloc(
-            Vector2 scaleFactor,
-            bool stereoEnabled,
-            DepthBits depthBufferBits = DepthBits.None,
-            RenderTextureFormat colorFormat = RenderTextureFormat.Default,
-            FilterMode filterMode = FilterMode.Point,
-            TextureWrapMode wrapMode = TextureWrapMode.Repeat,
-            TextureDimension dimension = TextureDimension.Tex2D,
-            bool sRGB = true,
-            bool enableRandomWrite = false,
-            bool useMipMap = false,
-            bool autoGenerateMips = true,
-            int anisoLevel = 1,
-            float mipMapBias = 0,
-            bool enableMSAA = false,
-            bool bindTextureMS = false,
-            bool useDynamicScale = false,
-            RenderTextureMemoryless memoryless = RenderTextureMemoryless.None,
-            string name = ""
-            )
-        {
-            int slices = 1;
-            VRTextureUsage vrUsage = VRTextureUsage.None;
-            if (stereoEnabled)
-            {
-                slices = (XRGraphicsConfig.eyeTextureDesc.dimension == TextureDimension.Tex2DArray) ? 2 : 1; // TODO VR: double-check that this works as expected
-                vrUsage = XRGraphicsConfig.eyeTextureDesc.vrUsage;
-            }
-            return s_DefaultInstance.Alloc(
-                scaleFactor,
-                slices,
-                depthBufferBits,
-                colorFormat,
-                filterMode,
-                wrapMode,
-                dimension,
-                sRGB,
-                enableRandomWrite,
-                useMipMap,
-                autoGenerateMips,
-                anisoLevel,
-                mipMapBias,
-                enableMSAA,
-                bindTextureMS,
-                useDynamicScale,
-                vrUsage,
-                memoryless,
-                name
-                );
-        }
 
         public static RTHandleSystem.RTHandle Alloc(
             ScaleFunc scaleFunc,
