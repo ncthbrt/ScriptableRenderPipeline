@@ -29,7 +29,6 @@ float4  _PunctualLightPosition;
 float4  _ContactShadowParamsParameters;
 float4  _ContactShadowParamsParameters2;
 int     _SampleCount;
-uint    _Eye;
 CBUFFER_END
 
 #define _ContactShadowLength                _ContactShadowParamsParameters.x

@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Improve Decal Gizmo
 - Implement Screen Space Reflections (SSR) (alpha version, highly experimental)
 - Add an option to invert the fade parameter on a Density Volume
+- Added a Fabric shader (experimental) handling cotton and silk
+- Added support for MSAA in forward only for opaque only
+- Implement smoothness fade for SSR
 
 ### Fixed
 - Fixed an issue where sometimes the deferred shadow texture would not be valid, causing wrong rendering.
@@ -45,9 +48,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Move a lot of files from CoreRP to HDRP/CoreRP. All moved files weren't used by Ligthweight pipeline. Long term they could move back to CoreRP after CoreRP become out of preview
 - Updated camera inspector UI
 - Updated decal gizmo
-- Added a Fabric shader (experimental) handling cotton and silk
-- Added support for MSAA in forward only for opaque only
-- Implement smoothness fade for SSR
 - Optimization: The objects that are rendered in the Motion Vector Pass are not rendered in the prepass anymore
 - Removed setting shader inclue path via old API, use package shader include paths
 - Modified deferred compute and vert/frag shaders for first steps towards stereo support
