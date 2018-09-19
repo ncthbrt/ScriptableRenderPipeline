@@ -143,8 +143,9 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         public float shapeRadius;
 
         // Only for Spot/Point - use to cheaply fake specular spherical area light
+        // It is not 1 to make sure the highlight does not disappear.
         [Range(0.0f, 1.0f)]
-        public float maxSmoothness = 1.0f;
+        public float maxSmoothness = 0.99f;
 
         // If true, we apply the smooth attenuation factor on the range attenuation to get 0 value, else the attenuation is just inverse square and never reach 0
         public bool applyRangeAttenuation = true;
