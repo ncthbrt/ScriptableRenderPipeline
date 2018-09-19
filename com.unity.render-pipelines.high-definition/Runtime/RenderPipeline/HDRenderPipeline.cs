@@ -1052,11 +1052,11 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     // We can't currently render object velocity after depth prepass because if there is no depth prepass we can have motion vector write that should have been rejected
                     RenderCameraVelocity(m_CullResults, hdCamera, renderContext, cmd);
 
+                    StopStereoRendering(cmd, renderContext, hdCamera);
                     // Caution: We require sun light here as some skies use the sun light to render, it means that UpdateSkyEnvironment must be called after PrepareLightsForGPU.
                     // TODO: Try to arrange code so we can trigger this call earlier and use async compute here to run sky convolution during other passes (once we move convolution shader to compute).
                     UpdateSkyEnvironment(hdCamera, cmd);
 
-                    StopStereoRendering(cmd, renderContext, hdCamera);
 
                     if (m_CurrentDebugDisplaySettings.IsDebugMaterialDisplayEnabled())
                     {
