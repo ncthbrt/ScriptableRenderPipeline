@@ -450,12 +450,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 return false;
             }
 
-            // VR is not fully supported in HD
-            //if (XRGraphicsConfig.enabled)
-            //{
-            //    CoreUtils.DisplayUnsupportedXRMessage();
-            //    return false;
-            //}
             return true;
         }
 
@@ -630,12 +624,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
                 // Set up UnityPerView CBuffer.
                 hdCamera.SetupGlobalParams(cmd, m_Time, m_LastTime, m_FrameCount);
-
-                // TODO VR: Current solution for compute shaders grabs matrices from
-                // stereo matrices even when not rendering stereo in order to reduce shader variants.
-                // After native fix for compute shader keywords is completed, qualify this with stereoEnabled.
-                hdCamera.SetupGlobalStereoParams(cmd);
-
+                
                 cmd.SetGlobalVector(HDShaderIDs._IndirectLightingMultiplier, new Vector4(VolumeManager.instance.stack.GetComponent<IndirectLightingController>().indirectDiffuseIntensity, 0, 0, 0));
 
                 PushGlobalRTHandle(
@@ -1109,12 +1098,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
                             // Overwrite camera properties set during the shadow pass with the original camera properties.
                             renderContext.SetupCameraProperties(camera, hdCamera.frameSettings.enableStereo);
-                            hdCamera.SetupGlobalParams(cmd, m_Time, m_LastTime, m_FrameCount);
-
-                            // TODO VR: Current solution for compute shaders grabs matrices from
-                            // stereo matrices even when not rendering stereo in order to reduce shader variants.
-                            // After native fix for compute shader keywords is completed, qualify this with stereoEnabled.
-                            hdCamera.SetupGlobalStereoParams(cmd);
+                            hdCamera.SetupGlobalParams(cmd, m_Time, m_LastTime, m_FrameCount);                            
                         }
 
                         using (new ProfilingSample(cmd, "Screen space shadows", CustomSamplerId.ScreenSpaceShadows.GetSampler()))
