@@ -38,7 +38,5 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         static readonly GUIContent volumetricContent = CoreEditorUtils.GetContent("    Enable Volumetric");
         static readonly GUIContent reprojectionForVolumetricsContent = CoreEditorUtils.GetContent("    Enable Reprojection For Volumetrics");
         static readonly GUIContent lightLayerContent = CoreEditorUtils.GetContent("Enable LightLayers");
-
-        static readonly GUIContent overrideTooltip = CoreEditorUtils.GetContent("|Override this setting component.");
     }
 }
