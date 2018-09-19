@@ -2547,13 +2547,15 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 {
                     for (uint eye = 0; eye < 2; eye++)
                     {
-                        cmd.SetComputeIntParam(screenSpaceShadowComputeShader, HDShaderIDs._Eye, (int)eye);
+                        cmd.SetGlobalInt(HDShaderIDs._ComputeEyeIndex, (int)eye);
+                        //cmd.SetComputeIntParam(screenSpaceShadowComputeShader, HDShaderIDs._Eye, (int)eye);
                         cmd.DispatchCompute(screenSpaceShadowComputeShader, kernel, numTilesX, numTilesY, 1);
                     }
                 }
                 else
                 {
-                    cmd.SetComputeIntParam(screenSpaceShadowComputeShader, HDShaderIDs._Eye, 0);
+                    cmd.SetGlobalInt(HDShaderIDs._ComputeEyeIndex, 0);
+                    //cmd.SetComputeIntParam(screenSpaceShadowComputeShader, HDShaderIDs._Eye, 0);
                     cmd.DispatchCompute(screenSpaceShadowComputeShader, kernel, numTilesX, numTilesY, 1);
                 }
 
