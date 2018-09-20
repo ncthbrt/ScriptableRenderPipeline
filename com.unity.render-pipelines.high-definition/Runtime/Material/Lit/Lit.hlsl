@@ -1196,11 +1196,6 @@ void BSDF(  float3 V, float3 L, float NdotL, float3 positionWS, PreLightData pre
 // EvaluateBSDF_Directional
 //-----------------------------------------------------------------------------
 
-float3 Nlerp(float3 A, float3 B, float t)
-{
-    return normalize(lerp(A, B, t));
-}
-
 DirectLighting EvaluateBSDF_Directional(LightLoopContext lightLoopContext,
                                         float3 V, PositionInputs posInput, PreLightData preLightData,
                                         DirectionalLightData lightData, BSDFData bsdfData,
@@ -1216,7 +1211,7 @@ DirectLighting EvaluateBSDF_Directional(LightLoopContext lightLoopContext,
     // Fake a sun disk. by modifying the light vector.
     float t = AngleAttenuation(dot(L, R), lightData.angleScale, lightData.angleOffset);
 
-    L = Nlerp(L, R, t);
+    L = NLerp(L, R, t);
 
     float NdotL = dot(N, L);
 

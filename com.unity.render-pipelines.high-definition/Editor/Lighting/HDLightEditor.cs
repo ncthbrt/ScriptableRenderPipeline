@@ -436,7 +436,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
 
                     // Sun disk.
                     EditorGUILayout.Slider(settings.spotAngle, 0f, 45f, s_Styles.sunDiskSize);
-                    EditorGUILayout.Slider(m_AdditionalLightData.spotInnerPercent, 0f, 100f, s_Styles.sunDiskPercent);
+                    EditorGUILayout.Slider(m_AdditionalLightData.spotInnerPercent, 0f, 100f, s_Styles.sunHaloPercent);
                     break;
 
                 case LightShape.Point:

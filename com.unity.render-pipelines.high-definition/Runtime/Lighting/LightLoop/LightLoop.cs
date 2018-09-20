@@ -967,8 +967,8 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 var sunDiskAngle = light.spotAngle;
 
                 var innerConePercent = additionalData.GetInnerSpotPercent01();
-                var cosConeOuterHalfAngle = Mathf.Clamp(Mathf.Cos(sunDiskAngle * 0.5f * Mathf.Deg2Rad), 0.0f, 1.0f);
-                var cosConeInnerHalfAngle = Mathf.Clamp(Mathf.Cos(sunDiskAngle * 0.5f * innerConePercent * Mathf.Deg2Rad), 0.0f, 1.0f); // inner cone
+                var cosConeInnerHalfAngle = Mathf.Clamp(Mathf.Cos(sunDiskAngle * 0.5f * Mathf.Deg2Rad), 0.0f, 1.0f);
+                var cosConeOuterHalfAngle = Mathf.Clamp(Mathf.Cos(sunDiskAngle * 0.5f * (1 + innerConePercent) * Mathf.Deg2Rad), 0.0f, 1.0f);
 
                 var val = Mathf.Max(0.0001f, (cosConeInnerHalfAngle - cosConeOuterHalfAngle));
                 directionalLightData.angleScale = 1.0f / val;

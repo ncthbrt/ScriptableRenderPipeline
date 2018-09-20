@@ -46,7 +46,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             public readonly GUIContent lightLayer = new GUIContent("Light Layer", "Specifies the current light layers that the light affect. Corresponding renderer with the same flags will be lit by this light.");
 
             public readonly GUIContent sunDiskSize = new GUIContent("Sun Disk Size", "Controls the size of the highlight of the sun disk. It's the angle of the sun cone in degrees.");
-            public readonly GUIContent sunDiskPercent = new GUIContent("Sun Disk Percent", "Controls the size of the fully lit sun disk as relative to the size of both the disk and the halo.");
+            public readonly GUIContent sunHaloPercent = new GUIContent("Sun Halo Percent", "Controls the size of the halo around the highlight of the sun disk.");
 
             public readonly GUIContent shape = new GUIContent("Type", "Specifies the current type of light. Possible types are Directional, Spot, Point, Rectangle and Line lights.");
             public readonly GUIContent[] shapeNames;

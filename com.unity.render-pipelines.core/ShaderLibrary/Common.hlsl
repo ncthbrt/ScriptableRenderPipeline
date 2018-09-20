@@ -479,6 +479,11 @@ real Smootherstep(real a, real b, real t)
     return Smootherstep01(x);
 }
 
+float3 NLerp(float3 A, float3 B, float t)
+{
+    return normalize(lerp(A, B, t));
+}
+
 real Pow4(real x)
 {
     return (x * x) * (x * x);
