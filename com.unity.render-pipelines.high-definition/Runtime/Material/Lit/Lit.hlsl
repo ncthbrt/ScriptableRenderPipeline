@@ -1208,9 +1208,10 @@ DirectLighting EvaluateBSDF_Directional(LightLoopContext lightLoopContext,
     float3 N = bsdfData.normalWS;
     float3 R = reflect(-V, N); // Not always the same as preLightData.iblR
 
-    // Fake a sun disk. by modifying the light vector.
+    // Fake a highlight of the sun disk by modifying the light vector.
     float t = AngleAttenuation(dot(L, R), lightData.angleScale, lightData.angleOffset);
 
+    // This will be quite inaccurate for large disk radii. Would be better to use SLerp().
     L = NLerp(L, R, t);
 
     float NdotL = dot(N, L);
