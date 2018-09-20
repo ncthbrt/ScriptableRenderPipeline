@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added a Fabric shader (experimental) handling cotton and silk
 - Added support for MSAA in forward only for opaque only
 - Implement smoothness fade for SSR
+- Added support for AxF shader (X-rite format - require special AxF importer from Unity not part of HDRP)
 
 ### Fixed
 - Fixed an issue where sometimes the deferred shadow texture would not be valid, causing wrong rendering.
@@ -33,6 +34,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed camera motion vectors shader and associated matrices to update correctly for single-pass double-wide stereo rendering
 - Fixed light attenuation functions when range attenuation is disabled
 - Fixed shadow component algorithm fixup not dirtying the scene, so changes can be saved to disk.
+= Fixed GC leaks for decals
+- Fixed contact shadow not affected by shadow dimmer
 
 ### Changed
 - Changed the way depth & color pyramids are built to be faster and better quality, thus improving the look of distortion and refraction.
