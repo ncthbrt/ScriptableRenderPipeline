@@ -69,6 +69,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             public SerializedProperty lightUnit;
             public SerializedProperty displayAreaLightEmissiveMesh;
             public SerializedProperty lightLayers;
+            public SerializedProperty sunDiskSize;
+            public SerializedProperty sunHaloSize;
 
             // Editor stuff
             public SerializedProperty useOldInspector;
@@ -176,6 +178,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                     shapeRadius = o.Find(x => x.shapeRadius),
                     maxSmoothness = o.Find(x => x.maxSmoothness),
                     applyRangeAttenuation = o.Find(x => x.applyRangeAttenuation),
+                    sunDiskSize = o.Find(x => x.sunDiskSize),
+                    sunHaloSize = o.Find(x => x.sunHaloSize),
 
                     // Editor stuff
                     useOldInspector = o.Find(x => x.useOldInspector),
@@ -435,8 +439,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                     m_AdditionalLightData.lightTypeExtent.enumValueIndex = (int)LightTypeExtent.Punctual;
 
                     // Sun disk.
-                    EditorGUILayout.Slider(settings.spotAngle, 0f, 45f, s_Styles.sunDiskSize);
-                    EditorGUILayout.Slider(m_AdditionalLightData.spotInnerPercent, 0f, 100f, s_Styles.sunHaloPercent);
+                    EditorGUILayout.Slider(m_AdditionalLightData.sunDiskSize, 0f, 45f, s_Styles.sunDiskSize);
+                    EditorGUILayout.Slider(m_AdditionalLightData.sunHaloSize, 0f, 1f, s_Styles.sunHaloSize);
                     break;
 
                 case LightShape.Point:
