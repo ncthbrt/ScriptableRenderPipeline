@@ -2,7 +2,7 @@
 // Again two versions, one for dynamic resource indexing, one for static resource access.
 
 
-#include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/Shadow/ShadowSamplingTent.hlsl"
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Shadow/ShadowSamplingTent.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
 
 // ------------------------------------------------------------------
