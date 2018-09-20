@@ -557,9 +557,13 @@ void FillVolumetricLightingBuffer(LightLoopContext context, uint featureFlags,
 
         _VBufferLightingFeedback[voxelCoord] = float4(blendedRadiance, centerTransmInt);
 
-        // Extrapolate the influence of the phase function on the results of the current frame.
-        // Use max() to prevent division by 0.
-        float3 phaseCurrFrame = lighting.radianceComplete * rcp(max(lighting.radianceNoPhase, FLT_MIN));
+        // Estimate the influence of the phase function on the results of the current frame.
+        float3 phaseCurrFrame;
+
+        phaseCurrFrame.r = SafeDiv(lighting.radianceComplete.r, lighting.radianceNoPhase.r);
+        phaseCurrFrame.g = SafeDiv(lighting.radianceComplete.g, lighting.radianceNoPhase.g);
+        phaseCurrFrame.b = SafeDiv(lighting.radianceComplete.b, lighting.radianceNoPhase.b);
+
         blendedRadiance *= phaseCurrFrame;
 
     #else // ENABLE_REPROJECTION
