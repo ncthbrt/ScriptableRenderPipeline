@@ -58,6 +58,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         public LightTypeExtent oldLightTypeExtent;
         public float oldLightColorTemperature;
         public Vector3 oldShape;
+        public float lightDimmer;
     }
 
     //@TODO: We should continuously move these values
@@ -463,7 +464,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 || shape != timelineWorkaround.oldShape
                 || m_Light.colorTemperature != timelineWorkaround.oldLightColorTemperature)
             {
-                RefreshLigthIntensity();
+                RefreshLightIntensity();
                 UpdateAreaLightEmissiveMesh();
                 timelineWorkaround.oldDisplayLightIntensity = displayLightIntensity;
                 timelineWorkaround.oldLocalScale = transform.localScale;
@@ -475,7 +476,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             // Same check for light angle to update intensity using spot angle
             if (m_Light.type == LightType.Spot && (timelineWorkaround.oldSpotAngle != m_Light.spotAngle || timelineWorkaround.oldEnableSpotReflector != enableSpotReflector))
             {
-                RefreshLigthIntensity();
+                RefreshLightIntensity();
                 timelineWorkaround.oldSpotAngle = m_Light.spotAngle;
                 timelineWorkaround.oldEnableSpotReflector = enableSpotReflector;
             }
@@ -484,9 +485,11 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 || transform.localScale != timelineWorkaround.oldLocalScale
                 || displayAreaLightEmissiveMesh != timelineWorkaround.oldDisplayAreaLightEmissiveMesh
                 || lightTypeExtent != timelineWorkaround.oldLightTypeExtent
-                || m_Light.colorTemperature != timelineWorkaround.oldLightColorTemperature)
+                || m_Light.colorTemperature != timelineWorkaround.oldLightColorTemperature
+                || lightDimmer != timelineWorkaround.lightDimmer)
             {
                 UpdateAreaLightEmissiveMesh();
+                timelineWorkaround.lightDimmer = lightDimmer;
                 timelineWorkaround.oldLightColor = m_Light.color;
                 timelineWorkaround.oldLocalScale = transform.localScale;
                 timelineWorkaround.oldDisplayAreaLightEmissiveMesh = displayAreaLightEmissiveMesh;
@@ -496,7 +499,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         }
 
         // The editor can only access displayLightIntensity (because of SerializedProperties) so we update the intensity to get the real value
-        void RefreshLigthIntensity()
+        void RefreshLightIntensity()
         {
             intensity = displayLightIntensity;
         }
@@ -570,6 +573,12 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             Color value = m_Light.color.linear * m_Light.intensity;
             if (useColorTemperature)
                 value *= LightUtils.CorrelatedColorTemperatureToRGB(m_Light.colorTemperature);
+            value.r = Mathf.Clamp01(value.r);
+            value.g = Mathf.Clamp01(value.g);
+            value.b = Mathf.Clamp01(value.b);
+            value.a = Mathf.Clamp01(value.a);
+
+            value *= lightDimmer;
 
             emissiveMeshRenderer.sharedMaterial.SetColor("_EmissiveColor", value);
         }
