@@ -156,6 +156,21 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             return m_RenderPipelineResources.defaultDiffuseMaterial;
         }
 
+        public override Shader GetAutodeskInteractiveShader()
+        {
+            return m_RenderPipelineResources.AutodeskInteractiveShader;
+        }
+
+        public override Shader GetAutodeskInteractiveTransparentShader()
+        {
+            return m_RenderPipelineResources.AutodeskInteractiveTransparentShader;
+        }
+
+        public override Shader GetAutodeskInteractiveMaskedShader()
+        {
+            return m_RenderPipelineResources.AutodeskInteractiveMaskedShader;
+        }
+
         // Note: This function is HD specific
         public Material GetDefaultDecalMaterial()
         {
