@@ -127,6 +127,8 @@ CBUFFER_END
     static uint unity_StereoEyeIndex;
 #elif defined(UNITY_SINGLE_PASS_STEREO)
 #if SHADER_STAGE_COMPUTE
+    // Currently the Unity engine doesn't automatically update stereo indices, offsets, and matrices for compute shaders.
+    // Instead, we manually update _ComputeEyeIndex in SRP code. 
     #define unity_StereoEyeIndex _ComputeEyeIndex
 #else
     CBUFFER_START(UnityStereoEyeIndex)
@@ -303,6 +305,8 @@ float4x4 _InvProjMatrixStereo[2];
 float4x4 _InvViewProjMatrixStereo[2];
 float4x4 _PrevViewProjMatrixStereo[2];
 #if SHADER_STAGE_COMPUTE
+// Currently the Unity engine doesn't automatically update stereo indices, offsets, and matrices for compute shaders.
+// Instead, we manually update _ComputeEyeIndex in SRP code. 
 float _ComputeEyeIndex;
 #endif
 CBUFFER_END
