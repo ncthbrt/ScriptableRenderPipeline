@@ -2153,9 +2153,8 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
             var numTilesX = GetNumTileClusteredX(hdCamera);
             var numTilesY = GetNumTileClusteredY(hdCamera);
-            int numEyes = m_FrameSettings.enableStereo ? 2 : 1;
-            //cmd.DispatchCompute(buildPerVoxelLightListShader, genListPerVoxelKernel, numTilesX, numTilesY, 1);
-            cmd.DispatchCompute(buildPerVoxelLightListShader, genListPerVoxelKernel, numTilesX, numTilesY, numEyes);
+
+            cmd.DispatchCompute(buildPerVoxelLightListShader, genListPerVoxelKernel, numTilesX, numTilesY, (int)hdCamera.numEyes);
         }
 
         public void BuildGPULightListsCommon(HDCamera hdCamera, CommandBuffer cmd, RenderTargetIdentifier cameraDepthBufferRT, RenderTargetIdentifier stencilTextureRT, bool skyEnabled)
@@ -2543,8 +2542,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 int numTilesX = hdCamera.frameSettings.enableStereo ? ((hdCamera.actualWidth / 2) + (deferredShadowTileSize - 1)) / deferredShadowTileSize : (hdCamera.actualWidth + (deferredShadowTileSize - 1)) / deferredShadowTileSize;
                 int numTilesY = (hdCamera.actualHeight + (deferredShadowTileSize - 1)) / deferredShadowTileSize;
 
-                int numEyes = hdCamera.frameSettings.enableStereo ? 2 : 1; // FIXME generalize this once XRSDK support for >2 eyes is ready
-                for (int eye = 0; eye < numEyes; eye++)
+                for (int eye = 0; eye < hdCamera.numEyes; eye++)
                 {
                     cmd.SetGlobalInt(HDShaderIDs._ComputeEyeIndex, (int)eye);
                     cmd.DispatchCompute(screenSpaceShadowComputeShader, kernel, numTilesX, numTilesY, 1);
@@ -2640,8 +2638,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                         }
                         else
                         {
-                            int numEyes = hdCamera.frameSettings.enableStereo ? 2 : 1; // VR TODO: generalize this once XRSDK support for >2 eyes is ready
-                            for (int eye = 0; eye < numEyes; eye++)
+                            for (int eye = 0; eye < hdCamera.numEyes; eye++)
                             {
                                 cmd.SetGlobalInt(HDShaderIDs._ComputeEyeIndex, eye);
                                 cmd.DispatchCompute(deferredComputeShader, kernel, numTilesX, numTilesY, 1);

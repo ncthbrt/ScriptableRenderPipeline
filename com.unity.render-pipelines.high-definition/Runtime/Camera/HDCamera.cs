@@ -32,10 +32,11 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
         public PostProcessRenderContext postprocessRenderContext;
 
-        public Matrix4x4[] viewMatrixStereo;
-        public Matrix4x4[] projMatrixStereo;
-        public Vector4 centerEyeTranslationOffset;
-        public Vector4 textureWidthScaling; // (2.0, 0.5) for SinglePassDoubleWide (stereo) and (1.0, 1.0) otherwise
+        public Matrix4x4[]  viewMatrixStereo;
+        public Matrix4x4[]  projMatrixStereo;
+        public Vector4      centerEyeTranslationOffset;
+        public Vector4      textureWidthScaling; // (2.0, 0.5) for SinglePassDoubleWide (stereo) and (1.0, 1.0) otherwise
+        public uint         numEyes; // 2+ when rendering stereo, 1 otherwise
 
         // Non oblique projection matrix (RHS)
         public Matrix4x4 nonObliqueProjMatrix
@@ -212,7 +213,10 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             m_ActualHeight = camera.pixelHeight;
             var screenWidth = m_ActualWidth;
             var screenHeight = m_ActualHeight;
-            textureWidthScaling = new Vector4(1.0f, 1.0f, 0.0f, 0.0f); 
+            textureWidthScaling = new Vector4(1.0f, 1.0f, 0.0f, 0.0f);
+
+            numEyes = m_frameSettings.enableStereo ? (uint)2 : (uint)1; // TODO VR: Generalize this when support for >2 eyes comes out with XR SDK
+
             if (m_frameSettings.enableStereo)
             {
                 textureWidthScaling = new Vector4(2.0f, 0.5f, 0.0f, 0.0f); 
