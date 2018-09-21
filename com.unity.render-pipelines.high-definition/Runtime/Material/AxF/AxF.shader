@@ -62,32 +62,9 @@ Shader "HDRenderPipeline/AxF"
         _CarPaint2_CTCoeffs("_CarPaint2_CTCoeffs", Color) = (1,1,1,1)
         _CarPaint2_CTSpreads("_CarPaint2_CTSpreads", Color) = (1,1,1,1)
 
-
-        /////////////////////////////////////////////////////////////////////////////
-_DEBUG_anisotropyAngle( "Anisotropy Angle", Range (-3.14, 3.14) ) = 0
-_DEBUG_anisotropicRoughessX( "Anisotropic Roughness X", Range( 0, 1 ) ) = 0.5
-_DEBUG_anisotropicRoughessY( "Anisotropic Roughness Y", Range( 0, 1 ) ) = 0.5
-_DEBUG_clearcoatIOR( "Clearcoat IOR", Float ) = 1
-
-
-
-//      _EmissiveColor("EmissiveColor", Color) = (1, 1, 1)
-//      _EmissiveColorMap("EmissiveColorMap", 2D) = "white" {}
-//      _EmissiveIntensity("EmissiveIntensity", Float) = 0
-//      [ToggleUI] _AlbedoAffectEmissive("Albedo Affect Emissive", Float) = 0.0
-
-
-//      // Transparency
-//      [ToggleUI] _PreRefractionPass("PreRefractionPass", Float) = 0.0
-//
 //      [ToggleUI]  _AlphaCutoffEnable("Alpha Cutoff Enable", Float) = 0.0
         _AlphaCutoff("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
         _TransparentSortPriority("_TransparentSortPriority", Float) = 0
-
-        // Reminder. Color here are in linear but the UI (color picker) do the conversion sRGB to linear
-        // Be careful, do not change the name here to _Color. It will conflict with the "fake" parameters (see end of properties) required for GI.
-        _BaseColor("BaseColor", Color) = (1,1,1,1)
-        _BaseColorMap("BaseColorMap", 2D) = "white" {}
 
 
         // Stencil state
@@ -321,6 +298,10 @@ _DEBUG_clearcoatIOR( "Clearcoat IOR", Float ) = 1
             #pragma multi_compile _ SHADOWS_SHADOWMASK
             // Setup DECALS_OFF so the shader stripper can remove variants
             #pragma multi_compile DECALS_OFF DECALS_3RT DECALS_4RT
+            
+            // Supported shadow modes per light type
+            #pragma multi_compile PUNCTUAL_SHADOW_LOW PUNCTUAL_SHADOW_MEDIUM PUNCTUAL_SHADOW_HIGH
+            #pragma multi_compile DIRECTIONAL_SHADOW_LOW DIRECTIONAL_SHADOW_MEDIUM DIRECTIONAL_SHADOW_HIGH
 
             // #include "../../Lighting/Forward.hlsl" : nothing left in there.
             //#pragma multi_compile LIGHTLOOP_SINGLE_PASS LIGHTLOOP_TILE_PASS
