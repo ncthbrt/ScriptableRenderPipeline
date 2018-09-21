@@ -43,7 +43,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         static void Drawer_SectionLightLoopSettings(LightLoopSettingsUI s, SerializedLightLoopSettings p, Editor owner, bool withOverride)
         {
             //RenderPipelineSettings hdrpSettings = (GraphicsSettings.renderPipelineAsset as HDRenderPipelineAsset).renderPipelineSettings;
-            OverridableSettingsArea area = new OverridableSettingsArea();
+            OverridableSettingsArea area = new OverridableSettingsArea(6);
 
             // Uncomment if you re-enable LIGHTLOOP_SINGLE_PASS multi_compile in lit*.shader
             //area.Add(p.enableTileAndCluster, tileAndClusterContent, a => p.overridesTileAndCluster = a, () => p.overridesTileAndCluster);
@@ -51,13 +51,13 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             
             if (s.isSectionExpandedEnableTileAndCluster.target)
             {
-                area.Add(p.enableFptlForForwardOpaque, fptlForForwardOpaqueContent, a => p.overridesFptlForForwardOpaque = a, () => p.overridesFptlForForwardOpaque);
-                area.Add(p.enableBigTilePrepass, bigTilePrepassContent, a => p.overridesBigTilePrepass = a, () => p.overridesBigTilePrepass);
-                area.Add(p.enableComputeLightEvaluation, computeLightEvaluationContent, a => p.overridesComputeLightEvaluation = a, () => p.overridesComputeLightEvaluation);
+                area.Add(p.enableFptlForForwardOpaque, fptlForForwardOpaqueContent, () => p.overridesFptlForForwardOpaque, a => p.overridesFptlForForwardOpaque = a);
+                area.Add(p.enableBigTilePrepass, bigTilePrepassContent, () => p.overridesBigTilePrepass, a => p.overridesBigTilePrepass = a);
+                area.Add(p.enableComputeLightEvaluation, computeLightEvaluationContent, () => p.overridesComputeLightEvaluation, a => p.overridesComputeLightEvaluation = a);
                 if (s.isSectionExpandedComputeLightEvaluation.target)
                 {
-                    area.Add(p.enableComputeLightVariants, computeLightVariantsContent, a => p.overridesComputeLightVariants = a, () => p.overridesComputeLightVariants, indent: 1);
-                    area.Add(p.enableComputeMaterialVariants, computeMaterialVariantsContent, a => p.overridesComputeMaterialVariants = a, () => p.overridesComputeMaterialVariants, indent: 1);
+                    area.Add(p.enableComputeLightVariants, computeLightVariantsContent, () => p.overridesComputeLightVariants, a => p.overridesComputeLightVariants = a, indent: 1);
+                    area.Add(p.enableComputeMaterialVariants, computeMaterialVariantsContent, () => p.overridesComputeMaterialVariants, a => p.overridesComputeMaterialVariants = a, indent: 1);
                 }
             }
 

@@ -43,22 +43,22 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
 
         static void Drawer_SectionCaptureSettings(CaptureSettingsUI s, SerializedCaptureSettings p, Editor owner, bool withOverride)
         {
-            OverridableSettingsArea area = new OverridableSettingsArea();
-            area.Add(p.clearColorMode, clearColorModeContent, a => p.overridesClearColorMode = a, () => p.overridesClearColorMode);
-            area.Add(p.backgroundColorHDR, backgroundColorHDRContent, a => p.overridesBackgroundColorHDR = a, () => p.overridesBackgroundColorHDR);
-            area.Add(p.clearDepth, clearDepthContent, a => p.overridesClearDepth = a, () => p.overridesClearDepth);
-            area.Add(p.renderingPath, renderingPathContent, a => p.overridesRenderingPath = a, () => p.overridesRenderingPath);
-            area.Add(p.volumeLayerMask, volumeLayerMaskContent, a => p.overridesVolumeLayerMask = a, () => p.overridesVolumeLayerMask);
-            area.Add(p.volumeAnchorOverride, volumeAnchorOverrideContent, a => p.overridesVolumeAnchorOverride = a, () => p.overridesVolumeAnchorOverride);
-            area.Add(p.aperture, apertureContent, a => p.overridesAperture = a, () => p.overridesAperture);
-            area.Add(p.shutterSpeed, shutterSpeedContent, a => p.overridesShutterSpeed = a, () => p.overridesShutterSpeed);
-            area.Add(p.iso, isoContent, a => p.overridesIso = a, () => p.overridesIso);
-            area.Add(p.shadowDistance, shadowDistanceContent, a => p.overridesShadowDistance = a, () => p.overridesShadowDistance);
-            area.Add(p.farClipPlane, farClipPlaneContent, a => p.overridesFarClip = a, () => p.overridesFarClip);
-            area.Add(p.nearClipPlane, nearClipPlaneContent, a => p.overridesNearClip = a, () => p.overridesNearClip);
-            area.Add(p.fieldOfview, fieldOfviewContent, a => p.overridesFieldOfview = a, () => p.overridesFieldOfview);
-            area.Add(p.useOcclusionCulling, useOcclusionCullingContent, a => p.overridesUseOcclusionCulling = a, () => p.overridesUseOcclusionCulling);
-            area.Add(p.cullingMask, cullingMaskContent, a => p.overridesCullingMask = a, () => p.overridesCullingMask);
+            OverridableSettingsArea area = new OverridableSettingsArea(15);
+            area.Add(p.clearColorMode, clearColorModeContent, () => p.overridesClearColorMode, a => p.overridesClearColorMode = a);
+            area.Add(p.backgroundColorHDR, backgroundColorHDRContent, () => p.overridesBackgroundColorHDR, a => p.overridesBackgroundColorHDR = a);
+            area.Add(p.clearDepth, clearDepthContent, () => p.overridesClearDepth, a => p.overridesClearDepth = a);
+            area.Add(p.renderingPath, renderingPathContent, () => p.overridesRenderingPath, a => p.overridesRenderingPath = a);
+            area.Add(p.volumeLayerMask, volumeLayerMaskContent, () => p.overridesVolumeLayerMask, a => p.overridesVolumeLayerMask = a);
+            area.Add(p.volumeAnchorOverride, volumeAnchorOverrideContent, () => p.overridesVolumeAnchorOverride, a => p.overridesVolumeAnchorOverride = a);
+            area.Add(p.aperture, apertureContent, () => p.overridesAperture, a => p.overridesAperture = a);
+            area.Add(p.shutterSpeed, shutterSpeedContent, () => p.overridesShutterSpeed, a => p.overridesShutterSpeed = a);
+            area.Add(p.iso, isoContent, () => p.overridesIso, a => p.overridesIso = a);
+            area.Add(p.shadowDistance, shadowDistanceContent, () => p.overridesShadowDistance, a => p.overridesShadowDistance = a);
+            area.Add(p.farClipPlane, farClipPlaneContent, () => p.overridesFarClip, a => p.overridesFarClip = a);
+            area.Add(p.nearClipPlane, nearClipPlaneContent, () => p.overridesNearClip, a => p.overridesNearClip = a);
+            area.Add(p.fieldOfview, fieldOfviewContent, () => p.overridesFieldOfview, a => p.overridesFieldOfview = a);
+            area.Add(p.useOcclusionCulling, useOcclusionCullingContent, () => p.overridesUseOcclusionCulling, a => p.overridesUseOcclusionCulling = a);
+            area.Add(p.cullingMask, cullingMaskContent, () => p.overridesCullingMask, a => p.overridesCullingMask = a);
             area.Draw(withOverride);
         }
     }
