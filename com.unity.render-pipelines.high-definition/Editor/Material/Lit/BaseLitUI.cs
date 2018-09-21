@@ -249,9 +249,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         protected override void BaseMaterialPropertiesGUI()
         {
             base.BaseMaterialPropertiesGUI();
-
-            EditorGUI.indentLevel++;
-
+            
             // This follow double sided option
             if (doubleSidedEnable != null && doubleSidedEnable.floatValue > 0.0f)
             {
@@ -327,8 +325,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                     EditorGUI.indentLevel--;
                 }
             }
-
-            EditorGUI.indentLevel--;
         }
 
         protected virtual void MaterialTesselationPropertiesGUI()
