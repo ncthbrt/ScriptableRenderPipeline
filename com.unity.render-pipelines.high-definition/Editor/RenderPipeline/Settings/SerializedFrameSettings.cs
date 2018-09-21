@@ -2,7 +2,7 @@ using UnityEngine.Experimental.Rendering.HDPipeline;
 
 namespace UnityEditor.Experimental.Rendering.HDPipeline
 {
-    public class SerializedFrameSettings
+    class SerializedFrameSettings
     {
         public SerializedProperty root;
 

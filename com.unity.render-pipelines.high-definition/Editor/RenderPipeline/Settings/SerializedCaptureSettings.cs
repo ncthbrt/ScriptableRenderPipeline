@@ -2,29 +2,31 @@ using UnityEngine.Experimental.Rendering.HDPipeline;
 
 namespace UnityEditor.Experimental.Rendering.HDPipeline
 {
-    public class SerializedCaptureSettings
+    class SerializedCaptureSettings
     {
-        public SerializedProperty root;
-
         public SerializedProperty clearColorMode;
         public SerializedProperty backgroundColorHDR;
         public SerializedProperty clearDepth;
 
-        public SerializedProperty renderingPath;
+        public SerializedProperty cullingMask;
+        public SerializedProperty useOcclusionCulling;
+
         public SerializedProperty volumeLayerMask;
         public SerializedProperty volumeAnchorOverride;
 
-        public SerializedProperty aperture;
-        public SerializedProperty shutterSpeed;
-        public SerializedProperty iso;
-
-        public SerializedProperty shadowDistance;
-
-        public SerializedProperty farClipPlane;
+        public SerializedProperty projection;
         public SerializedProperty nearClipPlane;
+        public SerializedProperty farClipPlane;
         public SerializedProperty fieldOfview;
-        public SerializedProperty useOcclusionCulling;
-        public SerializedProperty cullingMask;
+        public SerializedProperty orthographicSize;
+
+        public SerializedProperty renderingPath;
+
+        //public SerializedProperty aperture;
+        //public SerializedProperty shutterSpeed;
+        //public SerializedProperty iso;
+
+        //public SerializedProperty shadowDistance;
 
         private SerializedProperty overrides;
         //public bool overridesCubeResolution
@@ -82,15 +84,15 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                     overrides.intValue &= ~(int)CaptureSettingsOverrides.ClearDepth;
             }
         }
-        public bool overridesRenderingPath
+        public bool overridesCullingMask
         {
-            get { return (overrides.intValue & (int)CaptureSettingsOverrides.RenderingPath) > 0; }
+            get { return (overrides.intValue & (int)CaptureSettingsOverrides.CullingMask) > 0; }
             set
             {
                 if (value)
-                    overrides.intValue |= (int)CaptureSettingsOverrides.RenderingPath;
+                    overrides.intValue |= (int)CaptureSettingsOverrides.CullingMask;
                 else
-                    overrides.intValue &= ~(int)CaptureSettingsOverrides.RenderingPath;
+                    overrides.intValue &= ~(int)CaptureSettingsOverrides.CullingMask;
             }
         }
         public bool overridesVolumeLayerMask
@@ -115,37 +117,26 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                     overrides.intValue &= ~(int)CaptureSettingsOverrides.VolumeAnchorOverride;
             }
         }
-        public bool overridesAperture
+        public bool overridesUseOcclusionCulling
         {
-            get { return (overrides.intValue & (int)CaptureSettingsOverrides.Aperture) > 0; }
+            get { return (overrides.intValue & (int)CaptureSettingsOverrides.UseOcclusionCulling) > 0; }
             set
             {
                 if (value)
-                    overrides.intValue |= (int)CaptureSettingsOverrides.Aperture;
+                    overrides.intValue |= (int)CaptureSettingsOverrides.UseOcclusionCulling;
                 else
-                    overrides.intValue &= ~(int)CaptureSettingsOverrides.Aperture;
+                    overrides.intValue &= ~(int)CaptureSettingsOverrides.UseOcclusionCulling;
             }
         }
-        public bool overridesShutterSpeed
+        public bool overridesProjection
         {
-            get { return (overrides.intValue & (int)CaptureSettingsOverrides.ShutterSpeed) > 0; }
+            get { return (overrides.intValue & (int)CaptureSettingsOverrides.Projection) > 0; }
             set
             {
                 if (value)
-                    overrides.intValue |= (int)CaptureSettingsOverrides.ShutterSpeed;
+                    overrides.intValue |= (int)CaptureSettingsOverrides.Projection;
                 else
-                    overrides.intValue &= ~(int)CaptureSettingsOverrides.ShutterSpeed;
-            }
-        }
-        public bool overridesIso
-        {
-            get { return (overrides.intValue & (int)CaptureSettingsOverrides.Iso) > 0; }
-            set
-            {
-                if (value)
-                    overrides.intValue |= (int)CaptureSettingsOverrides.Iso;
-                else
-                    overrides.intValue &= ~(int)CaptureSettingsOverrides.Iso;
+                    overrides.intValue &= ~(int)CaptureSettingsOverrides.Projection;
             }
         }
         public bool overridesNearClip
@@ -181,65 +172,100 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                     overrides.intValue &= ~(int)CaptureSettingsOverrides.FieldOfview;
             }
         }
-        public bool overridesCullingMask
+        public bool overridesOrthographicSize
         {
-            get { return (overrides.intValue & (int)CaptureSettingsOverrides.CullingMask) > 0; }
+            get { return (overrides.intValue & (int)CaptureSettingsOverrides.OrphographicSize) > 0; }
             set
             {
                 if (value)
-                    overrides.intValue |= (int)CaptureSettingsOverrides.CullingMask;
+                    overrides.intValue |= (int)CaptureSettingsOverrides.OrphographicSize;
                 else
-                    overrides.intValue &= ~(int)CaptureSettingsOverrides.CullingMask;
+                    overrides.intValue &= ~(int)CaptureSettingsOverrides.OrphographicSize;
             }
         }
-        public bool overridesUseOcclusionCulling
+        public bool overridesRenderingPath
         {
-            get { return (overrides.intValue & (int)CaptureSettingsOverrides.UseOcclusionCulling) > 0; }
+            get { return (overrides.intValue & (int)CaptureSettingsOverrides.RenderingPath) > 0; }
             set
             {
                 if (value)
-                    overrides.intValue |= (int)CaptureSettingsOverrides.UseOcclusionCulling;
+                    overrides.intValue |= (int)CaptureSettingsOverrides.RenderingPath;
                 else
-                    overrides.intValue &= ~(int)CaptureSettingsOverrides.UseOcclusionCulling;
+                    overrides.intValue &= ~(int)CaptureSettingsOverrides.RenderingPath;
             }
         }
-        public bool overridesShadowDistance
-        {
-            get { return (overrides.intValue & (int)CaptureSettingsOverrides.ShadowDistance) > 0; }
-            set
-            {
-                if (value)
-                    overrides.intValue |= (int)CaptureSettingsOverrides.ShadowDistance;
-                else
-                    overrides.intValue &= ~(int)CaptureSettingsOverrides.ShadowDistance;
-            }
-        }
+        //public bool overridesAperture
+        //{
+        //    get { return (overrides.intValue & (int)CaptureSettingsOverrides.Aperture) > 0; }
+        //    set
+        //    {
+        //        if (value)
+        //            overrides.intValue |= (int)CaptureSettingsOverrides.Aperture;
+        //        else
+        //            overrides.intValue &= ~(int)CaptureSettingsOverrides.Aperture;
+        //    }
+        //}
+        //public bool overridesShutterSpeed
+        //{
+        //    get { return (overrides.intValue & (int)CaptureSettingsOverrides.ShutterSpeed) > 0; }
+        //    set
+        //    {
+        //        if (value)
+        //            overrides.intValue |= (int)CaptureSettingsOverrides.ShutterSpeed;
+        //        else
+        //            overrides.intValue &= ~(int)CaptureSettingsOverrides.ShutterSpeed;
+        //    }
+        //}
+        //public bool overridesIso
+        //{
+        //    get { return (overrides.intValue & (int)CaptureSettingsOverrides.Iso) > 0; }
+        //    set
+        //    {
+        //        if (value)
+        //            overrides.intValue |= (int)CaptureSettingsOverrides.Iso;
+        //        else
+        //            overrides.intValue &= ~(int)CaptureSettingsOverrides.Iso;
+        //    }
+        //}
+        //public bool overridesShadowDistance
+        //{
+        //    get { return (overrides.intValue & (int)CaptureSettingsOverrides.ShadowDistance) > 0; }
+        //    set
+        //    {
+        //        if (value)
+        //            overrides.intValue |= (int)CaptureSettingsOverrides.ShadowDistance;
+        //        else
+        //            overrides.intValue &= ~(int)CaptureSettingsOverrides.ShadowDistance;
+        //    }
+        //}
 
         public SerializedCaptureSettings(SerializedProperty root)
         {
-            this.root = root;
+            overrides = root.Find((CaptureSettings d) => d.overrides);
 
             clearColorMode = root.Find((CaptureSettings d) => d.clearColorMode);
             backgroundColorHDR = root.Find((CaptureSettings d) => d.backgroundColorHDR);
             clearDepth = root.Find((CaptureSettings d) => d.clearDepth);
 
-            renderingPath = root.Find((CaptureSettings d) => d.renderingPath);
+            cullingMask = root.Find((CaptureSettings d) => d.cullingMask);
+            useOcclusionCulling = root.Find((CaptureSettings d) => d.useOcclusionCulling);
+
             volumeLayerMask = root.Find((CaptureSettings d) => d.volumeLayerMask);
             volumeAnchorOverride = root.Find((CaptureSettings d) => d.volumeAnchorOverride);
 
-            aperture = root.Find((CaptureSettings d) => d.aperture);
-            shutterSpeed = root.Find((CaptureSettings d) => d.shutterSpeed);
-            iso = root.Find((CaptureSettings d) => d.iso);
-
-            shadowDistance = root.Find((CaptureSettings d) => d.shadowDistance);
-
-            farClipPlane = root.Find((CaptureSettings d) => d.farClipPlane);
+            projection = root.Find((CaptureSettings d) => d.projection);
             nearClipPlane = root.Find((CaptureSettings d) => d.nearClipPlane);
+            farClipPlane = root.Find((CaptureSettings d) => d.farClipPlane);
             fieldOfview = root.Find((CaptureSettings d) => d.fieldOfview);
-            useOcclusionCulling = root.Find((CaptureSettings d) => d.useOcclusionCulling);
-            cullingMask = root.Find((CaptureSettings d) => d.cullingMask);
+            orthographicSize = root.Find((CaptureSettings d) => d.orthographicSize);
 
-            overrides = root.Find((CaptureSettings d) => d.overrides);
+            renderingPath = root.Find((CaptureSettings d) => d.renderingPath);
+
+            //aperture = root.Find((CaptureSettings d) => d.aperture);
+            //shutterSpeed = root.Find((CaptureSettings d) => d.shutterSpeed);
+            //iso = root.Find((CaptureSettings d) => d.iso);
+
+            //shadowDistance = root.Find((CaptureSettings d) => d.shadowDistance);
         }
     }
 }

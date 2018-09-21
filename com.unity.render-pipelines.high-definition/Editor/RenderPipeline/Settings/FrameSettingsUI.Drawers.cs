@@ -1,4 +1,6 @@
 using UnityEditor.AnimatedValues;
+using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 using UnityEngine.Experimental.Rendering.HDPipeline;
 using UnityEngine.Rendering;
 
@@ -91,15 +93,15 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         {
             RenderPipelineSettings hdrpSettings = (GraphicsSettings.renderPipelineAsset as HDRenderPipelineAsset).renderPipelineSettings;
             OverridableSettingsArea area = new OverridableSettingsArea(6);
-            area.Add(p.enableForwardRenderingOnly, forwardRenderingOnlyContent, () => p.overridesForwardRenderingOnly, a => p.overridesForwardRenderingOnly = a, () => hdrpSettings.supportOnlyForward);
+            area.Add(p.enableForwardRenderingOnly, forwardRenderingOnlyContent, () => p.overridesForwardRenderingOnly, a => p.overridesForwardRenderingOnly = a, () => !GL.wireframe && !hdrpSettings.supportOnlyForward, defaultValue: GL.wireframe || hdrpSettings.supportOnlyForward);
             if (s.isSectionExpandedUseForwardOnly.target)
             {
                 area.Add(p.enableDepthPrepassWithDeferredRendering, depthPrepassWithDeferredRenderingContent, () => p.overridesDepthPrepassWithDeferredRendering, a => p.overridesDepthPrepassWithDeferredRendering = a);
             }
-            area.Add(p.enableAsyncCompute, asyncComputeContent, () => p.overridesAsyncCompute, a => p.overridesAsyncCompute = a);
+            area.Add(p.enableAsyncCompute, asyncComputeContent, () => p.overridesAsyncCompute, a => p.overridesAsyncCompute = a, () => SystemInfo.supportsAsyncCompute, defaultValue: SystemInfo.supportsAsyncCompute);
             area.Add(p.enableOpaqueObjects, opaqueObjectsContent, () => p.overridesOpaqueObjects, a => p.overridesOpaqueObjects = a);
             area.Add(p.enableTransparentObjects, transparentObjectsContent, () => p.overridesTransparentObjects, a => p.overridesTransparentObjects = a);
-            area.Add(p.enableMSAA, msaaContent, () => p.overridesMSAA, a => p.overridesMSAA = a, () => hdrpSettings.supportMSAA);
+            area.Add(p.enableMSAA, msaaContent, () => p.overridesMSAA, a => p.overridesMSAA = a, () => hdrpSettings.supportMSAA, defaultValue: hdrpSettings.supportMSAA);
             area.Draw(withOverride);
         }
         
@@ -109,15 +111,15 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             OverridableSettingsArea area = new OverridableSettingsArea(10);
             area.Add(p.enableShadow, shadowContent, () => p.overridesShadow, a => p.overridesShadow = a);
             area.Add(p.enableContactShadow, contactShadowContent, () => p.overridesContactShadow, a => p.overridesContactShadow = a);
-            area.Add(p.enableShadowMask, shadowMaskContent, () => p.overridesShadowMask, a => p.overridesShadowMask = a, () => hdrpSettings.supportShadowMask);
-            area.Add(p.enableSSR, ssrContent, () => p.overridesSSR, a => p.overridesSSR = a, () => hdrpSettings.supportSSR);
-            area.Add(p.enableSSAO, ssaoContent, () => p.overridesSSAO, a => p.overridesSSAO = a, () => hdrpSettings.supportSSAO);
-            area.Add(p.enableSubsurfaceScattering, subsurfaceScatteringContent, () => p.overridesSubsurfaceScattering, a => p.overridesSubsurfaceScattering = a, () => hdrpSettings.supportSubsurfaceScattering);
+            area.Add(p.enableShadowMask, shadowMaskContent, () => p.overridesShadowMask, a => p.overridesShadowMask = a, () => hdrpSettings.supportShadowMask, defaultValue: hdrpSettings.supportShadowMask);
+            area.Add(p.enableSSR, ssrContent, () => p.overridesSSR, a => p.overridesSSR = a, () => hdrpSettings.supportSSR, defaultValue: hdrpSettings.supportSSR);
+            area.Add(p.enableSSAO, ssaoContent, () => p.overridesSSAO, a => p.overridesSSAO = a, () => hdrpSettings.supportSSAO, defaultValue: hdrpSettings.supportSSAO);
+            area.Add(p.enableSubsurfaceScattering, subsurfaceScatteringContent, () => p.overridesSubsurfaceScattering, a => p.overridesSubsurfaceScattering = a, () => hdrpSettings.supportSubsurfaceScattering, defaultValue: hdrpSettings.supportSubsurfaceScattering);
             area.Add(p.enableTransmission, transmissionContent, () => p.overridesTransmission, a => p.overridesTransmission = a);
             area.Add(p.enableAtmosphericScattering, atmosphericScatteringContent, () => p.overridesAtmosphericScaterring, a => p.overridesAtmosphericScaterring = a);
-            area.Add(p.enableVolumetrics, volumetricContent, () => p.overridesVolumetrics, a => p.overridesVolumetrics = a, () => hdrpSettings.supportVolumetrics);
-            area.Add(p.enableReprojectionForVolumetrics, reprojectionForVolumetricsContent, () => p.overridesProjectionForVolumetrics, a => p.overridesProjectionForVolumetrics = a, () => hdrpSettings.supportVolumetrics);
-            area.Add(p.enableLightLayers, lightLayerContent, () => p.overridesLightLayers, a => p.overridesLightLayers = a, () => hdrpSettings.supportLightLayers);
+            area.Add(p.enableVolumetrics, volumetricContent, () => p.overridesVolumetrics, a => p.overridesVolumetrics = a, () => hdrpSettings.supportVolumetrics && p.enableAtmosphericScattering.boolValue, defaultValue: hdrpSettings.supportVolumetrics && p.enableAtmosphericScattering.boolValue, indent: 1);
+            area.Add(p.enableReprojectionForVolumetrics, reprojectionForVolumetricsContent, () => p.overridesProjectionForVolumetrics, a => p.overridesProjectionForVolumetrics = a, () => hdrpSettings.supportVolumetrics && p.enableAtmosphericScattering.boolValue, defaultValue: hdrpSettings.supportVolumetrics && p.enableAtmosphericScattering.boolValue, indent: 1);
+            area.Add(p.enableLightLayers, lightLayerContent, () => p.overridesLightLayers, a => p.overridesLightLayers = a, () => hdrpSettings.supportLightLayers, defaultValue: hdrpSettings.supportLightLayers);
             area.Draw(withOverride);
         }
 
@@ -125,7 +127,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         {
             OverridableSettingsArea area = new OverridableSettingsArea(1);
             area.Add(p.enableStereo, stereoContent, () => p.overridesStereo, a => p.overridesStereo = a, null);
-            area.Add(p.xrGraphicsConfig, xrGraphicConfigContent, () => p.overridesXrGraphicSettings, a => p.overridesXrGraphicSettings = a, null);
+            area.Add(p.xrGraphicsConfig, xrGraphicConfigContent, () => p.overridesXrGraphicSettings, a => p.overridesXrGraphicSettings = a, () => XRGraphicsConfig.enabled);
             area.Draw(withOverride);
         }
     }
