@@ -288,9 +288,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 }
             }
 
-            if (enableMotionVectorForVertexAnimation != null)
-                m_MaterialEditor.ShaderProperty(enableMotionVectorForVertexAnimation, StylesBaseUnlit.enableMotionVectorForVertexAnimationText);
-
             if (displacementMode != null)
             {
                 EditorGUI.BeginChangeCheck();
@@ -393,24 +390,27 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
 
         protected override void VertexAnimationPropertiesGUI()
         {
-            if (windEnable == null)
-                return;
-            
             using (var header = new HeaderScope(StylesBaseLit.vertexAnimation, (uint)Expendable.VertexAnimation, this))
             {
                 if (header.expended)
                 {
-                    m_MaterialEditor.ShaderProperty(windEnable, StylesBaseLit.windText);
-                    if (!windEnable.hasMixedValue && windEnable.floatValue > 0.0f)
+                    if (windEnable != null)
                     {
-                        EditorGUI.indentLevel++;
-                        m_MaterialEditor.ShaderProperty(windInitialBend, StylesBaseLit.windInitialBendText);
-                        m_MaterialEditor.ShaderProperty(windStiffness, StylesBaseLit.windStiffnessText);
-                        m_MaterialEditor.ShaderProperty(windDrag, StylesBaseLit.windDragText);
-                        m_MaterialEditor.ShaderProperty(windShiverDrag, StylesBaseLit.windShiverDragText);
-                        m_MaterialEditor.ShaderProperty(windShiverDirectionality, StylesBaseLit.windShiverDirectionalityText);
-                        EditorGUI.indentLevel--;
+                        m_MaterialEditor.ShaderProperty(windEnable, StylesBaseLit.windText);
+                        if (!windEnable.hasMixedValue && windEnable.floatValue > 0.0f)
+                        {
+                            EditorGUI.indentLevel++;
+                            m_MaterialEditor.ShaderProperty(windInitialBend, StylesBaseLit.windInitialBendText);
+                            m_MaterialEditor.ShaderProperty(windStiffness, StylesBaseLit.windStiffnessText);
+                            m_MaterialEditor.ShaderProperty(windDrag, StylesBaseLit.windDragText);
+                            m_MaterialEditor.ShaderProperty(windShiverDrag, StylesBaseLit.windShiverDragText);
+                            m_MaterialEditor.ShaderProperty(windShiverDirectionality, StylesBaseLit.windShiverDirectionalityText);
+                            EditorGUI.indentLevel--;
+                        }
                     }
+
+                    if (enableMotionVectorForVertexAnimation != null)
+                        m_MaterialEditor.ShaderProperty(enableMotionVectorForVertexAnimation, StylesBaseUnlit.enableMotionVectorForVertexAnimationText);
                 }
             }
         }
