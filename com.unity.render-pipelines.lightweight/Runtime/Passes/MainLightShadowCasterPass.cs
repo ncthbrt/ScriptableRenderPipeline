@@ -3,7 +3,7 @@ using UnityEngine.Rendering;
 
 namespace UnityEngine.Experimental.Rendering.LightweightPipeline
 {
-    public class DirectionalShadowsPass : ScriptableRenderPass
+    public class MainLightShadowCasterPass : ScriptableRenderPass
     {
         private static class MainLightShadowConstantBuffer
         {
@@ -36,7 +36,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
 
         private RenderTargetHandle destination { get; set; }
 
-        public DirectionalShadowsPass()
+        public MainLightShadowCasterPass()
         {
             RegisterShaderPassName("ShadowCaster");
 

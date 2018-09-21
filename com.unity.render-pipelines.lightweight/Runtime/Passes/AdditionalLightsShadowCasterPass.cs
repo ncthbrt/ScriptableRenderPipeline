@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 
 namespace UnityEngine.Experimental.Rendering.LightweightPipeline
 {
-    public class LocalShadowsPass : ScriptableRenderPass
+    public class AdditionalLightsShadowCasterPass : ScriptableRenderPass
     {
         private static class AdditionalShadowsConstantBuffer
         {
@@ -30,7 +30,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
 
         private RenderTargetHandle destination { get; set; }
 
-        public LocalShadowsPass()
+        public AdditionalLightsShadowCasterPass()
         {
             RegisterShaderPassName("ShadowCaster");
 
