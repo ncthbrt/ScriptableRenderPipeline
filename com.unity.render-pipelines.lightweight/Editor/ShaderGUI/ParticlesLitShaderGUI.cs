@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace UnityEditor
 {
-    internal class LightweightStandardParticlesShaderGUI : ShaderGUI
+    internal class ParticlesLitShaderGUI : ShaderGUI
     {
         public enum BlendMode
         {

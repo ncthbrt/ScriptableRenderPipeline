@@ -186,5 +186,5 @@ Shader "LightweightRenderPipeline/Unlit"
         }
     }
     FallBack "Hidden/InternalErrorShader"
-    CustomEditor "LightweightUnlitGUI"
+    CustomEditor "UnlitShaderGUI"
 }

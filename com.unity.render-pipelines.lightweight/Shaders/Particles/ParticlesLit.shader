@@ -124,5 +124,5 @@ Shader "LightweightRenderPipeline/Particles/Lit"
     }
 
     Fallback "LightweightRenderPipeline/Particles/SimpleLit"
-    CustomEditor "LightweightStandardParticlesShaderGUI"
+    CustomEditor "ParticlesLitShaderGUI"
 }

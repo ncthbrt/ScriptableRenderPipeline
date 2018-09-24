@@ -1,10 +1,9 @@
 using System;
-using UnityEditor;
 using UnityEngine;
 
 namespace UnityEditor
 {
-    public abstract class LightweightShaderGUI : ShaderGUI
+    public abstract class BaseShaderGUI : ShaderGUI
     {
         public enum SurfaceType
         {

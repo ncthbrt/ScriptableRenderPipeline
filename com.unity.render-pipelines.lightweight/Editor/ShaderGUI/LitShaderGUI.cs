@@ -4,7 +4,7 @@ using UnityEngine.Experimental.Rendering;
 
 namespace UnityEditor
 {
-    internal class LightweightStandardGUI : LightweightShaderGUI
+    internal class LitShaderGUI : BaseShaderGUI
     {
         public enum WorkflowMode
         {

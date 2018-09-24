@@ -210,5 +210,5 @@ Shader "LightweightRenderPipeline/Lit"
 
     }
     FallBack "Hidden/InternalErrorShader"
-    CustomEditor "LightweightStandardGUI"
+    CustomEditor "LitShaderGUI"
 }

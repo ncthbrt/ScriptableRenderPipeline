@@ -1,11 +1,10 @@
 using System;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 
 namespace UnityEditor
 {
-    public class LightweightUnlitGUI : LightweightShaderGUI
+    internal class UnlitShaderGUI : BaseShaderGUI
     {
         private MaterialProperty mainTexProp;
         private MaterialProperty mainColorProp;

@@ -142,5 +142,5 @@ Shader "Hidden/LightweightRenderPipeline/Terrain/Lit (Base Pass)"
         UsePass "Hidden/Nature/Terrain/Utilities/SELECTION"
     }
     FallBack "Hidden/InternalErrorShader"
-    CustomEditor "LightweightStandardGUI"
+    CustomEditor "LitShaderGUI"
 }

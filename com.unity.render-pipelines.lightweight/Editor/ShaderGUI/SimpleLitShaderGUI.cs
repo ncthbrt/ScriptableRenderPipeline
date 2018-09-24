@@ -5,7 +5,7 @@ using UnityEditor.Experimental.Rendering.LightweightRP;
 
 namespace UnityEditor
 {
-    public class LightweightStandardSimpleLightingGUI : LightweightShaderGUI
+    internal class SimpleLitShaderGUI : BaseShaderGUI
     {
         private const float kMinShininessValue = 0.01f;
         private MaterialProperty albedoMapProp;

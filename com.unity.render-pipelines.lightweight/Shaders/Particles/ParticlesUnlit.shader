@@ -105,5 +105,5 @@ Shader "LightweightRenderPipeline/Particles/Unlit"
         }
     }
 
-    CustomEditor "LightweightStandardParticlesShaderGUI"
+    CustomEditor "ParticlesLitShaderGUI"
 }

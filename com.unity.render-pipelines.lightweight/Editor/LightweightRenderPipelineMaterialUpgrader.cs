@@ -291,7 +291,7 @@ namespace UnityEditor.Experimental.Rendering.LightweightRP
                 throw new ArgumentNullException("material");
 
             material.shaderKeywords = null;
-            LightweightShaderGUI.SetupMaterialBlendMode(material);
+            BaseShaderGUI.SetupMaterialBlendMode(material);
             UpdateMaterialSpecularSource(material);
             CoreUtils.SetKeyword(material, "_NORMALMAP", material.GetTexture("_BumpMap"));
 

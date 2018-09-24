@@ -140,6 +140,6 @@ Shader "LightweightRenderPipeline/Particles/Simple Lit"
         }
     }
 
-    Fallback "LightweightPipeline/Particles/Standard Unlit"
-    CustomEditor "LightweightStandardParticlesShaderGUI"
+    Fallback "LightweightRenderPipeline/Particles/Unlit"
+    CustomEditor "ParticlesLitShaderGUI"
 }
