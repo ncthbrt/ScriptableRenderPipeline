@@ -129,7 +129,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightRP
             {
                 m_ShadowCasterCascadesCount = shadowData.mainLightShadowCascadesCount;
 
-                int shadowResolution = LightweightShadowUtils.GetMaxTileResolutionInAtlas(shadowData.mainLightShadowmapWidth, shadowData.mainLightShadowmapHeight, m_ShadowCasterCascadesCount);
+                int shadowResolution = ShadowUtils.GetMaxTileResolutionInAtlas(shadowData.mainLightShadowmapWidth, shadowData.mainLightShadowmapHeight, m_ShadowCasterCascadesCount);
                 float shadowNearPlane = light.shadowNearPlane;
 
                 Matrix4x4 view, proj;
@@ -145,12 +145,12 @@ namespace UnityEngine.Experimental.Rendering.LightweightRP
                 bool success = false;
                 for (int cascadeIndex = 0; cascadeIndex < m_ShadowCasterCascadesCount; ++cascadeIndex)
                 {
-                    success = LightweightShadowUtils.ExtractDirectionalLightMatrix(ref cullResults, ref shadowData, shadowLightIndex, cascadeIndex, shadowResolution, shadowNearPlane, out m_CascadeSplitDistances[cascadeIndex], out m_CascadeSlices[cascadeIndex], out view, out proj);
+                    success = ShadowUtils.ExtractDirectionalLightMatrix(ref cullResults, ref shadowData, shadowLightIndex, cascadeIndex, shadowResolution, shadowNearPlane, out m_CascadeSplitDistances[cascadeIndex], out m_CascadeSlices[cascadeIndex], out view, out proj);
                     if (success)
                     {
                         settings.splitData.cullingSphere = m_CascadeSplitDistances[cascadeIndex];
-                        LightweightShadowUtils.SetupShadowCasterConstants(cmd, ref shadowLight, proj, shadowResolution);
-                        LightweightShadowUtils.RenderShadowSlice(cmd, ref context, ref m_CascadeSlices[cascadeIndex], ref settings, proj, view);
+                        ShadowUtils.SetupShadowCasterConstants(cmd, ref shadowLight, proj, shadowResolution);
+                        ShadowUtils.RenderShadowSlice(cmd, ref context, ref m_CascadeSlices[cascadeIndex], ref settings, proj, view);
                     }
                 }
 

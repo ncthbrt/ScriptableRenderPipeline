@@ -130,7 +130,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightRP
                 // for spot lights and with max spot shadows per pass.
                 int atlasWidth = shadowData.additionalLightsShadowmapWidth;
                 int atlasHeight = shadowData.additionalLightsShadowmapHeight;
-                int sliceResolution = LightweightShadowUtils.GetMaxTileResolutionInAtlas(atlasWidth, atlasHeight, shadowCastingLightsCount);
+                int sliceResolution = ShadowUtils.GetMaxTileResolutionInAtlas(atlasWidth, atlasHeight, shadowCastingLightsCount);
 
                 m_AdditionalLightsShadowmapTexture = RenderTexture.GetTemporary(shadowData.additionalLightsShadowmapWidth,
                     shadowData.additionalLightsShadowmapHeight, k_ShadowmapBufferBits, m_AdditionalShadowmapFormat);
@@ -154,7 +154,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightRP
                         continue;
 
                     Matrix4x4 shadowTransform;
-                    bool success = LightweightShadowUtils.ExtractSpotLightMatrix(ref cullResults, ref shadowData,
+                    bool success = ShadowUtils.ExtractSpotLightMatrix(ref cullResults, ref shadowData,
                         shadowLightIndex, out shadowTransform, out view, out proj);
 
                     if (success)
@@ -173,11 +173,11 @@ namespace UnityEngine.Experimental.Rendering.LightweightRP
                         m_AdditionalLightsShadowStrength[i] = light.shadowStrength;
 
                         if (shadowCastingLightsCount > 1)
-                            LightweightShadowUtils.ApplySliceTransform(ref m_AdditionalLightSlices[i], atlasWidth, atlasHeight);
+                            ShadowUtils.ApplySliceTransform(ref m_AdditionalLightSlices[i], atlasWidth, atlasHeight);
 
                         var settings = new DrawShadowsSettings(cullResults, shadowLightIndex);
-                        LightweightShadowUtils.SetupShadowCasterConstants(cmd, ref shadowLight, proj, sliceResolution);
-                        LightweightShadowUtils.RenderShadowSlice(cmd, ref context, ref m_AdditionalLightSlices[i], ref settings, proj, view);
+                        ShadowUtils.SetupShadowCasterConstants(cmd, ref shadowLight, proj, sliceResolution);
+                        ShadowUtils.RenderShadowSlice(cmd, ref context, ref m_AdditionalLightSlices[i], ref settings, proj, view);
                     }
                 }
 

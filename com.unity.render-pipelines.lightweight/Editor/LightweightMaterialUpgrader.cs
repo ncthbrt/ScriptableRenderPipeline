@@ -253,7 +253,7 @@ namespace UnityEditor.Experimental.Rendering.LightweightRP
             if (oldShaderName == null)
                 throw new ArgumentNullException("oldShaderName");
 
-            string standardShaderPath = LightweightShaderUtils.GetShaderPath(ShaderPathID.PhysicallyBased);
+            string standardShaderPath = ShaderUtils.GetShaderPath(ShaderPathID.PhysicallyBased);
 
             if (oldShaderName.Contains("Specular"))
                 RenameShader(oldShaderName, standardShaderPath, UpdateStandardSpecularMaterialKeywords);
@@ -269,7 +269,7 @@ namespace UnityEditor.Experimental.Rendering.LightweightRP
             if (oldShaderName == null)
                 throw new ArgumentNullException("oldShaderName");
 
-            RenameShader(oldShaderName, LightweightShaderUtils.GetShaderPath(ShaderPathID.SimpleLit), UpdateMaterialKeywords);
+            RenameShader(oldShaderName, ShaderUtils.GetShaderPath(ShaderPathID.SimpleLit), UpdateMaterialKeywords);
 
             SetFloat("_Surface", (float)upgradeParams.surfaceType);
             SetFloat("_Blend", (float)upgradeParams.blendMode);
@@ -327,7 +327,7 @@ namespace UnityEditor.Experimental.Rendering.LightweightRP
     {
         public TerrainUpgrader(string oldShaderName)
         {
-            RenameShader(oldShaderName, LightweightShaderUtils.GetShaderPath(ShaderPathID.TerrainPhysicallyBased));
+            RenameShader(oldShaderName, ShaderUtils.GetShaderPath(ShaderPathID.TerrainPhysicallyBased));
         }
     }
 
@@ -339,9 +339,9 @@ namespace UnityEditor.Experimental.Rendering.LightweightRP
                 throw new ArgumentNullException("oldShaderName");
 
             if (oldShaderName.Contains("Unlit"))
-                RenameShader(oldShaderName, LightweightShaderUtils.GetShaderPath(ShaderPathID.ParticlesUnlit));
+                RenameShader(oldShaderName, ShaderUtils.GetShaderPath(ShaderPathID.ParticlesUnlit));
             else
-                RenameShader(oldShaderName, LightweightShaderUtils.GetShaderPath(ShaderPathID.ParticlesPhysicallyBased));
+                RenameShader(oldShaderName, ShaderUtils.GetShaderPath(ShaderPathID.ParticlesPhysicallyBased));
         }
     }
 }

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
-using UnityEngine.Experimental.Rendering.LightweightPipeline;
+using UnityEngine.Experimental.Rendering.LightweightRP;
 using UnityEngine.Rendering;
 
 public class CameraCallbackTests : MonoBehaviour

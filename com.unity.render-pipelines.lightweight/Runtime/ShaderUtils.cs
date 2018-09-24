@@ -12,7 +12,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightRP
         Count
     }
 
-    public static class LightweightShaderUtils
+    public static class ShaderUtils
     {
         static readonly string[] s_ShaderPaths  =
         {

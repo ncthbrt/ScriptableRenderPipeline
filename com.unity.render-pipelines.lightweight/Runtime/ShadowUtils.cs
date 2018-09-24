@@ -18,7 +18,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightRP
         }
     }
 
-    public static class LightweightShadowUtils
+    public static class ShadowUtils
     {
         public static bool ExtractDirectionalLightMatrix(ref CullResults cullResults, ref ShadowData shadowData, int shadowLightIndex, int cascadeIndex, int shadowResolution, float shadowNearPlane, out Vector4 cascadeSplitDistance, out ShadowSliceData shadowSliceData, out Matrix4x4 viewMatrix, out Matrix4x4 projMatrix)
         {
