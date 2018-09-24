@@ -228,7 +228,10 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             if (initParameters.useDynamicViewportRescale)
             {
                 // resize viewport size by the normalized size of the light on screen
-                viewportSize *= visibleLight.screenRect.size.magnitude / Mathf.Sqrt(2);
+                // When we will have access to the non screen clamped bounding sphere light size, we could use it to scale the shadow map resolution
+                // For the moment, this will be enough
+                viewportSize *= Mathf.Lerp(64f / viewportSize.x, 1f, visibleLight.range / (cameraPos - transform.position).magnitude);
+                viewportSize = Vector2.Max(new Vector2(64f, 64f) / viewportSize, viewportSize);
 
                 // Prevent flickering caused by the floating size of the viewport
                 viewportSize.x = Mathf.Round(viewportSize.x);
