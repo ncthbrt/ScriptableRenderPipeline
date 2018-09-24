@@ -78,7 +78,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightRP
             subShader.AppendLine("SubShader");
             using (subShader.BlockScope())
             {
-                subShader.AppendLine("Tags{ \"RenderPipeline\" = \"LightweightRenderPipeline\"}");
+                subShader.AppendLine("Tags{ \"RenderPipeline\" = \"LightweightPipeline\"}");
 
                 var materialOptions = ShaderGenerator.GetMaterialOptions(unlitMasterNode.surfaceType, unlitMasterNode.alphaMode, unlitMasterNode.twoSided.isOn);
                 var tagsBuilder = new ShaderStringBuilder(0);
