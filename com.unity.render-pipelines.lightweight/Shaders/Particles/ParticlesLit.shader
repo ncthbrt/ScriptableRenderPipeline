@@ -77,7 +77,7 @@ Shader "LightweightRenderPipeline/Particles/Lit"
             VaryingsParticle ParticlesLitVertex(AttributesParticle input)
             {
                 VaryingsParticle output;
-                VertexPosition vertexPosition = GetVertexPosition(input.vertex.xyz);
+                VertexPositionInput vertexInput = GetVertexPositionInput(input.vertex.xyz);
                 VertexTBN vertexTBN = GetVertexTBN(input.normal
 #if defined(_NORMALMAP)
                     , input.tangent
@@ -91,17 +91,17 @@ Shader "LightweightRenderPipeline/Particles/Lit"
                 output.binormal = vertexTBN.binormalWS;
 #endif
 
-                output.posWS.xyz = vertexPosition.worldSpace;
-                output.posWS.w = ComputeFogFactor(vertexPosition.hclipSpace.z);
-                output.clipPos = vertexPosition.hclipSpace;
-                output.viewDirShininess.xyz = VertexViewDirWS(GetCameraPositionWS() - vertexPosition.worldSpace);
+                output.posWS.xyz = vertexInput.positionWS;
+                output.posWS.w = ComputeFogFactor(vertexInput.positionCS.z);
+                output.clipPos = vertexInput.positionCS;
+                output.viewDirShininess.xyz = VertexViewDirWS(GetCameraPositionWS() - vertexInput.positionWS);
                 output.viewDirShininess.w = 0.0;
                 output.color = input.color;
 
                 // TODO: Instancing
                 // vertColor(output.color);
                 vertTexcoord(input, output);
-                vertFading(output, vertexPosition.worldSpace, vertexPosition.hclipSpace);
+                vertFading(output, vertexInput.positionWS, vertexInput.positionCS);
                 return output;
             }
 

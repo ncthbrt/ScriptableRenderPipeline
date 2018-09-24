@@ -72,18 +72,18 @@ Shader "LightweightRenderPipeline/Particles/Unlit"
                 VaryingsParticle vertParticleUnlit(AttributesParticle input)
                 {
                     VaryingsParticle output = (VaryingsParticle)0;
-                    VertexPosition vertexPosition = GetVertexPosition(input.vertex.xyz);
+                    VertexPositionInput vertexInput = GetVertexPositionInput(input.vertex.xyz);
 
                     // position ws is used to compute eye depth in vertFading
-                    output.posWS.xyz = vertexPosition.worldSpace;
-                    output.posWS.w = ComputeFogFactor(vertexPosition.hclipSpace.z);
-                    output.clipPos = vertexPosition.hclipSpace;
+                    output.posWS.xyz = vertexInput.positionWS;
+                    output.posWS.w = ComputeFogFactor(vertexInput.positionCS.z);
+                    output.clipPos = vertexInput.positionCS;
                     output.color = input.color;
 
                     // TODO: Instancing
                     //vertColor(output.color);
                     vertTexcoord(input, output);
-                    vertFading(output, vertexPosition.worldSpace, vertexPosition.hclipSpace);
+                    vertFading(output, vertexInput.positionWS, vertexInput.positionCS);
 
                     return output;
                 }

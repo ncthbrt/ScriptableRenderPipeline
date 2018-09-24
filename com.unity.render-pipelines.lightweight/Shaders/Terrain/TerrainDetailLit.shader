@@ -73,12 +73,12 @@ Shader "Hidden/TerrainEngine/Details/Vertexlit"
                 // Vertex attributes
                 output.UV01 = TRANSFORM_TEX(input.UV0, _MainTex);
                 output.LightmapUV = input.UV1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
-                VertexPosition vertexPosition = GetVertexPosition(input.PositionOS.xyz);
+                VertexPositionInput vertexInput = GetVertexPositionInput(input.PositionOS.xyz);
                 output.Color = input.Color;
-                output.PositionCS = vertexPosition.hclipSpace;
+                output.PositionCS = vertexInput.positionCS;
                 
                 // Shadow Coords
-                output.ShadowCoords = GetShadowCoord(vertexPosition);
+                output.ShadowCoords = GetShadowCoord(vertexInput);
 
                 // Vertex Lighting
                 half3 NormalWS = input.NormalOS;
@@ -89,7 +89,7 @@ Shader "Hidden/TerrainEngine/Details/Vertexlit"
                 int pixelLightCount = GetAdditionalLightsCount();
                 for (int i = 0; i < pixelLightCount; ++i)
                 {
-                    Light light = GetAdditionalLight(i, vertexPosition.worldSpace);
+                    Light light = GetAdditionalLight(i, vertexInput.positionWS);
                     half3 attenuatedLightColor = light.color * light.distanceAttenuation;
                     diffuseColor += LightingLambert(attenuatedLightColor, light.direction, NormalWS);
                 }

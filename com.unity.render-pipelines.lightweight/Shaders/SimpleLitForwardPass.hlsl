@@ -76,16 +76,16 @@ Varyings LitPassVertexSimple(Attributes input)
     UNITY_TRANSFER_INSTANCE_ID(input, output);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
-    VertexPosition vertexPosition = GetVertexPosition(input.positionOS.xyz);
+    VertexPositionInput vertexInput = GetVertexPositionInput(input.positionOS.xyz);
     VertexTBN vertexTBN = GetVertexTBN(input.normalOS, input.tangentOS);
-    half3 viewDir = VertexViewDirWS(GetCameraPositionWS() - vertexPosition.worldSpace);
-    half3 vertexLight = VertexLighting(vertexPosition.worldSpace, output.normal.xyz);
-    half fogFactor = ComputeFogFactor(vertexPosition.hclipSpace.z);
+    half3 viewDir = VertexViewDirWS(GetCameraPositionWS() - vertexInput.positionWS);
+    half3 vertexLight = VertexLighting(vertexInput.positionWS, output.normal.xyz);
+    half fogFactor = ComputeFogFactor(vertexInput.positionCS.z);
 
     output.uv = TRANSFORM_TEX(input.texcoord, _MainTex);
-    output.posWSShininess.xyz = vertexPosition.worldSpace;
+    output.posWSShininess.xyz = vertexInput.positionWS;
     output.posWSShininess.w = _Shininess * 128.0;
-    output.positionCS = vertexPosition.hclipSpace;
+    output.positionCS = vertexInput.positionCS;
 
 #ifdef _NORMALMAP
     output.normal = half4(vertexTBN.normalWS, viewDir.x);
@@ -102,7 +102,7 @@ Varyings LitPassVertexSimple(Attributes input)
     output.fogFactorAndVertexLight = half4(fogFactor, vertexLight);
 
 #if defined(_MAIN_LIGHT_SHADOWS) && !defined(_RECEIVE_SHADOWS_OFF)
-    output.shadowCoord = GetShadowCoord(vertexPosition);
+    output.shadowCoord = GetShadowCoord(vertexInput);
 #endif
 
     return output;

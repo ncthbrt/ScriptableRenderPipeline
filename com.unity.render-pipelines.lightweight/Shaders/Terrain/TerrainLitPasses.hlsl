@@ -168,7 +168,7 @@ VertexOutput SplatmapVert(VertexInput v)
     UNITY_SETUP_INSTANCE_ID(v);
     TerrainInstancing(v.vertex, v.normal, v.texcoord);
 
-    VertexPosition vertexPosition = GetVertexPosition(v.vertex.xyz);
+    VertexPositionInput vertexInput = GetVertexPositionInput(v.vertex.xyz);
 
     o.uvMainAndLM.xy = v.texcoord;
     o.uvMainAndLM.zw = v.texcoord * unity_LightmapST.xy + unity_LightmapST.zw;
@@ -179,7 +179,7 @@ VertexOutput SplatmapVert(VertexInput v)
     o.uvSplat23.zw = TRANSFORM_TEX(v.texcoord, _Splat3);
 #endif
 
-    half3 viewDir = VertexViewDirWS(GetCameraPositionWS() - vertexPosition.worldSpace);
+    half3 viewDir = VertexViewDirWS(GetCameraPositionWS() - vertexInput.positionWS);
 
 #if defined(_NORMALMAP) && !defined(ENABLE_TERRAIN_PERPIXEL_NORMAL)
     float4 vertexTangent = float4(cross(float3(0, 0, 1), v.normal), 1.0);
@@ -192,13 +192,13 @@ VertexOutput SplatmapVert(VertexInput v)
     o.normal = TransformObjectToWorldNormal(v.normal);
     o.viewDir = viewDir;
 #endif
-    o.fogFactorAndVertexLight.x = ComputeFogFactor(vertexPosition.hclipSpace.z);
-    o.fogFactorAndVertexLight.yzw = VertexLighting(vertexPosition.worldSpace, o.normal.xyz);
-    o.positionWS = vertexPosition.worldSpace;
-    o.clipPos = vertexPosition.hclipSpace;
+    o.fogFactorAndVertexLight.x = ComputeFogFactor(vertexInput.positionCS.z);
+    o.fogFactorAndVertexLight.yzw = VertexLighting(vertexInput.positionWS, o.normal.xyz);
+    o.positionWS = vertexInput.positionWS;
+    o.clipPos = vertexInput.positionCS;
 
 #ifdef _MAIN_LIGHT_SHADOWS
-    o.shadowCoord = GetShadowCoord(vertexPosition);
+    o.shadowCoord = GetShadowCoord(vertexInput);
 #endif
 
     return o;

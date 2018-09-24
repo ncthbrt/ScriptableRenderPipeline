@@ -56,14 +56,14 @@ void InitializeInputData(GrassVertexOutput input, out InputData inputData)
 
 void InitializeVertData(GrassVertexInput input, inout GrassVertexOutput vertData)
 {
-    VertexPosition vertexPosition = GetVertexPosition(input.vertex.xyz);
+    VertexPositionInput vertexInput = GetVertexPositionInput(input.vertex.xyz);
 
     vertData.uv = input.texcoord;
-    vertData.posWSShininess.xyz = vertexPosition.worldSpace;
+    vertData.posWSShininess.xyz = vertexInput.positionWS;
     vertData.posWSShininess.w = 32;
-    vertData.clipPos = vertexPosition.hclipSpace;
+    vertData.clipPos = vertexInput.positionCS;
 
-    vertData.viewDir = VertexViewDirWS(GetCameraPositionWS() - vertexPosition.worldSpace);
+    vertData.viewDir = VertexViewDirWS(GetCameraPositionWS() - vertexInput.positionWS);
     vertData.normal = TransformObjectToWorldNormal(input.normal);
 
     // We either sample GI from lightmap or SH.
@@ -73,12 +73,12 @@ void InitializeVertData(GrassVertexInput input, inout GrassVertexOutput vertData
     OUTPUT_LIGHTMAP_UV(input.lightmapUV, unity_LightmapST, vertData.lightmapUV);
     OUTPUT_SH(vertData.normal, vertData.vertexSH);
 
-    half3 vertexLight = VertexLighting(vertexPosition.worldSpace, vertData.normal.xyz);
-    half fogFactor = ComputeFogFactor(vertexPosition.hclipSpace.z);
+    half3 vertexLight = VertexLighting(vertexInput.positionWS, vertData.normal.xyz);
+    half fogFactor = ComputeFogFactor(vertexInput.positionCS.z);
     vertData.fogFactorAndVertexLight = half4(fogFactor, vertexLight);
 
 #ifdef _MAIN_LIGHT_SHADOWS
-    vertData.shadowCoord = GetShadowCoord(vertexPosition);
+    vertData.shadowCoord = GetShadowCoord(vertexInput);
 #endif
 }
 
