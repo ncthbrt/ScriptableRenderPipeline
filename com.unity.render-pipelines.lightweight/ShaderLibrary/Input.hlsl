@@ -68,7 +68,7 @@ StructuredBuffer<int> _AdditionalLightsBuffer;
 #define UNITY_MATRIX_IT_MV transpose(mul(UNITY_MATRIX_I_M, UNITY_MATRIX_I_V))
 #define UNITY_MATRIX_MVP   mul(UNITY_MATRIX_VP, UNITY_MATRIX_M)
 
-#include "InputBuiltin.hlsl"
+#include "UnityInput.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 #include "CoreFunctions.hlsl"
 

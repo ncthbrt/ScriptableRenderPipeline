@@ -2,7 +2,7 @@
 #define LIGHTWEIGHT_SIMPLE_LIT_INPUT_INCLUDED
 
 #include "Packages/com.unity.render-pipelines.lightweight/ShaderLibrary/Core.hlsl"
-#include "Packages/com.unity.render-pipelines.lightweight/ShaderLibrary/InputSurface.hlsl"
+#include "Packages/com.unity.render-pipelines.lightweight/ShaderLibrary/SurfaceInput.hlsl"
 
 CBUFFER_START(UnityPerMaterial)
 float4 _MainTex_ST;

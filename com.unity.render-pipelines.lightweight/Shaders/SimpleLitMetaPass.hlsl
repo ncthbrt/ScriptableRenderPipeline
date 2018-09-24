@@ -1,7 +1,7 @@
 #ifndef LIGHTWEIGHT_SIMPLE_LIT_META_PASS_INCLUDED
 #define LIGHTWEIGHT_SIMPLE_LIT_META_PASS_INCLUDED
 
-#include "Packages/com.unity.render-pipelines.lightweight/ShaderLibrary/InputMeta.hlsl"
+#include "Packages/com.unity.render-pipelines.lightweight/ShaderLibrary/MetaInput.hlsl"
 
 half4 LightweightFragmentMetaSimple(Varyings input) : SV_Target
 {

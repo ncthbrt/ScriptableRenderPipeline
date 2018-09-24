@@ -2,7 +2,7 @@
 #define LIGHTWEIGHT_WAVING_GRASS_INPUT_INCLUDED
 
 #include "Packages/com.unity.render-pipelines.lightweight/ShaderLibrary/Core.hlsl"
-#include "Packages/com.unity.render-pipelines.lightweight/ShaderLibrary/InputSurface.hlsl"
+#include "Packages/com.unity.render-pipelines.lightweight/ShaderLibrary/SurfaceInput.hlsl"
 
 // Terrain engine shader helpers
 CBUFFER_START(TerrainGrass)
