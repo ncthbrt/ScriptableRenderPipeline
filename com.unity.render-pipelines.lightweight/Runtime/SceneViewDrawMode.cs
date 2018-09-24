@@ -1,7 +1,7 @@
 #if UNITY_EDITOR
 using System.Collections;
 
-namespace UnityEditor.Experimental.Rendering.LightweightPipeline
+namespace UnityEditor.Experimental.Rendering.LightweightRP
 {
     internal static class SceneViewDrawMode
     {

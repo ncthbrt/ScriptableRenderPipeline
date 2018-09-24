@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.Rendering;
 
-namespace UnityEngine.Experimental.Rendering.LightweightPipeline
+namespace UnityEngine.Experimental.Rendering.LightweightRP
 {
     /// <summary>
     /// Inherit from this class to perform custom rendering in the Lightweight Render Pipeline. 

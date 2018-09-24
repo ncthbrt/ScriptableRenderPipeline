@@ -2,9 +2,9 @@ using System;
 using UnityEditor.AnimatedValues;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.Experimental.Rendering.LightweightPipeline;
+using UnityEngine.Experimental.Rendering.LightweightRP;
 
-namespace UnityEditor.Experimental.Rendering.LightweightPipeline
+namespace UnityEditor.Experimental.Rendering.LightweightRP
 {
     [CustomEditorForRenderPipeline(typeof(Camera), typeof(LightweightPipelineAsset))]
     [CanEditMultipleObjects]

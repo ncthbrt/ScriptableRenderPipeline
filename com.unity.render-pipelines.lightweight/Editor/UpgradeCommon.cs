@@ -1,4 +1,4 @@
-namespace UnityEditor.Experimental.Rendering.LightweightPipeline
+namespace UnityEditor.Experimental.Rendering.LightweightRP
 {
     public enum UpgradeSurfaceType
     {

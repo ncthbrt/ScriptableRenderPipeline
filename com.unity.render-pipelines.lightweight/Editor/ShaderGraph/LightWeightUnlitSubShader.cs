@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEditor.Graphing;
 using UnityEditor.ShaderGraph;
 
-namespace UnityEngine.Experimental.Rendering.LightweightPipeline
+namespace UnityEngine.Experimental.Rendering.LightweightRP
 {
     [Serializable]
     [FormerName("UnityEditor.ShaderGraph.LightWeightUnlitSubShader")]

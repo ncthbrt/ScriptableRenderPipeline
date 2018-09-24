@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
-using UnityEditor.Experimental.Rendering.LightweightPipeline;
+using UnityEditor.Experimental.Rendering.LightweightRP;
 
 namespace UnityEditor
 {
