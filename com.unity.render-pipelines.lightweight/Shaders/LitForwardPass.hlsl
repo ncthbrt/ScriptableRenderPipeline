@@ -18,7 +18,7 @@ struct Varyings
     float2 uv                       : TEXCOORD0;
     DECLARE_LIGHTMAP_OR_SH(lightmapUV, vertexSH, 1);
 
-#ifdef _ADDITIONAL_LIGHTS_PIXEL
+#ifdef _ADDITIONAL_LIGHTS
     float3 positionWS               : TEXCOORD2;
 #endif
 
@@ -46,7 +46,7 @@ void InitializeInputData(Varyings input, half3 normalTS, out InputData inputData
 {
     inputData = (InputData)0;
 
-#ifdef _ADDITIONAL_LIGHTS_PIXEL
+#ifdef _ADDITIONAL_LIGHTS
     inputData.positionWS = input.positionWS;
 #endif
 
@@ -104,7 +104,7 @@ Varyings LitPassVertex(Attributes input)
 
     output.fogFactorAndVertexLight = half4(fogFactor, vertexLight);
 
-#ifdef _ADDITIONAL_LIGHTS_PIXEL
+#ifdef _ADDITIONAL_LIGHTS
     output.positionWS = vertexPosition.worldSpace;
 #endif
 
