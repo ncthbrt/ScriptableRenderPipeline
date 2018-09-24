@@ -36,8 +36,8 @@ VertexPositionInput GetVertexPositionInput(float3 positionOS)
     VertexPositionInput input;
     input.positionWS = TransformObjectToWorld(positionOS);
     input.positionVS = TransformWorldToView(input.positionWS);
-    input.positionCS = TransformWorldToHClip(input.positionCS);
-    return vertexPos;
+    input.positionCS = TransformWorldToHClip(input.positionWS);
+    return input;
 }
 
 VertexTBN GetVertexTBN(float3 normalOS)
