@@ -102,7 +102,6 @@ float4 unity_RenderingLayer;
 
 // Light Indices block feature
 // These are set internally by the engine upon request by RendererConfiguration.
-// Check GetRendererSettings in LightweightPipeline.cs
 real4 unity_LightIndicesOffsetAndCount;
 real4 unity_4LightIndices0;
 real4 unity_4LightIndices1;

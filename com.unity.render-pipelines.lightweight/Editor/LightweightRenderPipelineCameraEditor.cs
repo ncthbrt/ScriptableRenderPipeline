@@ -26,7 +26,7 @@ namespace UnityEditor.Experimental.Rendering.LightweightRP
 
         static readonly int[] s_RenderingPathValues = {0};
         static Styles s_Styles;
-        LightweightPipelineAsset m_LightweightPipeline;
+        LightweightPipelineAsset m_LightweightRenderPipeline;
 
         readonly AnimBool m_ShowBGColorAnim = new AnimBool();
         readonly AnimBool m_ShowOrthoAnim = new AnimBool();
@@ -54,7 +54,7 @@ namespace UnityEditor.Experimental.Rendering.LightweightRP
 
         public new void OnEnable()
         {
-            m_LightweightPipeline = GraphicsSettings.renderPipelineAsset as LightweightPipelineAsset;
+            m_LightweightRenderPipeline = GraphicsSettings.renderPipelineAsset as LightweightPipelineAsset;
 
             settings.OnEnable();
             UpdateAnimationValues(true);
@@ -66,7 +66,7 @@ namespace UnityEditor.Experimental.Rendering.LightweightRP
             m_ShowOrthoAnim.valueChanged.RemoveListener(Repaint);
             m_ShowTargetEyeAnim.valueChanged.RemoveListener(Repaint);
 
-            m_LightweightPipeline = null;
+            m_LightweightRenderPipeline = null;
         }
 
         public override void OnInspectorGUI()
@@ -118,7 +118,7 @@ namespace UnityEditor.Experimental.Rendering.LightweightRP
 
         void DrawHDR()
         {
-            bool disabled = settings.HDR.boolValue && !m_LightweightPipeline.supportsHDR;
+            bool disabled = settings.HDR.boolValue && !m_LightweightRenderPipeline.supportsHDR;
             using (new EditorGUI.DisabledScope(disabled))
             {
                 settings.DrawHDR();
@@ -135,7 +135,7 @@ namespace UnityEditor.Experimental.Rendering.LightweightRP
             if (!settings.targetTexture.hasMultipleDifferentValues)
             {
                 var texture = settings.targetTexture.objectReferenceValue as RenderTexture;
-                int pipelineSamplesCount = m_LightweightPipeline.msaaSampleCount;
+                int pipelineSamplesCount = m_LightweightRenderPipeline.msaaSampleCount;
 
                 if (texture && texture.antiAliasing > pipelineSamplesCount)
                 {
@@ -150,7 +150,7 @@ namespace UnityEditor.Experimental.Rendering.LightweightRP
 
         void DrawMSAA()
         {
-            bool disabled = settings.allowMSAA.boolValue && m_LightweightPipeline.msaaSampleCount <= 1;
+            bool disabled = settings.allowMSAA.boolValue && m_LightweightRenderPipeline.msaaSampleCount <= 1;
             using (new EditorGUI.DisabledScope(disabled))
             {
                 settings.DrawMSAA();

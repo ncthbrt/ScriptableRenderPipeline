@@ -67,7 +67,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightRP
 
         Shader m_DefaultShader;
 
-        // Default values set when a new LightweightPipeline asset is created
+        // Default values set when a new LightweightRenderPipeline asset is created
         [SerializeField] int k_AssetVersion = 4;
         
         // General settings
@@ -130,11 +130,11 @@ namespace UnityEngine.Experimental.Rendering.LightweightRP
             }
         }
 
-        [MenuItem("Assets/Create/Rendering/Lightweight Pipeline Asset", priority = CoreUtils.assetCreateMenuPriority1)]
+        [MenuItem("Assets/Create/Rendering/Lightweight Render Pipeline Asset", priority = CoreUtils.assetCreateMenuPriority1)]
         static void CreateLightweightPipeline()
         {
             ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0, CreateInstance<CreateLightweightPipelineAsset>(),
-                "LightweightAsset.asset", null, null);
+                "LightweightRenderPipelineAsset.asset", null, null);
         }
 
         //[MenuItem("Assets/Create/Rendering/Lightweight Pipeline Resources", priority = CoreUtils.assetCreateMenuPriority1)]

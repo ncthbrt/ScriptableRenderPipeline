@@ -46,9 +46,9 @@ Shader "LightweightRenderPipeline/Lit"
 
     SubShader
     {
-        // Lightweight Pipeline tag is required. If Lightweight pipeline is not set in the graphics settings
+        // Lightweight Pipeline tag is required. If Lightweight render pipeline is not set in the graphics settings
         // this Subshader will fail. One can add a subshader below or fallback to Standard built-in to make this
-        // material work with both Lightweight Pipeline and Builtin Unity Pipeline
+        // material work with both Lightweight Render Pipeline and Builtin Unity Pipeline
         Tags{"RenderType" = "Opaque" "RenderPipeline" = "LightweightPipeline" "IgnoreProjector" = "True"}
         LOD 300
 
@@ -56,8 +56,8 @@ Shader "LightweightRenderPipeline/Lit"
         //  Forward pass. Shades all light in a single pass. GI + emission + Fog
         Pass
         {
-            // Lightmode matches the ShaderPassName set in LightweightPipeline.cs. SRPDefaultUnlit and passes with
-            // no LightMode tag are also rendered by Lightweight Pipeline
+            // Lightmode matches the ShaderPassName set in LightweightRenderPipeline.cs. SRPDefaultUnlit and passes with
+            // no LightMode tag are also rendered by Lightweight Render Pipeline
             Name "ForwardLit"
             Tags{"LightMode" = "LightweightForward"}
 
