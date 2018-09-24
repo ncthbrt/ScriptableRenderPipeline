@@ -5,7 +5,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightRP
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Camera))]
     [ImageEffectAllowedInSceneView]
-    public class LightweightAdditionalCameraData : MonoBehaviour
+    public class AdditionalCameraData : MonoBehaviour
     {
         [Tooltip("If enabled shadows will render for this camera.")]
         [FormerlySerializedAs("renderShadows"), SerializeField] bool m_RenderShadows = true;
