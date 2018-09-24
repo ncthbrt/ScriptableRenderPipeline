@@ -307,7 +307,8 @@ float3 PreEvaluatePunctualLightTransmission(LightLoopContext lightLoopContext, P
 
             // Compute the distance from the light to the back face of the object along the light direction.
             float distBackFaceToLight = GetPunctualShadowClosestDistance(   lightLoopContext.shadowContext, s_linear_clamp_sampler,
-                                                                            posInput.positionWS, lightData.shadowIndex, L, lightData.positionRWS);
+                                                                            posInput.positionWS, lightData.shadowIndex, L, lightData.positionRWS,
+                                                                            lightData.lightType == GPULIGHTTYPE_POINT);
 
             // Our subsurface scattering models use the semi-infinite planar slab assumption.
             // Therefore, we need to find the thickness along the normal.
