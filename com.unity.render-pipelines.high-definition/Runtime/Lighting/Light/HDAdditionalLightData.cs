@@ -225,7 +225,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
             Vector2 viewportSize = new Vector2(m_ShadowData.shadowResolution, m_ShadowData.shadowResolution);
 
-            if (initParameters.useDynamicViewportRescale)
+            if (initParameters.useDynamicViewportRescale && m_Light.type != LightType.Directional)
             {
                 // resize viewport size by the normalized size of the light on screen
                 // When we will have access to the non screen clamped bounding sphere light size, we could use it to scale the shadow map resolution
