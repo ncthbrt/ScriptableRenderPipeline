@@ -188,7 +188,7 @@ namespace UnityEditor.Experimental.Rendering.LightweightPipeline
         void LogVariants(Shader shader, ShaderSnippetData snippetData, int prevVariantsCount, int currVariantsCount)
         {
 #if LOG_ONLY_LWRP_VARIANTS
-            if (shader.name.Contains("LightweightPipeline"))
+            if (shader.name.Contains("LightweightRenderPipeline"))
 #endif
             {
                 float percentageCurrent = (float)currVariantsCount / (float)prevVariantsCount * 100f;
