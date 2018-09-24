@@ -68,13 +68,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `Normal Create` node has been renamed to `Normal From Texture`.
 - The preview of nodes now updates correctly.
 - Your system locale can no longer cause incorrect commands due to full stops being converted to commas.
-<<<<<<< HEAD
-- Shader Graphs no longer display an error message intended for Sub Graphs when you delete properties.
-=======
 - `Show Generated Code` no longer throws an "Argument cannot be null" error.
 - Sub Graphs now use the correct generation mode when they generate preview shaders.
 - The `CodeFunctionNode` API now generates correct function headers when you use `DynamicMatrix` type slots.
 - Texture type input slots now set correct default values for 'Normal' texture type.
 - SpaceMaterialSlot now reads correct slot.
-
->>>>>>> master
+- Shader Graphs no longer display an error message intended for Sub Graphs when you delete properties.
