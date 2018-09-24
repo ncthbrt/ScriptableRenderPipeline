@@ -233,9 +233,9 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 // Prevent flickering caused by the floating size of the viewport
                 viewportSize.x = Mathf.Round(viewportSize.x);
                 viewportSize.y = Mathf.Round(viewportSize.y);
-
-                viewportSize = Vector2.Max(viewportSize, new Vector2(32, 32));
             }
+
+            viewportSize = Vector2.Max(viewportSize, new Vector2(16, 16));
 
             for (int requestIndex = 0; requestIndex < shadowRequests.Length; requestIndex++)
             {

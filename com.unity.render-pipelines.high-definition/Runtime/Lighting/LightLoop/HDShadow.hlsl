@@ -60,7 +60,7 @@ float GetPunctualShadowClosestDistance(HDShadowContext shadowContext, SamplerSta
         sd.rot2 = shadowContext.shadowDatas[shadowDataIndex + CubeMapFaceID(-L)].rot2;
     }
     
-    return EvalShadow_SampleClosestDistance_Punctual(sd, _ShadowmapAtlas, s_linear_clamp_sampler, positionWS, L, lightPositionWS);
+    return EvalShadow_SampleClosestDistance_Punctual(sd, _ShadowmapAtlas, sampl, positionWS, L, lightPositionWS);
 }
 
 #endif // LIGHTLOOP_HD_SHADOW_HLSL
