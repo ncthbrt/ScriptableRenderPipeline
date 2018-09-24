@@ -7,8 +7,8 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
         Unlit,
         TerrainPhysicallyBased,
         ParticlesPhysicallyBased,
+        ParticlesSimpleLit,
         ParticlesUnlit,
-
         Count
     }
 
@@ -16,14 +16,13 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
     {
         static readonly string[] s_ShaderPaths  =
         {
-            "LightweightPipeline/Standard (Physically Based)",
-            "LightweightPipeline/Standard (Simple Lighting)",
-            "LightweightPipeline/Standard Unlit",
-            "LightweightPipeline/Terrain/Standard Terrain",
-            "LightweightPipeline/Particles/Standard",
-            "LightweightPipeline/Particles/Standard Unlit",
-            "Hidden/LightweightPipeline/Blit",
-            "Hidden/LightweightPipeline/CopyDepth"
+            "LightweightRenderPipeline/Lit",
+            "LightweightRenderPipeline/Simple Lit",
+            "LightweightRenderPipeline/Unlit",
+            "LightweightRenderPipeline/Terrain/Lit",
+            "LightweightRenderPipeline/Particles/Lit",
+            "LightweightRenderPipeline/Particles/Simple Lit",
+            "LightweightRenderPipeline/Particles/Unlit",
         };
 
         public static string GetShaderPath(ShaderPathID id)
