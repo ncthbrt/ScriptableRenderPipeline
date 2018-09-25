@@ -209,13 +209,13 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
             switch (materialType)
             {
                 case DefaultMaterialType.Standard:
-                    return editorResources.defaultMaterial;
+                    return editorResources.litMaterial;
 
                 case DefaultMaterialType.Particle:
-                    return editorResources.defaultParticleMaterial;
+                    return editorResources.particleLitMaterial;
 
                 case DefaultMaterialType.Terrain:
-                    return editorResources.defaultTerrainMaterial;
+                    return editorResources.terrainLitMaterial;
 
                 // Unity Builtin Default
                 default:
@@ -347,17 +347,17 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
         #if UNITY_EDITOR
         public override Shader GetAutodeskInteractiveShader()
         {
-            return editorResources.AutodeskInteractiveShader;
+            return editorResources.autodeskInteractiveShader;
         }
 
         public override Shader GetAutodeskInteractiveTransparentShader()
         {
-            return editorResources.AutodeskInteractiveTransparentShader;
+            return editorResources.autodeskInteractiveTransparentShader;
         }
 
         public override Shader GetAutodeskInteractiveMaskedShader()
         {
-            return editorResources.AutodeskInteractiveMaskedShader;
+            return editorResources.autodeskInteractiveMaskedShader;
         }
         #endif
 
