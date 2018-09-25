@@ -20,8 +20,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - [Shader API] Added a `VertexPositionInputs` struct that contains vertex position in difference spaces (world, view, hclip).
 - [Shader API] Added a `GetVertexPositionInputs` function to get an initialized `VertexPositionInputs`.
 - [Shader API] Added a `GetPerObjectLightIndex` function to return the per-object index given a for-loop index.
-- [Shader API] Added a `GetShadowCoord` function that takes a `VertexPosition` as input.
-- LWRP now has three interactive Autodesk shaders: Autedesk Interactive, Autodesk Interactive Masked and Autodesk Interactive Transparent.
+- [Shader API] Added a `GetShadowCoord` function that takes a `VertexPositionInputs` as input.
+- LWRP now has three interactive Autodesk shaders: Autodesk Interactive, Autodesk Interactive Masked and Autodesk Interactive Transparent.
 ### Changed
 - The `RenderingData` struct is now read-only.
 - `ScriptableRenderer`always performs a Clear before calling `IRendererSetup::Setup.` 
