@@ -1,6 +1,6 @@
 using System;
 
-namespace UnityEngine.Experimental.Rendering.LightweightRP
+namespace UnityEngine.Experimental.Rendering.LightweightPipeline
 {
     /// <summary>
     /// Set up camera properties for the current pass.

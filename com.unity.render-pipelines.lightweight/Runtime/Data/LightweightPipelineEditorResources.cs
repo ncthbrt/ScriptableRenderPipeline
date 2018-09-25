@@ -1,6 +1,6 @@
 using UnityEngine.Serialization;
 
-namespace UnityEngine.Experimental.Rendering.LightweightRP
+namespace UnityEngine.Experimental.Rendering.LightweightPipeline
 {
     public class LightweightPipelineEditorResources : ScriptableObject
     {

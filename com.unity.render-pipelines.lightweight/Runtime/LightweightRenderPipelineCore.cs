@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.Rendering.PostProcessing;
 
-namespace UnityEngine.Experimental.Rendering.LightweightRP
+namespace UnityEngine.Experimental.Rendering.LightweightPipeline
 {
     [Flags]
     public enum ShaderFeatures

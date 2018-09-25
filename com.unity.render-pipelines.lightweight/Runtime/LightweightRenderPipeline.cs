@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using Unity.Collections;
 #if UNITY_EDITOR
 using UnityEditor;
-using UnityEditor.Experimental.Rendering.LightweightRP;
+using UnityEditor.Experimental.Rendering.LightweightPipeline;
 #endif
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.Experimental.GlobalIllumination;
 using Lightmapping = UnityEngine.Experimental.GlobalIllumination.Lightmapping;
 
-namespace UnityEngine.Experimental.Rendering.LightweightRP
+namespace UnityEngine.Experimental.Rendering.LightweightPipeline
 {
     public interface IBeforeCameraRender
     {

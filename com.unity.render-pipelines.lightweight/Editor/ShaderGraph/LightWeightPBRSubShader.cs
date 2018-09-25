@@ -5,9 +5,9 @@ using System.Linq;
 using UnityEditor.Graphing;
 using UnityEditor.ShaderGraph;
 using UnityEngine.Experimental.Rendering;
-using UnityEngine.Experimental.Rendering.LightweightRP;
+using UnityEngine.Experimental.Rendering.LightweightPipeline;
 
-namespace UnityEditor.Experimental.Rendering.LightweightRP
+namespace UnityEditor.Experimental.Rendering.LightweightPipeline
 {
     [Serializable]
     [FormerName("UnityEditor.ShaderGraph.LightWeightPBRSubShader")]

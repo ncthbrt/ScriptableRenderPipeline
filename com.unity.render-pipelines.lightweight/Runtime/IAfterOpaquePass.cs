@@ -1,4 +1,4 @@
-namespace UnityEngine.Experimental.Rendering.LightweightRP
+namespace UnityEngine.Experimental.Rendering.LightweightPipeline
 {
     public interface IAfterOpaquePass
     {

@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
-using UnityEngine.Experimental.Rendering.LightweightRP;
+using UnityEngine.Experimental.Rendering.LightweightPipeline;
 
-namespace UnityEditor.Experimental.Rendering.LightweightRP
+namespace UnityEditor.Experimental.Rendering.LightweightPipeline
 {
     internal sealed class LightweightRenderPipelineMaterialUpgrader
     {

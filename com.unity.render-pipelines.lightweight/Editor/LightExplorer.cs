@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.Experimental.Rendering.LightweightRP;
+using UnityEngine.Experimental.Rendering.LightweightPipeline;
 
 namespace UnityEditor
 {
