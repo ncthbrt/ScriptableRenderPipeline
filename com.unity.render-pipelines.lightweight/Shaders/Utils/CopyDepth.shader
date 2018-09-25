@@ -6,7 +6,7 @@ Shader "Hidden/Lightweight Render Pipeline/CopyDepth"
 
         Pass
         {
-            Name "DepthCopy"
+            Name "CopyDepth"
             ZTest Always ZWrite On ColorMask 0
 
             HLSLPROGRAM
@@ -18,7 +18,7 @@ Shader "Hidden/Lightweight Render Pipeline/CopyDepth"
 
             #pragma multi_compile _DEPTH_NO_MSAA _DEPTH_MSAA_2 _DEPTH_MSAA_4
 
-            #include "DepthCopyPass.hlsl"
+            #include "CopyDepthPass.hlsl"
 
             ENDHLSL
         }
