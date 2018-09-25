@@ -111,7 +111,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
         const string k_ReleaseResourcesTag = "Release Resources";
         readonly Material[] m_Materials;
 
-        public ScriptableRenderer(LightweightPipelineAsset pipelineAsset)
+        public ScriptableRenderer(LightweightRenderPipelineAsset pipelineAsset)
         {
             if (pipelineAsset == null)
                 throw new ArgumentNullException("pipelineAsset");

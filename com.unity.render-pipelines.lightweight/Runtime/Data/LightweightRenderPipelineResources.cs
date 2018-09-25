@@ -2,7 +2,7 @@ using UnityEngine.Serialization;
 
 namespace UnityEngine.Experimental.Rendering.LightweightPipeline
 {
-    public class LightweightPipelineResources : ScriptableObject
+    public class LightweightRenderPipelineResources : ScriptableObject
     {
         [FormerlySerializedAs("BlitShader"), SerializeField] Shader m_BlitShader = null;
         [FormerlySerializedAs("CopyDepthShader"), SerializeField] Shader m_CopyDepthShader = null;

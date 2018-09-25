@@ -74,7 +74,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
             public bool supportsDynamicBatching { get; private set; }
             public bool mixedLightingSupported { get; private set; }
 
-            public static PipelineSettings Create(LightweightPipelineAsset asset)
+            public static PipelineSettings Create(LightweightRenderPipelineAsset asset)
             {
                 var cache = new PipelineSettings();
                 // General settings
@@ -119,7 +119,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
             }
         }
 
-        public LightweightRenderPipeline(LightweightPipelineAsset asset)
+        public LightweightRenderPipeline(LightweightRenderPipelineAsset asset)
         {
             settings = PipelineSettings.Create(asset);
             renderer = new ScriptableRenderer(asset);

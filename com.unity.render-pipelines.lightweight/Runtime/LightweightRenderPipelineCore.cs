@@ -103,7 +103,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
             get { return s_ShaderFeatures; }
         }
 
-        public static void SetSupportedShaderFeatures(LightweightPipelineAsset pipelineAsset)
+        public static void SetSupportedShaderFeatures(LightweightRenderPipelineAsset pipelineAsset)
         {
             s_ShaderFeatures = ShaderFeatures.MainLight;
 

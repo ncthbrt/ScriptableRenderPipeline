@@ -3,8 +3,8 @@ using UnityEditor.Experimental.Rendering;
 
 namespace UnityEngine.Experimental.Rendering.LightweightPipeline
 {
-    [CustomEditor(typeof(LightweightPipelineAsset))]
-    public class LightweightPipelineAssetEditor : Editor
+    [CustomEditor(typeof(LightweightRenderPipelineAsset))]
+    public class LightweightRenderPipelineAssetEditor : Editor
     {
         internal class Styles
         {

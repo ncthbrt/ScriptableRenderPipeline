@@ -60,7 +60,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
         PerVertex,
     }
 
-    public class LightweightPipelineAsset : RenderPipelineAsset, ISerializationCallbackReceiver
+    public class LightweightRenderPipelineAsset : RenderPipelineAsset, ISerializationCallbackReceiver
     {
         static readonly string s_SearchPathProject = "Assets";
         static readonly string s_SearchPathPackage = "Packages/com.unity.render-pipelines.lightweight";
@@ -113,19 +113,19 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
         [SerializeField] int m_MaxPixelLights;
         [SerializeField] ShadowResolution m_ShadowAtlasResolution;
 
-        [SerializeField] LightweightPipelineResources m_ResourcesAsset;
+        [SerializeField] LightweightRenderPipelineResources m_ResourcesAsset;
 #if UNITY_EDITOR
         [NonSerialized]
-        LightweightPipelineEditorResources m_EditorResourcesAsset;
+        LightweightRenderPipelineEditorResources m_EditorResourcesAsset;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1812")]
         internal class CreateLightweightPipelineAsset : EndNameEditAction
         {
             public override void Action(int instanceId, string pathName, string resourceFile)
             {
-                var instance = CreateInstance<LightweightPipelineAsset>();
-                instance.m_EditorResourcesAsset = LoadResourceFile<LightweightPipelineEditorResources>();
-                instance.m_ResourcesAsset = LoadResourceFile<LightweightPipelineResources>();
+                var instance = CreateInstance<LightweightRenderPipelineAsset>();
+                instance.m_EditorResourcesAsset = LoadResourceFile<LightweightRenderPipelineEditorResources>();
+                instance.m_ResourcesAsset = LoadResourceFile<LightweightRenderPipelineResources>();
                 AssetDatabase.CreateAsset(instance, pathName);
             }
         }
@@ -140,15 +140,15 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
         //[MenuItem("Assets/Create/Rendering/Lightweight Pipeline Resources", priority = CoreUtils.assetCreateMenuPriority1)]
         static void CreateLightweightPipelineResources()
         {
-            var instance = CreateInstance<LightweightPipelineResources>();
-            AssetDatabase.CreateAsset(instance, string.Format("Assets/{0}.asset", typeof(LightweightPipelineResources).Name));
+            var instance = CreateInstance<LightweightRenderPipelineResources>();
+            AssetDatabase.CreateAsset(instance, string.Format("Assets/{0}.asset", typeof(LightweightRenderPipelineResources).Name));
         }
 
         //[MenuItem("Assets/Create/Rendering/Lightweight Pipeline Editor Resources", priority = CoreUtils.assetCreateMenuPriority1)]
         static void CreateLightweightPipelineEditorResources()
         {
-            var instance = CreateInstance<LightweightPipelineEditorResources>();
-            AssetDatabase.CreateAsset(instance, string.Format("Assets/{0}.asset", typeof(LightweightPipelineEditorResources).Name));
+            var instance = CreateInstance<LightweightRenderPipelineEditorResources>();
+            AssetDatabase.CreateAsset(instance, string.Format("Assets/{0}.asset", typeof(LightweightRenderPipelineEditorResources).Name));
         }
 
         static T LoadResourceFile<T>() where T : ScriptableObject
@@ -172,24 +172,24 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
             return resourceAsset;
         }
 
-        LightweightPipelineEditorResources editorResources
+        LightweightRenderPipelineEditorResources editorResources
         {
             get
             {
                 if (m_EditorResourcesAsset == null)
-                    m_EditorResourcesAsset = LoadResourceFile<LightweightPipelineEditorResources>();
+                    m_EditorResourcesAsset = LoadResourceFile<LightweightRenderPipelineEditorResources>();
 
                 return m_EditorResourcesAsset;
             }
         }
 #endif
-        LightweightPipelineResources resources
+        LightweightRenderPipelineResources resources
         {
             get
             {
 #if UNITY_EDITOR
                 if (m_ResourcesAsset == null)
-                    m_ResourcesAsset = LoadResourceFile<LightweightPipelineResources>();
+                    m_ResourcesAsset = LoadResourceFile<LightweightRenderPipelineResources>();
 #endif
                 return m_ResourcesAsset;
             }

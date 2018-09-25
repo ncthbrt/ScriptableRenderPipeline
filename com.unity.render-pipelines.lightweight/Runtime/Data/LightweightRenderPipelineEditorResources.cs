@@ -2,7 +2,7 @@ using UnityEngine.Serialization;
 
 namespace UnityEngine.Experimental.Rendering.LightweightPipeline
 {
-    public class LightweightPipelineEditorResources : ScriptableObject
+    public class LightweightRenderPipelineEditorResources : ScriptableObject
     {
         [FormerlySerializedAs("DefaultMaterial"),SerializeField] Material m_DefaultMaterial = null;
         [FormerlySerializedAs("DefaultParticleMaterial"),SerializeField] Material m_DefaultParticleMaterial = null;

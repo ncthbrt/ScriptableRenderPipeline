@@ -6,7 +6,7 @@ using UnityEngine.Experimental.Rendering.LightweightPipeline;
 
 namespace UnityEditor.Experimental.Rendering.LightweightPipeline
 {
-    [CustomEditorForRenderPipeline(typeof(Camera), typeof(LightweightPipelineAsset))]
+    [CustomEditorForRenderPipeline(typeof(Camera), typeof(LightweightRenderPipelineAsset))]
     [CanEditMultipleObjects]
     internal class LightweightRenderPipelineCameraEditor : CameraEditor
     {
@@ -26,7 +26,7 @@ namespace UnityEditor.Experimental.Rendering.LightweightPipeline
 
         static readonly int[] s_RenderingPathValues = {0};
         static Styles s_Styles;
-        LightweightPipelineAsset m_LightweightRenderPipeline;
+        LightweightRenderPipelineAsset m_LightweightRenderPipeline;
 
         readonly AnimBool m_ShowBGColorAnim = new AnimBool();
         readonly AnimBool m_ShowOrthoAnim = new AnimBool();
@@ -54,7 +54,7 @@ namespace UnityEditor.Experimental.Rendering.LightweightPipeline
 
         public new void OnEnable()
         {
-            m_LightweightRenderPipeline = GraphicsSettings.renderPipelineAsset as LightweightPipelineAsset;
+            m_LightweightRenderPipeline = GraphicsSettings.renderPipelineAsset as LightweightRenderPipelineAsset;
 
             settings.OnEnable();
             UpdateAnimationValues(true);
