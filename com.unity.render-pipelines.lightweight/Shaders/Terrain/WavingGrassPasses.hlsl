@@ -56,7 +56,7 @@ void InitializeInputData(GrassVertexOutput input, out InputData inputData)
 
 void InitializeVertData(GrassVertexInput input, inout GrassVertexOutput vertData)
 {
-    VertexPositionInput vertexInput = GetVertexPositionInput(input.vertex.xyz);
+    VertexPositionInputs vertexInput = GetVertexPositionInputs(input.vertex.xyz);
 
     vertData.uv = input.texcoord;
     vertData.posWSShininess.xyz = vertexInput.positionWS;

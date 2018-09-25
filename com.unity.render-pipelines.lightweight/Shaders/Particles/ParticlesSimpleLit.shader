@@ -90,7 +90,7 @@ Shader "LightweightRenderPipeline/Particles/Simple Lit"
             {
                 VaryingsParticle output;
 
-                VertexPositionInput vertexInput = GetVertexPositionInput(input.vertex.xyz);
+                VertexPositionInputs vertexInput = GetVertexPositionInputs(input.vertex.xyz);
                 VertexTBN vertexTBN = GetVertexTBN(input.normal
 #if defined(_NORMALMAP)
                     , input.tangent

@@ -87,7 +87,7 @@ Shader "LightweightRenderPipeline/Unlit"
                 UNITY_TRANSFER_INSTANCE_ID(input, output);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
-                VertexPositionInput vertexInput = GetVertexPositionInput(input.positionOS.xyz);
+                VertexPositionInputs vertexInput = GetVertexPositionInputs(input.positionOS.xyz);
                 output.vertex = vertexInput.positionCS;
                 output.uv0AndFogCoord.xy = TRANSFORM_TEX(input.uv, _MainTex);
                 output.uv0AndFogCoord.z = ComputeFogFactor(vertexInput.positionCS.z);

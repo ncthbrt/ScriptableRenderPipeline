@@ -209,7 +209,7 @@ half AdditionalLightRealtimeShadow(int lightIndex, float3 positionWS)
 #endif
 }
 
-float4 GetShadowCoord(VertexPositionInput vertexInput)
+float4 GetShadowCoord(VertexPositionInputs vertexInput)
 {
 #if SHADOWS_SCREEN
     return ComputeScreenPos(vertexInput.positionCS);

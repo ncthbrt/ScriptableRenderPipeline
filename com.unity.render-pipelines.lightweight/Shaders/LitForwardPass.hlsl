@@ -82,7 +82,7 @@ Varyings LitPassVertex(Attributes input)
     UNITY_TRANSFER_INSTANCE_ID(input, output);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
-    VertexPositionInput vertexInput = GetVertexPositionInput(input.positionOS.xyz);
+    VertexPositionInputs vertexInput = GetVertexPositionInputs(input.positionOS.xyz);
     VertexTBN vertexTBN = GetVertexTBN(input.normalOS, input.tangentOS);
     half3 viewDir = VertexViewDirWS(GetCameraPositionWS() - vertexInput.positionWS);
     half3 vertexLight = VertexLighting(vertexInput.positionWS, vertexTBN.normalWS);

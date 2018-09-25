@@ -168,7 +168,7 @@ VertexOutput SplatmapVert(VertexInput v)
     UNITY_SETUP_INSTANCE_ID(v);
     TerrainInstancing(v.vertex, v.normal, v.texcoord);
 
-    VertexPositionInput vertexInput = GetVertexPositionInput(v.vertex.xyz);
+    VertexPositionInputs vertexInput = GetVertexPositionInputs(v.vertex.xyz);
 
     o.uvMainAndLM.xy = v.texcoord;
     o.uvMainAndLM.zw = v.texcoord * unity_LightmapST.xy + unity_LightmapST.zw;

@@ -78,7 +78,7 @@ ${VertexShaderDescriptionInputs}
 ${VertexShaderOutputs}
 		float3 lwWNormal = TransformObjectToWorldNormal(v.normal);
 
-        VertexPositionInput vertexInput = GetVertexPositionInput(v.vertex.xyz);
+        VertexPositionInputs vertexInput = GetVertexPositionInputs(v.vertex.xyz);
         
  		// We either sample GI from lightmap or SH.
 	    // Lightmap UV and vertex SH coefficients use the same interpolator ("float2 lightmapUV" for lightmap or "half3 vertexSH" for SH)

@@ -73,7 +73,7 @@ Shader "Hidden/TerrainEngine/Details/Vertexlit"
                 // Vertex attributes
                 output.UV01 = TRANSFORM_TEX(input.UV0, _MainTex);
                 output.LightmapUV = input.UV1.xy * unity_LightmapST.xy + unity_LightmapST.zw;
-                VertexPositionInput vertexInput = GetVertexPositionInput(input.PositionOS.xyz);
+                VertexPositionInputs vertexInput = GetVertexPositionInputs(input.PositionOS.xyz);
                 output.Color = input.Color;
                 output.PositionCS = vertexInput.positionCS;
                 

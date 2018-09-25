@@ -72,7 +72,7 @@ Shader "LightweightRenderPipeline/Particles/Unlit"
                 VaryingsParticle vertParticleUnlit(AttributesParticle input)
                 {
                     VaryingsParticle output = (VaryingsParticle)0;
-                    VertexPositionInput vertexInput = GetVertexPositionInput(input.vertex.xyz);
+                    VertexPositionInputs vertexInput = GetVertexPositionInputs(input.vertex.xyz);
 
                     // position ws is used to compute eye depth in vertFading
                     output.posWS.xyz = vertexInput.positionWS;
