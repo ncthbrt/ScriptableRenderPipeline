@@ -16,13 +16,13 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
     {
         static readonly string[] s_ShaderPaths  =
         {
-            "LightweightRenderPipeline/Lit",
-            "LightweightRenderPipeline/Simple Lit",
-            "LightweightRenderPipeline/Unlit",
-            "LightweightRenderPipeline/Terrain/Lit",
-            "LightweightRenderPipeline/Particles/Lit",
-            "LightweightRenderPipeline/Particles/Simple Lit",
-            "LightweightRenderPipeline/Particles/Unlit",
+            "Lightweight Render Pipeline/Lit",
+            "Lightweight Render Pipeline/Simple Lit",
+            "Lightweight Render Pipeline/Unlit",
+            "Lightweight Render Pipeline/Terrain/Lit",
+            "Lightweight Render Pipeline/Particles/Lit",
+            "Lightweight Render Pipeline/Particles/Simple Lit",
+            "Lightweight Render Pipeline/Particles/Unlit",
         };
 
         public static string GetShaderPath(ShaderPathID id)

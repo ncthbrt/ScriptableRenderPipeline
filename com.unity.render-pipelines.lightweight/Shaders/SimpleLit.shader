@@ -1,5 +1,5 @@
 // Shader targeted for low end devices. Single Pass Forward Rendering.
-Shader "LightweightRenderPipeline/Simple Lit"
+Shader "Lightweight Render Pipeline/Simple Lit"
 {
     // Keep properties of StandardSpecular shader for upgrade reasons.
     Properties

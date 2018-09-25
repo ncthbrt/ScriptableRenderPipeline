@@ -1,4 +1,4 @@
-Shader "Hidden/LightweightRenderPipeline/Terrain/Lit (Base Pass)"
+Shader "Hidden/Lightweight Render Pipeline/Terrain/Lit (Base Pass)"
 {
     Properties
     {

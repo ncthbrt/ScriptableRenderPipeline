@@ -1,6 +1,6 @@
 // No support to Distortion
 // No support to Shadows
-Shader "LightweightRenderPipeline/Particles/Unlit"
+Shader "Lightweight Render Pipeline/Particles/Unlit"
 {
     Properties
     {

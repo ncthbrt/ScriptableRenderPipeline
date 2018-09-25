@@ -2,7 +2,7 @@
 // Only directional light is supported for lit particles
 // No shadow
 // No distortion
-Shader "LightweightRenderPipeline/Particles/Lit"
+Shader "Lightweight Render Pipeline/Particles/Lit"
 {
     Properties
     {
@@ -123,6 +123,6 @@ Shader "LightweightRenderPipeline/Particles/Lit"
         }
     }
 
-    Fallback "LightweightRenderPipeline/Particles/SimpleLit"
+    Fallback "Lightweight Render Pipeline/Particles/SimpleLit"
     CustomEditor "ParticlesLitShaderGUI"
 }

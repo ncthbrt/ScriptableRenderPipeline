@@ -1,4 +1,4 @@
-Shader "Hidden/LightweightRenderPipeline/Sampling"
+Shader "Hidden/Lightweight Render Pipeline/Sampling"
 {
     Properties
     {

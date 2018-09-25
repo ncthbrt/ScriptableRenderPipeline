@@ -1,4 +1,4 @@
-Shader "LightweightRenderPipeline/Lit"
+Shader "Lightweight Render Pipeline/Lit"
 {
     Properties
     {
