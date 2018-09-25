@@ -119,10 +119,7 @@ namespace UnityEditor.Experimental.Rendering.LightweightPipeline
         void DrawHDR()
         {
             bool disabled = settings.HDR.boolValue && !m_LightweightRenderPipeline.supportsHDR;
-            using (new EditorGUI.DisabledScope(disabled))
-            {
-                settings.DrawHDR();
-            }
+            settings.DrawHDR();
 
             if (disabled)
                 EditorGUILayout.HelpBox(s_Styles.hdrDisabledWarning, MessageType.Info);
@@ -151,10 +148,7 @@ namespace UnityEditor.Experimental.Rendering.LightweightPipeline
         void DrawMSAA()
         {
             bool disabled = settings.allowMSAA.boolValue && m_LightweightRenderPipeline.msaaSampleCount <= 1;
-            using (new EditorGUI.DisabledScope(disabled))
-            {
-                settings.DrawMSAA();
-            }
+            settings.DrawMSAA();
 
             if (disabled)
                 EditorGUILayout.HelpBox(s_Styles.mssaDisabledWarning, MessageType.Info);
