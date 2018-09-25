@@ -70,13 +70,5 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 out worldToCamera, out projection, out capturePosition, out captureRotation,
                 viewerCamera);
         }
-
-        public static void CalculateCaptureCameraViewProj(PlanarReflectionProbe probe, out Matrix4x4 worldToCamera, out Matrix4x4 projection, out Vector3 capturePosition, out Quaternion captureRotation, Camera viewerCamera = null)
-        {
-            ReflectionSystemInternal.CalculateCaptureCameraViewProj(
-                probe,
-                out worldToCamera, out projection, out capturePosition, out captureRotation,
-                viewerCamera);
-        }
     }
 }
