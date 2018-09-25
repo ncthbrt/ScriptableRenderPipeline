@@ -49,7 +49,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         public CameraProjection projection = CameraProjection.Perspective;
         public float nearClipPlane = 0.3f;
         public float farClipPlane = 1000f;
-        public float fieldOfview = 60.0f;
+        public float fieldOfview = 90.0f;   //90f for a face of a cubemap
         public float orthographicSize = 5f;
 
         public HDAdditionalCameraData.RenderingPath renderingPath = HDAdditionalCameraData.RenderingPath.UseGraphicsSettings;

@@ -336,7 +336,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline.Internal
             target.IncrementUpdateCount();
         }
 
-        public void Render(HDAdditionalReflectionData additional, RenderTexture target, Camera viewerCamera = null)
+        public void Render(HDAdditionalReflectionData additional, RenderTexture target)
         {
             var renderCamera = GetRenderCamera();
             var renderCameraAdditionalData = GetRenderCameraAdditionalData();
@@ -344,7 +344,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline.Internal
             // Copy current frameSettings of this probe to the HDAdditionalData of the render camera
             //probe.frameSettings.CopyTo(s_RenderCameraData.GetFrameSettings());
             
-            SetupCameraForRender(renderCamera, renderCameraAdditionalData, additional, viewerCamera);
+            SetupCameraForRender(renderCamera, renderCameraAdditionalData, additional);
             renderCamera.RenderToCubemap(target);
             target.IncrementUpdateCount();
         }
@@ -383,14 +383,15 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline.Internal
         {
             float nearClipPlane, farClipPlane, aspect, fov;
             Color backgroundColor;
-            CameraClearFlags clearFlags;
+            HDAdditionalCameraData.ClearColorMode clearFlags;
+            bool clearDepth;
             Vector3 capturePosition;
             Quaternion captureRotation;
             Matrix4x4 worldToCamera, projection;
 
             CalculateCaptureCameraProperties(probe,
                 out nearClipPlane, out farClipPlane,
-                out aspect, out fov, out clearFlags, out backgroundColor,
+                out aspect, out fov, out clearFlags, out clearDepth, out backgroundColor,
                 out worldToCamera, out projection,
                 out capturePosition, out captureRotation, viewerCamera);
 
@@ -398,7 +399,8 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline.Internal
             camera.nearClipPlane = nearClipPlane;
             camera.fieldOfView = fov;
             camera.aspect = aspect;
-            camera.clearFlags = clearFlags;
+            additionalData.clearColorMode = clearFlags;
+            additionalData.clearDepth = clearDepth;
             camera.backgroundColor = camera.backgroundColor;
             camera.projectionMatrix = projection;
             camera.worldToCameraMatrix = worldToCamera;
@@ -410,63 +412,60 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline.Internal
             ctr.rotation = captureRotation;
         }
 
-        static void SetupCameraForRender(Camera camera, HDAdditionalCameraData additionalData, HDAdditionalReflectionData additional, Camera viewerCamera = null)
+        static void SetupCameraForRender(Camera camera, HDAdditionalCameraData additionalData, HDAdditionalReflectionData additional)
         {
-            float nearClipPlane, farClipPlane, aspect, fov;
-            Color backgroundColor;
-            CameraClearFlags clearFlags;
-            Vector3 capturePosition;
-            Quaternion captureRotation;
-            Matrix4x4 worldToCamera, projection;
+            Vector3 capturePosition = additional.capturePosition;
+            Quaternion captureRotation = Quaternion.identity;
+            float nearClipPlane = additional.captureSettings.nearClipPlane;
+            float farClipPlane = additional.captureSettings.farClipPlane;
+            float aspect = 1f;
+            float fov = additional.captureSettings.fieldOfview;
 
-            CalculateCaptureCameraProperties(additional,
-                out nearClipPlane, out farClipPlane,
-                out aspect, out fov, out clearFlags, out backgroundColor,
-                out worldToCamera, out projection,
-                out capturePosition, out captureRotation, viewerCamera);
+            camera.clearFlags = CameraClearFlags.Nothing;
+            camera.backgroundColor = Color.white;
+            camera.aspect = 1f;
 
+            additionalData.backgroundColorHDR = additional.captureSettings.backgroundColorHDR;
+            additionalData.clearColorMode = additional.captureSettings.clearColorMode;
+            additionalData.clearDepth = additional.captureSettings.clearDepth;
+            camera.cullingMask = additional.captureSettings.cullingMask;
+            additionalData.volumeLayerMask = additional.captureSettings.volumeLayerMask;
+            additionalData.volumeAnchorOverride = additional.captureSettings.volumeAnchorOverride;
+            camera.useOcclusionCulling = additional.captureSettings.useOcclusionCulling;
+            camera.orthographic = additional.captureSettings.projection == CameraProjection.Orthographic;
             camera.farClipPlane = farClipPlane;
             camera.nearClipPlane = nearClipPlane;
             camera.fieldOfView = fov;
-            camera.aspect = aspect;
-            camera.clearFlags = clearFlags;
-            camera.backgroundColor = camera.backgroundColor;
-            camera.projectionMatrix = projection;
-            camera.worldToCameraMatrix = worldToCamera;
-            camera.cullingMask = additional.reflectionProbe.cullingMask;
+            camera.orthographicSize = additional.captureSettings.orthographicSize;
 
-            additionalData.volumeAnchorOverride = null;
+            //additionalData.aperture = additional.captureSettings.aperture;
+            //additionalData.shutterspeed = additional.captureSettings.shutterspeed;
+            //additionalData.iso = additional.captureSettings.iso;
+
+            additionalData.renderingPath = additional.captureSettings.renderingPath;
+
+            HDRenderPipelineAsset hdrp = GraphicsSettings.renderPipelineAsset as HDRenderPipelineAsset;
+            hdrp.GetFrameSettings().CopyTo(additionalData.GetFrameSettings());
+            if (additional.captureSettings.renderingPath == HDAdditionalCameraData.RenderingPath.Custom)
+                additional.frameSettings.CopyTo(additionalData.GetFrameSettings()); //TODO: only override what needed
+
+            camera.projectionMatrix = Matrix4x4.Perspective(fov, aspect, nearClipPlane, farClipPlane);
+            camera.worldToCameraMatrix = GeometryUtils.CalculateWorldToCameraMatrixRHS(capturePosition, captureRotation);
 
             var ctr = camera.transform;
             ctr.position = capturePosition;
             ctr.rotation = captureRotation;
         }
 
-        public static void CalculateCaptureCameraProperties(PlanarReflectionProbe probe, out float nearClipPlane, out float farClipPlane, out float aspect, out float fov, out CameraClearFlags clearFlags, out Color backgroundColor, out Matrix4x4 worldToCamera, out Matrix4x4 projection, out Vector3 capturePosition, out Quaternion captureRotation, Camera viewerCamera = null)
+        public static void CalculateCaptureCameraProperties(PlanarReflectionProbe probe, out float nearClipPlane, out float farClipPlane, out float aspect, out float fov, out HDAdditionalCameraData.ClearColorMode clearFlags, out bool clearDepth, out Color backgroundColor, out Matrix4x4 worldToCamera, out Matrix4x4 projection, out Vector3 capturePosition, out Quaternion captureRotation, Camera viewerCamera = null)
         {
             if (viewerCamera != null
                 && probe.mode == ReflectionProbeMode.Realtime
                 && probe.refreshMode == ReflectionProbeRefreshMode.EveryFrame
                 && probe.capturePositionMode == PlanarReflectionProbe.CapturePositionMode.MirrorCamera)
-                CalculateMirroredCaptureCameraProperties(probe, viewerCamera, out nearClipPlane, out farClipPlane, out aspect, out fov, out clearFlags, out backgroundColor, out worldToCamera, out projection, out capturePosition, out captureRotation);
+                CalculateMirroredCaptureCameraProperties(probe, viewerCamera, out nearClipPlane, out farClipPlane, out aspect, out fov, out clearFlags, out clearDepth, out backgroundColor, out worldToCamera, out projection, out capturePosition, out captureRotation);
             else
-                CalculateStaticCaptureCameraProperties(probe, out nearClipPlane, out farClipPlane, out aspect, out fov, out clearFlags, out backgroundColor, out worldToCamera, out projection, out capturePosition, out captureRotation);
-        }
-
-        public static void CalculateCaptureCameraProperties(HDAdditionalReflectionData additional, out float nearClipPlane, out float farClipPlane, out float aspect, out float fov, out CameraClearFlags clearFlags, out Color backgroundColor, out Matrix4x4 worldToCamera, out Matrix4x4 projection, out Vector3 capturePosition, out Quaternion captureRotation, Camera viewerCamera = null)
-        {
-            nearClipPlane = additional.reflectionProbe.nearClipPlane;
-            farClipPlane = additional.reflectionProbe.farClipPlane;
-            aspect = 1f;
-            fov = 90f;
-            clearFlags = CameraClearFlags.Nothing;
-            backgroundColor = Color.white;
-
-            capturePosition = additional.capturePosition;
-            captureRotation = Quaternion.identity;
-
-            worldToCamera = GeometryUtils.CalculateWorldToCameraMatrixRHS(capturePosition, captureRotation);
-            projection = Matrix4x4.Perspective(fov, aspect, nearClipPlane, farClipPlane);
+                CalculateStaticCaptureCameraProperties(probe, out nearClipPlane, out farClipPlane, out aspect, out fov, out clearFlags, out clearDepth, out backgroundColor, out worldToCamera, out projection, out capturePosition, out captureRotation);
         }
 
         static bool IsProbeCaptureMirrored(PlanarReflectionProbe probe, Camera viewerCamera)
@@ -477,16 +476,16 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline.Internal
                 && probe.capturePositionMode == PlanarReflectionProbe.CapturePositionMode.MirrorCamera;
         }
 
-        static void CalculateStaticCaptureCameraProperties(PlanarReflectionProbe probe, out float nearClipPlane, out float farClipPlane, out float aspect, out float fov, out CameraClearFlags clearFlags, out Color backgroundColor, out Matrix4x4 worldToCamera, out Matrix4x4 projection, out Vector3 capturePosition, out Quaternion captureRotation)
+        static void CalculateStaticCaptureCameraProperties(PlanarReflectionProbe probe, out float nearClipPlane, out float farClipPlane, out float aspect, out float fov, out HDAdditionalCameraData.ClearColorMode clearFlags, out bool clearDepth, out Color backgroundColor, out Matrix4x4 worldToCamera, out Matrix4x4 projection, out Vector3 capturePosition, out Quaternion captureRotation)
         {
-            nearClipPlane = probe.captureNearPlane;
-            farClipPlane = probe.captureFarPlane;
+            nearClipPlane = probe.captureSettings.nearClipPlane;
+            farClipPlane = probe.captureSettings.farClipPlane;
             aspect = 1f;
-            fov = probe.overrideFieldOfView
-                ? probe.fieldOfViewOverride
-                : 90f;
-            clearFlags = CameraClearFlags.Nothing;
-            backgroundColor = Color.white;
+            //previously set to 90f if not overrided
+            fov = probe.captureSettings.fieldOfview; 
+            clearFlags = probe.captureSettings.clearColorMode;
+            clearDepth = probe.captureSettings.clearDepth;
+            backgroundColor = probe.captureSettings.backgroundColorHDR;
 
             capturePosition = probe.capturePosition;
             captureRotation = Quaternion.LookRotation((Vector3)probe.influenceToWorld.GetColumn(3) - capturePosition, probe.transform.up);
@@ -497,15 +496,17 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline.Internal
             projection = GeometryUtils.CalculateObliqueMatrix(projection, clipPlane);
         }
 
-        static void CalculateMirroredCaptureCameraProperties(PlanarReflectionProbe probe, Camera viewerCamera, out float nearClipPlane, out float farClipPlane, out float aspect, out float fov, out CameraClearFlags clearFlags, out Color backgroundColor, out Matrix4x4 worldToCamera, out Matrix4x4 projection, out Vector3 capturePosition, out Quaternion captureRotation)
+        static void CalculateMirroredCaptureCameraProperties(PlanarReflectionProbe probe, Camera viewerCamera, out float nearClipPlane, out float farClipPlane, out float aspect, out float fov, out HDAdditionalCameraData.ClearColorMode clearFlags, out bool clearDepth, out Color backgroundColor, out Matrix4x4 worldToCamera, out Matrix4x4 projection, out Vector3 capturePosition, out Quaternion captureRotation)
         {
+            clearDepth = probe.captureSettings.clearDepth;
+            //to check
             nearClipPlane = viewerCamera.nearClipPlane;
             farClipPlane = viewerCamera.farClipPlane;
             aspect = 1;
             fov = probe.overrideFieldOfView
                 ? probe.fieldOfViewOverride
                 : Mathf.Max(viewerCamera.fieldOfView, viewerCamera.fieldOfView * viewerCamera.aspect);
-            clearFlags = viewerCamera.clearFlags;
+            clearFlags = probe.captureSettings.clearColorMode;
             backgroundColor = viewerCamera.backgroundColor;
 
             var worldToCapture = GeometryUtils.CalculateWorldToCameraMatrixRHS(viewerCamera.transform);
