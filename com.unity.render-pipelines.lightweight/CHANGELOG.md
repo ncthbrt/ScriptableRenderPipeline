@@ -17,8 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Custom Light Explorer for LWRP, compared to builtin only reflection probes have changed, removed projection and added resolution.
 - Vertex Lit shader for detail meshes on terrain, this is hidden by default but will override the usage in the terrain system.
 - [Shader API] `GetMainLight` and `GetAdditionalLight` functions can now compute shadow attenuation and store it in the new `shadowAttenuation` field in `LightData` struct.
-- [Shader API] Added `VertexPosition` struct that contains vertex position in difference spaces (world, view, hclip).
-- [Shader API] Added `GetVertexPosition` function to get an initialized `VertexPosition`.
+- [Shader API] Added `VertexPositionInputs` struct that contains vertex position in difference spaces (world, view, hclip).
+- [Shader API] Added `GetVertexPositionInputs` function to get an initialized `VertexPositionInputs`.
 - [Shader API] Added `GetPerObjectLightIndex` function to return the per-object index given a for-loop index.
 - [Shader API] Added `GetShadowCoord` function that takes a `VertexPosition` as input.
 - Autodesk interactive shaders.
@@ -35,8 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - [Shader API] Renamed `SpotAttenuation` function to `AngleAttenuation`.
 - [Shader API] Renamed `_SHADOWS_ENABLED` keyword to `_MAIN_LIGHT_SHADOWS`
 - [Shader API] Renamed `_SHADOWS_CASCADE` keyword to `_MAIN_LIGHT_SHADOWS_CASCADE`
-- [Shader API] Renamed `_VERTEX_LIGHTS` and `_ADDITIONAL_LIGHTS` keywords to
-`_ADDITIONAL_LIGHTS_VERTEX` and `_ADDITIONAL_LIGHTS_PIXEL` respectively.
+- [Shader API] Renamed `_VERTEX_LIGHTS` keyword to `_ADDITIONAL_LIGHTS_VERTEX`.
 - [Shader API] Renamed `_LOCAL_SHADOWS_ENABLED` to `_ADDITIONAL_LIGHT_SHADOWS`
 - [Shader API] Renamed `GetLight` function to `GetAdditionalLight`.
 - [Shader API] Renamed `GetPixelLightCount` function to `GetAdditionalLightsCount`.
