@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace UnityEditor
+namespace UnityEditor.Experimental.Rendering.LightweightPipeline
 {
     internal class ParticlesLitShaderGUI : ShaderGUI
     {

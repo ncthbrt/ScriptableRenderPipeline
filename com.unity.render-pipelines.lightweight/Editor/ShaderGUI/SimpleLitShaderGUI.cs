@@ -1,9 +1,8 @@
 using System;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
-using UnityEditor.Experimental.Rendering.LightweightPipeline;
 
-namespace UnityEditor
+namespace UnityEditor.Experimental.Rendering.LightweightPipeline
 {
     internal class SimpleLitShaderGUI : BaseShaderGUI
     {
