@@ -308,11 +308,11 @@ Shader "HDRenderPipeline/Fabric"
             #pragma multi_compile _ WRITE_MSAA_DEPTH
             
             #define SHADERPASS SHADERPASS_VELOCITY
-            #include "../../ShaderVariables.hlsl"
-            #include "../../Material/Material.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Material.hlsl"
             #include "ShaderPass/FabricSharePass.hlsl"
             #include "FabricData.hlsl"
-            #include "../../ShaderPass/ShaderPassVelocity.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/ShaderPassVelocity.hlsl"
 
             ENDHLSL
         }
