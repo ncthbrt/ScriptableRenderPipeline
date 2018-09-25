@@ -12,23 +12,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - When __HDR__ is enabled in the Camera but disabled in the Asset, an information box in the Camera Inspector informs you about it.
 - When __MSAA__ is enabled in the Camera but disabled in the Asset, an information box in the Camera Inspector informs you about it.
 - Enabled instancing on the terrain shader.
-- Sorting of opaque objects now respects camera opaqueSortMode setting.
-- Sorting of opaque objects disables front-to-back sorting flag when camera settings allow that and the GPU has hidden surface removal.
-- Custom Light Explorer for LWRP, compared to builtin only reflection probes have changed, removed projection and added resolution.
-- Vertex Lit shader for detail meshes on terrain, this is hidden by default but will override the usage in the terrain system.
-- [Shader API] `GetMainLight` and `GetAdditionalLight` functions can now compute shadow attenuation and store it in the new `shadowAttenuation` field in `LightData` struct.
-- [Shader API] Added `VertexPositionInputs` struct that contains vertex position in difference spaces (world, view, hclip).
-- [Shader API] Added `GetVertexPositionInputs` function to get an initialized `VertexPositionInputs`.
-- [Shader API] Added `GetPerObjectLightIndex` function to return the per-object index given a for-loop index.
-- [Shader API] Added `GetShadowCoord` function that takes a `VertexPosition` as input.
-- Autodesk interactive shaders.
+- Sorting of opaque objects now respects camera `opaqueSortMode` setting.
+- Sorting of opaque objects disables front-to-back sorting flag, when camera settings allow that and the GPU has hidden surface removal.
+- LWRP now has a Custom Light Explorer that suits its feature set.
+- LWRP now supports Vertex Lit shaders for detail meshes on terrain.
+- [Shader API] The `GetMainLight` and `GetAdditionalLight` functions can now compute shadow attenuation and store it in the new `shadowAttenuation` field in `LightData` struct.
+- [Shader API] Added a `VertexPositionInputs` struct that contains vertex position in difference spaces (world, view, hclip).
+- [Shader API] Added a `GetVertexPositionInputs` function to get an initialized `VertexPositionInputs`.
+- [Shader API] Added a `GetPerObjectLightIndex` function to return the per-object index given a for-loop index.
+- [Shader API] Added a `GetShadowCoord` function that takes a `VertexPosition` as input.
+- LWRP now has three interactive Autodesk shaders: Autedesk Interactive, Autodesk Interactive Masked and Autodesk Interactive Transparent.
 ### Changed
 - The `RenderingData` struct is now read-only.
-- `ScriptableRenderer`always perform a Clear before calling `IRendererSetup::Setup.` 
+- `ScriptableRenderer`always performs a Clear before calling `IRendererSetup::Setup.` 
 - `ScriptableRenderPass::Execute` no longer takes `CullResults` as input. Instead, use `RenderingData`as input, since that references `CullResults`.
 - `IRendererSetup_Setup` no longer takes `ScriptableRenderContext` and `CullResults` as input.
-- Removed setting shader inclue path via old API, use package shader include paths
-- Reorganized LWRP asset settings to be more clear.
+- Shader includes are now referenced via package relative paths instead of via the deprecated shader export path mechanism https://docs.unity3d.com/2018.3/Documentation/ScriptReference/ShaderIncludePathAttribute.html.
+- The LWRP Asset settings were re-organized to be more clear.
 - Vertex lighting now controls if additional lights should be shaded per-vertex or per-pixel.
 - Renamed all `Local Lights` nomenclature to `Additional Lights`.
 - Changed shader naming to conform to our SRP shader code convention.
