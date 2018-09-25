@@ -482,6 +482,7 @@ void MixRealtimeAndBakedGI(inout Light light, half3 normalWS, inout half3 bakedG
 half3 LightingLambert(half3 lightColor, half3 lightDir, half3 normal)
 {
     half NdotL = saturate(dot(normal, lightDir));
+    NdotL = smoothstep(0, 0.0025f, NdotL);
     return lightColor * NdotL;
 }
 
@@ -496,7 +497,8 @@ half3 LightingSpecular(half3 lightColor, half3 lightDir, half3 normal, half3 vie
 
 half3 LightingPhysicallyBased(BRDFData brdfData, half3 lightColor, half3 lightDirectionWS, half lightAttenuation, half3 normalWS, half3 viewDirectionWS)
 {
-    half NdotL = saturate(dot(normalWS, lightDirectionWS));
+    half NdotL = saturate(dot(normalWS, lightDirectionWS));    
+    NdotL = smoothstep(0, 0.0025f, NdotL);
     half3 radiance = lightColor * (lightAttenuation * NdotL);
     return DirectBDRF(brdfData, normalWS, lightDirectionWS, viewDirectionWS) * radiance;
 }
