@@ -15,6 +15,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
         LocalShadows        = (1 << 3),
         SoftShadows         = (1 << 4),
     }
+    
     public enum MixedLightingSetup
     {
         None,

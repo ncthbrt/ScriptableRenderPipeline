@@ -1,6 +1,4 @@
-﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-Shader "Hidden/WaterColorFilter" {
+﻿Shader "Hidden/WaterColorFilter" {
 	Properties {
 		_MainTex ("Texture", 2D) = "white" {}
 		_WobbTex ("Wobbing", 2D) = "grey" {}
