@@ -1,5 +1,5 @@
-#ifndef LIGHTWEIGHT_DEPTH_COPY_PASS_INCLUDED
-#define LIGHTWEIGHT_DEPTH_COPY_PASS_INCLUDED
+#ifndef LIGHTWEIGHT_COPY_DEPTH_PASS_INCLUDED
+#define LIGHTWEIGHT_COPY_DEPTH_PASS_INCLUDED
 
 #include "Packages/com.unity.render-pipelines.lightweight/ShaderLibrary/Core.hlsl"
 
