@@ -376,7 +376,17 @@ ModelImporter:
     4300138: Sphere025
     4300140: Hat001
     4300142: Sphere026
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Jacket
+    second: {fileID: 2100000, guid: 1933aeea595cc46d7a9e69ff00a7ca61, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pants
+    second: {fileID: 2100000, guid: 64b2ab62ed9524e1b91c67a712b67b02, type: 2}
   materials:
     importMaterials: 1
     materialName: 0

@@ -74,7 +74,72 @@ ModelImporter:
     4300016: Sphere005
     4300018: Sphere006
     4300020: Sphere021.001
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Badge1.001
+    second: {fileID: 2100000, guid: 7b2366e35fdd241f7875dd1f854cf13e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Badge3.001
+    second: {fileID: 2100000, guid: d4566f1a27ad24ee48eb6c86f3c3bcac, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Gold
+    second: {fileID: 2100000, guid: f30dc07311b5947449210411d4434f48, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Gold.001
+    second: {fileID: 2100000, guid: 125e67003eb31490daf23caf9b02cf29, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Jacket.001
+    second: {fileID: 2100000, guid: 1933aeea595cc46d7a9e69ff00a7ca61, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Red detail
+    second: {fileID: 2100000, guid: 92fe8bdeacae14fc590ee6aef893bb18, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Red detail.001
+    second: {fileID: 2100000, guid: 13ada4d4522824de5bd3ecdf9faabd30, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: bade4.001
+    second: {fileID: 2100000, guid: 4914083f982d54cf68b600b7a25d259d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: badge2.001
+    second: {fileID: 2100000, guid: 8ac4e7d1f24944557a9b168dd6cd4cc7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: body.001
+    second: {fileID: 2100000, guid: c089a7400999441c3b0c2716d4f6c352, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: eyes.001
+    second: {fileID: 2100000, guid: 990ff6a30037d4d17bd414abd2d0ac84, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pants.001
+    second: {fileID: 2100000, guid: 64b2ab62ed9524e1b91c67a712b67b02, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: skin.001
+    second: {fileID: 2100000, guid: d168a6259e8f541f59e87e64f6dec789, type: 2}
   materials:
     importMaterials: 1
     materialName: 0

@@ -47,6 +47,7 @@ Shader "Hidden/ToneFilter" {
 				#endif
 				return o;
 			}
+			
 			fixed4 frag (v2f i) : SV_Target {
 				float depth;
 				float3 normal;
