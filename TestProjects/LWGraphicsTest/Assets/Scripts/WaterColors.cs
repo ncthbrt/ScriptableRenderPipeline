@@ -1,0 +1,199 @@
+﻿using UnityEngine;
+using System.Collections;
+using UnityEngine.Rendering.PostProcessing;
+using System;
+
+namespace WaterColors
+{
+
+  [Serializable]
+  public class PaperData
+  {
+    public Texture paperTex;
+    public float paperScale = 1f;
+    public float paperPower = 1f;
+  }
+
+
+  // [Serializable]
+  // public sealed class PaperParameter : ParameterOverride<PaperData>
+  // {
+  //   public PaperParameter()
+  //   {
+  //   }
+
+  //   public override void Interp(PaperData from, PaperData to, float t)
+  //   {
+  //     // Do nothing
+  //   }
+  // }
+
+
+  [Serializable]
+  [PostProcess(typeof(WaterColorRenderer), PostProcessEvent.AfterStack, "Custom/WaterColors")]
+  public sealed class WaterColors : PostProcessEffectSettings
+  {
+    public TextureParameter wobbTex = new TextureParameter() { defaultState = TextureParameterDefault.White };
+    public FloatParameter wobbScale = new FloatParameter { value = 1f };
+    public FloatParameter wobbPower = new FloatParameter { value = 0.01f };
+    public FloatParameter edgeSize = new FloatParameter { value = 1f };
+    public FloatParameter edgePower = new FloatParameter { value = 3f };
+    // public PaperParameter[] paperDataset;
+  }
+
+  public sealed class WaterColorRenderer : PostProcessEffectRenderer<WaterColors>
+  {
+    private Shader Shader = Shader.Find("PostProcessing/WaterColorFilter");
+    private const int PASS_WOBB = 0;
+    private const int PASS_EDGE = 1;
+    private const int PASS_PAPER = 2;
+
+    public override DepthTextureMode GetCameraFlags()
+    {
+      return DepthTextureMode.DepthNormals;
+    }
+
+    public override void Render(PostProcessRenderContext context)
+    {
+      var sheet = context.propertySheets.Get(Shader);
+      if (settings.wobbTex.value != null)
+      {
+        sheet.properties.SetTexture("_WobbTex", settings.wobbTex);
+      }
+      sheet.properties.SetFloat("_WobbScale", settings.wobbScale);
+      sheet.properties.SetFloat("_WobbPower", settings.wobbPower);
+      sheet.properties.SetFloat("_EdgeSize", settings.edgeSize);
+      sheet.properties.SetFloat("_EdgePower", settings.edgePower);
+      var rt0 = RenderTexture.GetTemporary(context.screenWidth, context.screenHeight, 0, RenderTextureFormat.ARGB64);
+      var rt1 = RenderTexture.GetTemporary(context.screenWidth, context.screenHeight, 0, RenderTextureFormat.ARGB64);
+
+      context.command.BlitFullscreenTriangle(context.source, rt0, sheet, PASS_WOBB);
+      Swap(ref rt0, ref rt1);
+      // if (0 > 0)
+      // {
+      // context.command.BlitFullscreenTriangle(rt0, rt1, sheet, PASS_EDGE);
+      // Swap(ref rt0, ref rt1);
+
+      // for (var i = 0; i < nPapers; i++)
+      // {
+      //   paperDataset[i].SetProps(_filterMat);
+      //   Graphics.Blit(rt0, (i == (nPapers - 1) ? dst : rt1), _filterMat, PASS_PAPER);
+      //   Swap(ref rt0, ref rt1);
+      // }
+      // }
+      // else
+      // {
+      context.command.BlitFullscreenTriangle(rt1, context.destination, sheet, PASS_EDGE);
+      // }
+      RenderTexture.ReleaseTemporary(rt0);
+      RenderTexture.ReleaseTemporary(rt1);
+
+      // context.command.BlitFullscreenTriangle(context.destination, context.destination, sheet, 1);
+    }
+
+    private void Swap(ref RenderTexture src, ref RenderTexture dst)
+    {
+      var tmp = src;
+      src = dst;
+      dst = tmp;
+    }
+  }
+
+  // // namespace WaterColorFilterSystem
+  // // {
+
+  // //   [ExecuteInEditMode]
+  // //   public class WaterColorFilter : MonoBehaviour
+  // //   {
+  // //     public const int PASS_WOBB = 0;
+  // //     public const int PASS_EDGE = 1;
+  // //     public const int PASS_PAPER = 2;
+
+  // //     public const string PROP_WOBB_TEX = "_WobbTex";
+  // //     public const string PROP_WOBB_TEX_SCALE = "_WobbScale";
+  // //     public const string PROP_WOBB_POWER = "_WobbPower";
+  // //     public const string PROP_EDGE_SIZE = "_EdgeSize";
+  // //     public const string PROP_EDGE_POWER = "_EdgePower";
+  // //     public const string PROP_PAPER_TEX = "_PaperTex";
+  // //     public const string PROP_PAPER_SCALE = "_PaperScale";
+  // //     public const string PROP_PAPER_POWER = "_PaperPower";
+
+  // //     public Shader filter;
+
+  // //     public Texture wobbTex;
+  // //     public float wobbScale = 1f;
+  // //     public float wobbPower = 0.01f;
+  // //     public float edgeSize = 1f;
+  // //     public float edgePower = 3f;
+  // //     public PaperData[] paperDataset;
+
+  // //     Material _filterMat;
+
+  // //     void OnEnable()
+  // //     {
+  // //       _filterMat = new Material(filter);
+  // //     }
+  // //     void OnDisable()
+  // //     {
+  // //       DestroyImmediate(_filterMat);
+  // //     }
+  // //     void OnRenderImage(RenderTexture src, RenderTexture dst)
+  // //     {
+  // //       _filterMat.SetTexture(PROP_WOBB_TEX, wobbTex);
+  // //       _filterMat.SetFloat(PROP_WOBB_TEX_SCALE, wobbScale);
+  // //       _filterMat.SetFloat(PROP_WOBB_POWER, wobbPower);
+  // //       _filterMat.SetFloat(PROP_EDGE_SIZE, edgeSize);
+  // //       _filterMat.SetFloat(PROP_EDGE_POWER, edgePower);
+
+  // //       var rt0 = RenderTexture.GetTemporary(src.width, src.height, 0, RenderTextureFormat.ARGB32);
+  // //       var rt1 = RenderTexture.GetTemporary(src.width, src.height, 0, RenderTextureFormat.ARGB32);
+  // //       var nPapers = paperDataset.Length;
+
+  // //       Graphics.Blit(src, rt1, _filterMat, PASS_WOBB);
+  // //       Swap(ref rt0, ref rt1);
+
+  // //       if (nPapers > 0)
+  // //       {
+  // //         Graphics.Blit(rt0, rt1, _filterMat, PASS_EDGE);
+  // //         Swap(ref rt0, ref rt1);
+
+  // //         for (var i = 0; i < nPapers; i++)
+  // //         {
+  // //           paperDataset[i].SetProps(_filterMat);
+  // //           Graphics.Blit(rt0, (i == (nPapers - 1) ? dst : rt1), _filterMat, PASS_PAPER);
+  // //           Swap(ref rt0, ref rt1);
+  // //         }
+  // //       }
+  // //       else
+  // //       {
+  // //         Graphics.Blit(rt0, dst, _filterMat, PASS_EDGE);
+  // //       }
+
+  // //       RenderTexture.ReleaseTemporary(rt0);
+  // //       RenderTexture.ReleaseTemporary(rt1);
+  // //     }
+
+  // //     void Swap(ref RenderTexture src, ref RenderTexture dst)
+  // //     {
+  // //       var tmp = src;
+  // //       src = dst;
+  // //       dst = tmp;
+  // //     }
+
+  // //     [System.Serializable]
+  // //     public class PaperData
+  // //     {
+  // //       public Texture paperTex;
+  // //       public float paperScale = 1f;
+  // //       public float paperPower = 1f;
+
+  // //       public void SetProps(Material mat)
+  // //       {
+  // //         mat.SetTexture(PROP_PAPER_TEX, paperTex);
+  // //         mat.SetFloat(PROP_PAPER_SCALE, paperScale);
+  // //         mat.SetFloat(PROP_PAPER_POWER, paperPower);
+  // //       }
+  // //     }
+  // //   }
+  // // }
+}
